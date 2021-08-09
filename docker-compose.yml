@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+    web:
+        build: .
+        ports:
+            - "8080:8080"
+            - "3000:3000"
+        volumes:
+            - .:/srv
+        depends_on:
+            - db
+        restart: unless-stopped
+
+    db:
+        image: mariadb:latest
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_USER: fairy
+            MYSQL_ROOT_PASSWORD: RedKhezuHR5
+            MYSQL_PASSWORD: RedKhezuHR5
+            MYSQL_DATABASE: fairy
+        restart: unless-stopped
+
+    mail:
+        image: mailhog/mailhog:latest
+        ports:
+            - "8025:8025"
+            - "1025:1025"
