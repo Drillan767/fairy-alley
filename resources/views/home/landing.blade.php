@@ -159,7 +159,7 @@
 </section>
 
 <section class="text-gray-600 body-font">
-    <div class="container px-5 py-24 mx-auto">
+    <div class="container px-5 py-12 mx-auto">
         <h1 class="text-3xl font-medium title-font text-gray-900 mb-12 text-center">Témoignages</h1>
         <div class="flex flex-wrap -m-4">
             <div class="p-4 md:w-1/2 w-full">
@@ -207,7 +207,7 @@
 </section>
 
 <section class="text-gray-600 body-font relative">
-    <div class="container px-5 py-24 mx-auto flex sm:flex-nowrap flex-wrap">
+    <div class="container px-5 py-12 mx-auto flex sm:flex-nowrap flex-wrap">
         <div
             class="lg:w-2/3 md:w-1/2 bg-gray-300 rounded-lg overflow-hidden sm:mr-10 p-10 flex items-end justify-start relative">
             <!--
