@@ -1,28 +1,46 @@
 window._ = require('lodash');
 
-/**
- * We'll load the axios HTTP library which allows us to easily issue requests
- * to our Laravel back-end. This library automatically handles sending the
- * CSRF token as a header based on the value of the "XSRF" token cookie.
- */
-
 window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-/**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allows your team to easily build robust real-time web applications.
- */
+const form = document.getElementById('contact');
+if (form) {
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
 
-// import Echo from 'laravel-echo';
+        const feedback = document.querySelector('.feedback')
+        feedback.classList.add('hidden');
 
-// window.Pusher = require('pusher-js');
+        let formData = new FormData();
+        ['name', 'email', 'subject', 'message'].forEach((entry) => {
+            formData.append(entry, document.getElementById(entry).value)
+        })
 
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: process.env.MIX_PUSHER_APP_KEY,
-//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//     forceTLS: true
-// });
+        if (document.getElementById('newsletter').checked) {
+            formData.append('newsletter', '1')
+        }
+
+        axios.post('/contact', formData)
+            .then((response) => {
+                feedback.classList.remove('hidden');
+                feedback.classList.add('bg-green-100',  'border-green-500', 'text-green-700');
+                feedback.querySelector('p').innerHTML = response.data;
+                form.reset();
+            })
+            .catch((error) => {
+                if (error.response) {
+                    feedback.classList.remove('hidden');
+                    feedback.classList.add('bg-red-100',  'border-red-500', 'text-red-700');
+                    const errors = error.response.data.errors
+                    let messages = '<ul>'
+                    for (const property in errors) {
+                        messages += `<li>${property}: ${errors[property]}</li>`;
+                    }
+
+                    messages += '</li>';
+                    feedback.querySelector('p').innerHTML = messages;
+                }
+            })
+    })
+}
