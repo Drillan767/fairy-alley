@@ -11,8 +11,8 @@
     <script src="{{ mix('js/app.js') }}" defer></script>
     {{-- @vite --}}
 </head>
-<body>
-<header class="text-gray-600 body-font">
+<body class="text-gray-600 body-font">
+<header>
     <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row justify-end">
         {{-- {{ route('login') }} --}}
         <a href="#"
@@ -25,7 +25,7 @@
     </div>
 </header>
 
-<section class="text-gray-600 body-font">
+<section>
     <div class="container px-5 py-10 mx-auto">
         <div class="flex flex-wrap w-full mb-5 flex-col items-center text-center">
             <h1 class="sm:text-3xl text-2xl font-medium title-font mb-2 text-gray-900">
@@ -50,7 +50,6 @@
             <li class="mb-2"><b>Thérapie florale</b> avec les élixirs floraux du bush australien</li>
             <li class="mb-2"><b>Bol d'air Jacquier</b></li>
             <li class="mb-2"><b>Luminothérapie</b> (pour rééquilibrer entre autres la sécrétion de mélatonine/sérotonine)</li>
-            <li class="mb-2"><b>Méditation</b></li>
             <li class="mb-2"><b>Géoécologie</b></li>
             <li class="mb-2"><b>Ateliers en libre-service</b> avec abonnement </li>
             <li class="mb-2">
@@ -158,7 +157,40 @@
     </div>
 </section>
 
-<section class="text-gray-600 body-font">
+<section>
+    <div class="container px-5 py-24 mx-auto flex flex-wrap">
+        <div class="flex w-full mb-20 flex-wrap">
+            <h1 class="sm:text-3xl text-2xl font-medium title-font text-gray-900 lg:w-1/3 lg:mb-0 mb-4">Master Cleanse Reliac Heirloom</h1>
+            <p class="lg:pl-6 lg:w-2/3 mx-auto leading-relaxed text-base">Whatever cardigan tote bag tumblr hexagon brooklyn asymmetrical gentrify, subway tile poke farm-to-table. Franzen you probably haven't heard of them man bun deep jianbing selfies heirloom.</p>
+        </div>
+        <div class="flex flex-wrap md:-m-2 -m-1">
+            <div class="flex flex-wrap w-1/2">
+                <div class="md:p-2 p-1 w-1/2">
+                    <img alt="gallery" class="w-full object-cover h-full object-center block" src="https://picsum.photos/500/300">
+                </div>
+                <div class="md:p-2 p-1 w-1/2">
+                    <img alt="gallery" class="w-full object-cover h-full object-center block" src="https://picsum.photos/500/300">
+                </div>
+                <div class="md:p-2 p-1 w-full">
+                    <img alt="gallery" class="w-full h-full object-cover object-center block" src="https://picsum.photos/600/360">
+                </div>
+            </div>
+            <div class="flex flex-wrap w-1/2">
+                <div class="md:p-2 p-1 w-full">
+                    <img alt="gallery" class="w-full h-full object-cover object-center block" src="https://picsum.photos/600/360">
+                </div>
+                <div class="md:p-2 p-1 w-1/2">
+                    <img alt="gallery" class="w-full object-cover h-full object-center block" src="https://picsum.photos/500/300">
+                </div>
+                <div class="md:p-2 p-1 w-1/2">
+                    <img alt="gallery" class="w-full object-cover h-full object-center block" src="https://picsum.photos/500/300">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
     <div class="container px-5 py-12 mx-auto">
         <h1 class="text-3xl font-medium title-font text-gray-900 mb-12 text-center">Témoignages</h1>
         <div class="flex flex-wrap -m-4">
@@ -206,7 +238,7 @@
     </div>
 </section>
 
-<section class="text-gray-600 body-font relative">
+<section class="relative">
     <div class="container px-5 py-12 mx-auto flex sm:flex-nowrap flex-wrap">
         <div
             class="lg:w-2/3 md:w-1/2 bg-gray-300 rounded-lg overflow-hidden sm:mr-10 p-10 flex items-end justify-start relative">
@@ -282,9 +314,9 @@
     </div>
 </section>
 
-<footer class="text-gray-600 body-font">
+<footer>
     <div class="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
-        <p class="text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">
+        <p class="text-sm text-center text-gray-500 sm:ml-4 sm:pl-4 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">
             © {{ date("Y") }} L'Allée des Fées
         </p>
     </div>
