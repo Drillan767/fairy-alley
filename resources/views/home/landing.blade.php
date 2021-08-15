@@ -20,17 +20,17 @@
             Connexion
         </a>
     </div>
-    <div class="flex justify-center">
+    <div class="flex justify-center items-center">
         <img src="/img/logo.png" class="w-1/2 md:w-1/4" alt="logo" />
+        <h1 class="sm:text-3xl text-2xl font-medium title-font mb-2 text-gray-900">
+            L'Allée des Fées
+        </h1>
     </div>
 </header>
 
 <section>
     <div class="container px-5 py-10 mx-auto">
         <div class="flex flex-wrap w-full mb-5 flex-col items-center text-center">
-            <h1 class="sm:text-3xl text-2xl font-medium title-font mb-2 text-gray-900">
-                L'Allée des Fées
-            </h1>
             <p class="lg:w-1/2 w-full leading-relaxed text-gray-500">
                 Séverine & Thierry vous proposent un accompagnement bien-être
             </p>
@@ -150,10 +150,12 @@
                 </div>
             </div>
         </div>
+        @auth
         <button
             class="flex mx-auto mt-16 text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">
             Button
         </button>
+        @endauth
     </div>
 </section>
 
@@ -240,14 +242,8 @@
 
 <section class="relative">
     <div class="container px-5 py-12 mx-auto flex sm:flex-nowrap flex-wrap">
-        <div
-            class="lg:w-2/3 md:w-1/2 bg-gray-300 rounded-lg overflow-hidden sm:mr-10 p-10 flex items-end justify-start relative">
-            <!--
-            <iframe class="absolute inset-0 w-full h-full pointer-events-none"
-                    src="https://www.openstreetmap.org/export/embed.html?bbox=6.033323407173158%2C46.104476816447495%2C6.035576462745667%2C46.1056874663043&amp;layer=mapnik"
-                    style="border: 1px solid black; filter: grayscale(1) contrast(1.2) opacity(0.4);"></iframe>
-                    -->
-            <img src="/img/maps.png" alt="map" class="absolute inset-0 w-full h-full pointer-events-none" />
+        <div class="lg:w-2/3 md:w-1/2 bg-gray-300 rounded-lg overflow-hidden sm:mr-10 p-10 flex items-end justify-start relative">
+            <img src="/img/maps.png" alt="map" class="absolute inset-0 w-full h-full object-cover" />
             <div class="bg-white w-full relative flex flex-wrap py-6 rounded shadow-md">
                 <div class="lg:w-1/2 px-6">
                     <h2 class="title-font font-semibold text-gray-900 tracking-widest text-xs">ADRESSE</h2>
@@ -262,15 +258,15 @@
                     <a href="mailto:thierry.muraz@orange.fr" class="text-indigo-500 leading-relaxed">thierry.muraz@orange.fr</a>
                     <h2 class="title-font font-semibold text-gray-900 tracking-widest text-xs mt-4">TÉLÉPHONE</h2>
                     <p class="leading-relaxed">
-                        <a href="tel:0033450774754">+33 450 77 47 54</a> <br/>
-                        <a href="tel:0033630811984">+33 630 81 19 84</a>
+                        <a href="tel:0033450774754">+33 4 50 77 47 54</a> <br/>
+                        <a href="tel:0033630811984">+33 6 30 81 19 84</a>
                     </p>
                 </div>
             </div>
         </div>
         <div class="lg:w-1/3 md:w-1/2 bg-white flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0">
             <h2 class="text-gray-900 text-lg mb-1 font-medium title-font">Contact</h2>
-            <p class="leading-relaxed mb-5 text-gray-600">N'hésitez pas à nous contacter pour plus d'informations !</p>
+            <p class="leading-relaxed mb-5 text-gray-600">Contactez-nous pour plus d'informations !</p>
             <form action="{{ route('contact') }}" method="POST" id="contact">
                 @csrf
                 <div class="feedback hidden border-l-4 p-4" role="alert">
@@ -315,8 +311,8 @@
 </section>
 
 <footer>
-    <div class="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
-        <p class="text-sm text-center text-gray-500 sm:ml-4 sm:pl-4 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">
+    <div class="container px-5 py-8 mx-auto text-center">
+        <p class="text-sm text-gray-500 sm:ml-4 sm:mt-0 mt-4">
             © {{ date("Y") }} L'Allée des Fées
         </p>
     </div>

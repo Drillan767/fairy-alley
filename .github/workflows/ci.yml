@@ -60,7 +60,4 @@ jobs:
           username: ${{ secrets.USER }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          script: |
-            whoami
-            ls -al
-            pwd
+          script: sh deploy.sh

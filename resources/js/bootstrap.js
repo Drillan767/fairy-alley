@@ -4,6 +4,8 @@ window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+import Macy from 'macy';
+
 const form = document.getElementById('contact');
 if (form) {
     form.addEventListener('submit', (e) => {
@@ -43,4 +45,21 @@ if (form) {
                 }
             })
     })
+}
+
+const macy = document.getElementById('macy');
+
+if (macy) {
+    Macy({
+        container: '#macy',
+        trueOrder: false,
+        waitForImages: false,
+        margin: 24,
+        columns: 4,
+        breakAt: {
+            1200: 3,
+            520: 2,
+            400: 1
+        }
+    });
 }
