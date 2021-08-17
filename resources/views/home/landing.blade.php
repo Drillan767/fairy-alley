@@ -20,8 +20,11 @@
             Connexion
         </a>
     </div>
-    <div class="flex justify-center items-center">
-        <img src="/img/logo.png" class="w-1/2 md:w-1/4" alt="logo" />
+    <div class="flex justify-center items-center test-parallax py-6" style="background-image: url('https://picsum.photos/1920/1080?random=1')">
+        <div class="bg-white rounded-full flex justify-center align-center">
+            <img src="http://localhost:8080/img/image002.png" class="" alt="logo" />
+        </div>
+
         <h1 class="sm:text-3xl text-2xl font-medium title-font mb-2 text-gray-900">
             L'Allée des Fées
         </h1>
