@@ -18,3 +18,4 @@ yarn-error.log
 /.ash_history
 .composer
 .npm
+.cache

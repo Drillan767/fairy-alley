@@ -17,8 +17,6 @@ use Inertia\Inertia;
 */
 
 Route::view('/', 'home.landing');
-Route::view('/affichage-1', 'home.possibility1');
-Route::view('/affichage-2', 'home.possibility2');
 
 Route::post('/contact', [HomeController::class, 'contact'])->name('contact');
 

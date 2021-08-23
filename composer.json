@@ -10,10 +10,12 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "inertiajs/inertia-laravel": "^0.4.3",
+        "innocenzi/laravel-vite": "^0.1.8",
         "laravel/framework": "^8.40",
         "laravel/jetstream": "^2.3",
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.5",
+        "ohseesoftware/laravel-vite-manifest": "^1.1",
         "tightenco/ziggy": "^1.0"
     },
     "require-dev": {
