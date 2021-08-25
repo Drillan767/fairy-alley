@@ -13,7 +13,7 @@
     <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row justify-end">
         {{-- {{ route('login') }} --}}
         <a href="#"
-            class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">
+           class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">
             Connexion
         </a>
     </div>
@@ -302,10 +302,10 @@
             </div>
         </div>
         @auth
-        <button
-            class="flex mx-auto mt-16 text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">
-            Button
-        </button>
+            <button
+                class="flex mx-auto mt-16 text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">
+                Button
+            </button>
         @endauth
     </div>
 </section>

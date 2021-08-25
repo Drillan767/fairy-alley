@@ -5,7 +5,7 @@ import tailwind from 'tailwindcss'
 import autoprefixer from 'autoprefixer'
 
 export default defineConfig()
-    .withPlugin(vue)
+	.withPlugin(vue)
     .withPostCSS([
         tailwind,
         autoprefixer,
@@ -25,4 +25,4 @@ export default defineConfig()
                 'axios'
             ]
         }
-    })
+    });

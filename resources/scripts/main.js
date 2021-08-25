@@ -1,17 +1,22 @@
+import {createApp, h, resolveComponent} from 'vue';
+import App from '@/views/App.vue'
+import { createInertiaApp } from '@inertiajs/inertia-vue3';
+import { InertiaProgress } from '@inertiajs/progress';
 import axios from 'axios';
 import _ from 'lodash';
 import Macy from 'macy';
-import 'dynamic-import-polyfill';
-import {createApp, h, resolveComponent} from 'vue';
-import { createInertiaApp } from '@inertiajs/inertia-vue3';
-import { InertiaProgress } from '@inertiajs/progress';
 import '../sass/app.scss';
+
+createApp(App).mount('#app')
+
+// -------------
+
+
+// import 'dynamic-import-polyfill';
 
 window._ = _;
 window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
-
 
 const form = document.getElementById('contact');
 if (form) {
@@ -26,7 +31,7 @@ if (form) {
             formData.append(entry, document.getElementById(entry).value)
         })
 
-        if (document.getElementById('newsletter').checked) {
+        if (document.getElementById('newsletter')?.checked) {
             formData.append('newsletter', '1')
         }
 

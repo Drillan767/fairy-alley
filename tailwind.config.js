@@ -8,7 +8,6 @@ module.exports = {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './resources/js/**/*.vue',
-        './resources/js/**/*.{js,ts,vue}',
     ],
 
     theme: {
@@ -16,12 +15,6 @@ module.exports = {
             fontFamily: {
                 sans: ['Nunito', ...defaultTheme.fontFamily.sans],
             },
-        },
-    },
-
-    variants: {
-        extend: {
-            opacity: ['disabled'],
         },
     },
 
