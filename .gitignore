@@ -16,7 +16,9 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+.config
 /.ash_history
 .composer
 .npm
 .cache
+
