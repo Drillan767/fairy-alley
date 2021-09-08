@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\PageController;
+use App\Http\Controllers\Admin\PageController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -34,6 +34,7 @@ Route::get('/test', function () {
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::middleware(['role:administrator'])->group(function() {
         Route::get('/administration', [AdminController::class, 'index'])->name('admin.index');
+        Route::resource('pages', PageController::class);
     });
 
     Route::middleware(['role:subscriber'])->group(function() {

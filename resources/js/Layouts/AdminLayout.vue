@@ -22,8 +22,8 @@
                                 <jet-nav-link :href="route('admin.index')" :active="route().current('admin.index')">
                                     Administration
                                 </jet-nav-link>
-                                <jet-nav-link :href="route('admin.index')" :active="route().current('admin.index')">
-                                    Administration
+                                <jet-nav-link :href="route('pages.index')" :active="route().current('pages.index')">
+                                    Pages
                                 </jet-nav-link>
                             </div>
                         </div>
@@ -89,7 +89,7 @@
                         <jet-responsive-nav-link :href="route('admin.index')" :active="route().current('admin.index')">
                             Administration
                         </jet-responsive-nav-link>
-                        <jet-responsive-nav-link :href="route('admin.index')" :active="route().current('admin.index')">
+                        <jet-responsive-nav-link :href="route('pages.index')" :active="route().current('pages.index')">
                             Pages
                         </jet-responsive-nav-link>
                     </div>

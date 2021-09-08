@@ -1,41 +1,35 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\PageRequest;
 use App\Models\Page;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class PageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): Response
     {
-        //
+        return Inertia::render('Admin/Pages/Index', Page::all());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
+        return Inertia::render('Admin/Pages/Create', [
+            'tiny' => env('TINY_SECRET'),
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(PageRequest $request)
     {
-        //
+        $page = new Page();
+        $page->fill($request->validated());
+        $page->save();
+
+        return Inertia::render('Admin/Pages/Index')->with('success', "Page enregistrée avec succès");
     }
 
     /**
