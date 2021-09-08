@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\PageController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,9 +31,15 @@ Route::get('/test', function () {
     ]);
 });
 
+Route::middleware(['auth:sanctum', 'verified'])->group(function() {
+    Route::middleware(['role:administrator'])->group(function() {
+        Route::get('/administration', [AdminController::class, 'index'])->name('admin.index');
+    });
 
-/*
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
-*/
+    Route::middleware(['role:subscriber'])->group(function() {
+        Route::get('/profil', fn() => Inertia::render('Test/Profile'))->name('profile.index');
+
+    });
+});
+
+Route::resource('pages', PageController::class);

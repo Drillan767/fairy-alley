@@ -1,22 +1,27 @@
-import 'dynamic-import-polyfill';
-
-// import titleMixin from "@/Mixins/titleMixin";
-import mitt from 'mitt';
 import { createApp, h } from 'vue';
 import { App as InertiaApp, plugin as InertiaPlugin } from '@inertiajs/inertia-vue3';
 import { InertiaProgress } from '@inertiajs/progress';
-
+import { macy, contact } from "./Modules/landing";
+import mitt from 'mitt';
+import 'dynamic-import-polyfill';
+import _ from 'lodash';
 import axios from 'axios';
-axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
 import '../sass/app.scss';
 
-InertiaProgress.init();
+window._ = _;
+window.axios = axios;
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-const emitter = mitt();
 const app = document.getElementById('app');
-
+const emitter = mitt();
 const pages = import.meta.glob('./Pages/**/*.vue');
+
+if (document.getElementById('macy')) {
+    macy();
+}
+if (document.getElementById('contact')) {
+    contact();
+}
 
 const created = createApp({
     render: () =>
@@ -32,8 +37,9 @@ const created = createApp({
         }),
 })
     .mixin({ methods: { route } })
-    // .mixin(titleMixin)
     .use(InertiaPlugin);
 
 created.config.globalProperties.emitter = emitter
 created.mount(app);
+
+InertiaProgress.init({ color: '#4B5563' });
