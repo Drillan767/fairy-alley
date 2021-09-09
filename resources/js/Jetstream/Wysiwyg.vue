@@ -1,6 +1,6 @@
 <template>
     <editor
-        api-key="eywu9q72sa0iwmaojefquqo1s5vhjb1v6wpbgjljqm92109l"
+        :apiKey="tiny"
         :init="init"
         v-model="model"
     >
@@ -10,9 +10,11 @@
 
 <script>
 import Editor from '@tinymce/tinymce-vue';
+import { emitter } from '../Modules/emitter'
 
 export default {
-    props: ['value'],
+    props: ['value', 'tiny'],
+    // props: ['value'],
     components: {
         editor: Editor,
     },
@@ -36,9 +38,22 @@ export default {
                     image removeformat undo redo fullscreen',
 
                 images_upload_handler: function (blobInfo, success, failure) {
-                    success(URL.createObjectURL(blobInfo.blob()));
+                    const blob = URL.createObjectURL(blobInfo.blob());
+                    emitter.emit('image-added', {
+                        file: blobInfo.blob(),
+                        blob: blob,
+                    })
+                    success(blob);
                 },
             }
+        }
+    },
+
+    methods: {
+        image_upload_handler(blobInfo, success, failure) {
+            const blob = URL.createObjectURL(blobInfo.blob())
+            this.emitter.emit('image-added', blob)
+            return success(blob);
         }
     },
 

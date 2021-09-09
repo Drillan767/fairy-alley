@@ -28,7 +28,7 @@ class PageRequest extends FormRequest
             'title' => ['required', 'string', 'unique:pages,title', 'max:255'],
             'slug' => ['required', 'string', 'unique:pages,slug', 'max:255'],
             'summary' => ['required', 'string', 'max:255'],
-            'content' => ['required', 'text'],
+            'content' => ['required', 'string'],
             'published' => ['required', 'boolean']
         ];
     }

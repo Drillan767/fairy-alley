@@ -25,6 +25,9 @@ class PageController extends Controller
 
     public function store(PageRequest $request)
     {
+        $blobs = $request->get('medias');
+        $images = $request->file('medias');
+        dd($request->file('medias'));
         $page = new Page();
         $page->fill($request->validated());
         $page->save();
