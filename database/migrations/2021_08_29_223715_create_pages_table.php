@@ -17,6 +17,7 @@ class CreatePagesTable extends Migration
             $table->id();
             $table->string('title')->unique();
             $table->string('slug')->unique();
+            $table->string('illustration');
             $table->string('summary');
             $table->text('content');
             $table->boolean('published')->default(false);

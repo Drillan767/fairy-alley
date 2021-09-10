@@ -31,6 +31,28 @@
                                 </div>
 
                                 <div class="mt-4">
+                                    <!-- Page Illustration File Input -->
+                                    <input type="file" class="hidden" ref="illustration" @change="updateillustrationPreview" />
+                                    <jet-label for="illustration" value="Illustration pour la page" />
+
+                                    <!-- Current Page Illustration -->
+                                    <div class="mt-2" v-show="! illustrationPreview && form.illustration">
+                                        <img :src="form.illustration" alt="illustration" class="rounded-full h-20 w-20 object-cover">
+                                    </div>
+
+                                    <!-- New Page Illustration Preview -->
+                                    <div class="mt-2" v-show="illustrationPreview">
+                                        <img class="rounded" :src="illustrationPreview" alt="illustration">
+                                    </div>
+
+                                    <jet-secondary-button class="mt-2 mr-2" type="button" @click.prevent="selectNewillustration">
+                                        Ajouter une illustration
+                                    </jet-secondary-button>
+
+                                    <jet-input-error :message="form.errors.illustration" class="mt-2" />
+                                </div>
+
+                                <div class="mt-4">
                                     <jet-label for="summary" value="Résumé" />
                                     <jet-input id="summary" type="text" class="mt-1 block w-full" v-model="form.summary" required />
                                     <jet-input-error :message="form.errors.summary" class="mt-2" />
@@ -87,12 +109,13 @@ export default {
             form: this.$inertia.form({
                 title: '',
                 slug: '',
+                illustration: '',
                 summary: '',
                 content: '',
                 published: false,
                 medias: [],
             }),
-
+            illustrationPreview: null,
 
         }
     },
@@ -110,9 +133,22 @@ export default {
             console.log(this.images)
             this.form.published = status;
             this.form.images = this.images;
+            this.form.illustration = this.$refs.illustration.files[0];
             this.form.slug = this.slug
             this.form.post(route('pages.store'));
-        }
+        },
+
+        selectNewillustration() {
+            this.$refs.illustration.click();
+        },
+
+        updateillustrationPreview() {
+            const illustration = this.$refs.illustration.files[0];
+
+            if (! illustration) return;
+
+            this.illustrationPreview = URL.createObjectURL(illustration);
+        },
     },
 
     computed: {
