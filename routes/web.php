@@ -34,7 +34,7 @@ Route::get('/test', function () {
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::middleware(['role:administrator'])->group(function() {
         Route::get('/administration', [AdminController::class, 'index'])->name('admin.index');
-        Route::resource('pages', PageController::class);
+        Route::resource('pages', PageController::class)->except(['show']);
     });
 
     Route::middleware(['role:subscriber'])->group(function() {
@@ -43,4 +43,4 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     });
 });
 
-Route::resource('pages', PageController::class);
+Route::get('/page/{slug}', [PageController::class, 'show'])->name('pages.show');

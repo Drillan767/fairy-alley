@@ -22,7 +22,7 @@
                                 <jet-nav-link :href="route('admin.index')" :active="route().current('admin.index')">
                                     Administration
                                 </jet-nav-link>
-                                <jet-nav-link :href="route('pages.index')" :active="route().current('pages.index')">
+                                <jet-nav-link :href="route('pages.index')" :active="['pages.index', 'pages.show', 'pages.edit'].includes(route().current())">
                                     Pages
                                 </jet-nav-link>
                             </div>
@@ -89,7 +89,7 @@
                         <jet-responsive-nav-link :href="route('admin.index')" :active="route().current('admin.index')">
                             Administration
                         </jet-responsive-nav-link>
-                        <jet-responsive-nav-link :href="route('pages.index')" :active="route().current('pages.index')">
+                        <jet-responsive-nav-link :href="route('pages.index')" :active="['pages.index', 'pages.show', 'pages.edit'].includes(route().current())">
                             Pages
                         </jet-responsive-nav-link>
                     </div>
@@ -167,6 +167,10 @@ export default {
         return {
             showingNavigationDropdown: false,
         }
+    },
+
+    mounted() {
+        console.log(this.route().current())
     },
 
     methods: {

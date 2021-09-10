@@ -23,6 +23,28 @@ services:
             MYSQL_DATABASE: fairy
         restart: unless-stopped
 
+    minio:
+        image: minio/minio:latest
+        ports:
+            - "9090:9000"
+            - "9001:9001"
+        environment:
+            MINIO_ROOT_USER: minio
+            MINIO_ROOT_PASSWORD: minioadmin
+        command: server /data --console-address ":9001"
+
+    mc:
+        image: minio/mc
+        depends_on:
+            - minio
+        entrypoint: >
+            /bin/sh -c "
+            until (/usr/bin/mc config host add myminio http://minio:9000 minio minioadmin) do echo '...waiting...' && sleep 1; done;
+            /usr/bin/mc mb myminio/medias;
+            /usr/bin/mc policy set public myminio/medias;
+            exit 0;
+            "
+
     mail:
         image: mailhog/mailhog:latest
         ports:
