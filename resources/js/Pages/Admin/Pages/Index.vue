@@ -92,6 +92,7 @@ import { Link } from '@inertiajs/inertia-vue3';
 import Swal from "sweetalert2";
 
 export default {
+    title: 'Toutes les pages',
     name: "Index.vue",
     components: {
         AdminLayout,

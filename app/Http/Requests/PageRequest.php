@@ -24,12 +24,21 @@ class PageRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'title' => ['required', 'string', 'unique:pages,title', 'max:255'],
-            'slug' => ['required', 'string', 'unique:pages,slug', 'max:255'],
+        $rules = [
             'summary' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],
             'published' => ['required', 'boolean']
         ];
+
+        if ($this->routeIs('pages.store')) {
+            $rules['title'] = ['required', 'string', 'unique:pages,title', 'max:255'];
+            $rules['slug'] = ['required', 'string', 'unique:pages,slug', 'max:255'];
+            $rules['illustration'] = ['required', 'mimes:jpg,jpeg,png,webp'];
+        } else {
+            $rules['title'] = ['required', 'string', 'unique:pages,title,' . $this->id, 'max:255'];
+            $rules['slug'] = ['required', 'string', 'unique:pages,slug,' . $this->id, 'max:255'];
+        }
+
+        return $rules;
     }
 }

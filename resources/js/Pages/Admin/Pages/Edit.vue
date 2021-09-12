@@ -2,7 +2,7 @@
     <admin-layout title="Pages">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Nouvelle page
+                Éditer "{{ page.title }}"
             </h2>
         </template>
 
@@ -17,7 +17,7 @@
                     </div>
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-                            <Form :editing="false" :tiny="tiny" />
+                            <Form :editing="true" :page="page" :tiny="tiny" />
                         </div>
                     </div>
                 </div>
@@ -28,17 +28,18 @@
 
 <script>
 import AdminLayout from '@/Layouts/AdminLayout.vue'
-import Form from './Form.vue';
+import Form from "./Form.vue";
 
 export default {
-    title: 'Nouvelle page',
+    title: `Éditer la page`,
     components: {
         AdminLayout,
         Form,
     },
 
     props: {
+        page: Object,
         tiny: String,
-    },
+    }
 }
 </script>

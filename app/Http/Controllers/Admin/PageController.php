@@ -26,17 +26,48 @@ class PageController extends Controller
 
     public function store(PageRequest $request)
     {
+        $this->handlePage($request, new Page());
+        return redirect()->route('pages.index')->with('success', 'Page créée avec succès.');
+    }
+
+    public function show(string $slug)
+    {
+        $page = Page::where('slug', $slug)->firstorFail();
+        $user = Auth::user()?->load('roles');
+        return Inertia::render('Admin/Pages/Show', compact('page', 'user'));
+    }
+
+    public function edit(Page $page)
+    {
+        return Inertia::render('Admin/Pages/Edit', compact('page'));
+    }
+
+    public function update(PageRequest $request, Page $page)
+    {
+        $this->handlePage($request, $page, true);
+        dd($request);
+
+    }
+
+    public function destroy(Page $page)
+    {
+        Storage::disk('s3')->deleteDirectory("pages/{$page->id}");
+        $page->delete();
+        return response()->json('ok');
+    }
+
+    private function handlePage(PageRequest $request, Page $page, $editing = false)
+    {
         $content = $request->get('content');
         $file = $request->file('illustration');
         $blobs = Arr::flatten($request->get('medias'));
         $images = Arr::flatten($request->file('medias'));
         $imgsInContent = array_combine($blobs, $images);
 
-        $page = new Page();
         $page->title = $request->get('title');
         $page->slug = $request->get('slug');
         $page->summary = $request->get('summary');
-        $page->published = $request->get('published') === 1;
+        $page->published = $request->get('published') === true;
         $page->illustration = '';
         $page->content = '';
         $page->save();
@@ -52,44 +83,5 @@ class PageController extends Controller
         $page->illustration = env('MEDIAS_URL') . Storage::disk('s3')->putFileAs("pages/{$page->id}/illustration", $file, $file->getClientOriginalName());;
 
         $page->save();
-
-        return redirect()->route('pages.index')->with('success', 'Page créée avec succès.');
-    }
-
-    public function show(string $slug)
-    {
-        $page = Page::where('slug', $slug)->firstorFail();
-        $user = Auth::user()?->load('roles');
-        return Inertia::render('Admin/Pages/Show', compact('page', 'user'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Page  $page
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Page $page)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Page  $page
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Page $page)
-    {
-        //
-    }
-
-    public function destroy(Page $page)
-    {
-        Storage::disk('s3')->deleteDirectory("pages/{$page->id}");
-        $page->delete();
-        return response()->json('ok');
     }
 }
