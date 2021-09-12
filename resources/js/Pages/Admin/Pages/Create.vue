@@ -66,10 +66,10 @@
 
                                 <div class="mt-8">
                                     <div class="flex justify-end">
-                                        <jet-secondary-button type="submit" @click.prevent="submit(false)">
+                                        <jet-secondary-button type="submit" @click.prevent="submit(false)" :disabled="form.processing">
                                             Enregistrer comme brouillon
                                         </jet-secondary-button>
-                                        <jet-button type="submit" @click.prevent="submit(true)" class="ml-2">
+                                        <jet-button type="submit" @click.prevent="submit(true)" class="ml-2" :disabled="form.processing">
                                             Enregistrer et publier
                                         </jet-button>
                                     </div>
@@ -130,7 +130,6 @@ export default {
 
     methods: {
         submit (status) {
-            console.log(this.images)
             this.form.published = status;
             this.form.images = this.images;
             this.form.illustration = this.$refs.illustration.files[0];

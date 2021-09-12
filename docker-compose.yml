@@ -32,6 +32,7 @@ services:
             MINIO_ROOT_USER: minio
             MINIO_ROOT_PASSWORD: minioadmin
         command: server /data --console-address ":9001"
+        restart: unless-stopped
 
     mc:
         image: minio/mc

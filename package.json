@@ -28,6 +28,7 @@
     },
     "dependencies": {
         "@tinymce/tinymce-vue": "^4.0.4",
-        "daisyui": "^1.14.0"
+        "daisyui": "^1.14.0",
+        "sweetalert2": "^11.1.5"
     }
 }

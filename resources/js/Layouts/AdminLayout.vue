@@ -169,10 +169,6 @@ export default {
         }
     },
 
-    mounted() {
-        console.log(this.route().current())
-    },
-
     methods: {
         switchToTeam(team) {
             this.$inertia.put(route('current-team.update'), {
