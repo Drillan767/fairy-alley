@@ -16,7 +16,6 @@
         "laravel/jetstream": "^2.3",
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.5",
-        "ohseesoftware/laravel-vite-manifest": "^1.2",
         "shuchkin/simplexlsx": "^0.8.26",
         "shuchkin/simplexlsxgen": "^1.0",
         "spatie/laravel-permission": "^4.4",
