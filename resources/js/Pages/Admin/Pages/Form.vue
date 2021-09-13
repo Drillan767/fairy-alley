@@ -122,7 +122,7 @@ export default {
             if (this.editing) {
                 this.form.put(route('pages.update', {page: this.page.id}));
             } else {
-                this.form.post(route('page.store'));
+                this.form.post(route('pages.store'));
             }
 
         },

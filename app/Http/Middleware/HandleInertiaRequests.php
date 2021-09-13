@@ -44,7 +44,7 @@ class HandleInertiaRequests extends Middleware
             ]
         ]);
 
-        if (auth()->user()->hasRole('administrator')) {
+        if (auth()->user()?->hasRole('administrator')) {
             $array['tiny'] = env('TINY_SECRET');
         }
 

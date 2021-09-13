@@ -60,14 +60,14 @@ class PageController extends Controller
     {
         $content = $request->get('content');
         $file = $request->file('illustration');
-        $blobs = Arr::flatten($request->get('medias'));
-        $images = Arr::flatten($request->file('medias'));
+        $blobs = $request->get('medias') ? Arr::flatten($request->get('medias')) : [];
+        $images = $request->file('medias') ? Arr::flatten($request->file('medias')) : [];
         $imgsInContent = array_combine($blobs, $images);
 
         $page->title = $request->get('title');
         $page->slug = $request->get('slug');
         $page->summary = $request->get('summary');
-        $page->published = $request->get('published') === true;
+        $page->published = $request->get('published');
         $page->illustration = '';
         $page->content = '';
         $page->save();
