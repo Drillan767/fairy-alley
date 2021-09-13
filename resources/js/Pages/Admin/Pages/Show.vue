@@ -38,7 +38,10 @@ import AdminLayout from '@/Layouts/AdminLayout.vue'
 import {Link} from "@inertiajs/inertia-vue3";
 
 export default {
-    title: this.page.title,
+    title () {
+        return `${this.page.title}`
+    },
+
     components: {
         AdminLayout,
         Link,

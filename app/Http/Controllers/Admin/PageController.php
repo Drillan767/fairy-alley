@@ -42,10 +42,11 @@ class PageController extends Controller
         return Inertia::render('Admin/Pages/Edit', compact('page'));
     }
 
-    public function update(PageRequest $request, Page $page)
+    public function update(Request $request, Page $page)
     {
-        $this->handlePage($request, $page, true);
         dd($request);
+        $this->handlePage($request, $page, true);
+        return redirect()->route('pages.index')->with('success', 'Page mise à jour avec succès,');
 
     }
 
@@ -68,8 +69,11 @@ class PageController extends Controller
         $page->slug = $request->get('slug');
         $page->summary = $request->get('summary');
         $page->published = $request->get('published');
-        $page->illustration = '';
-        $page->content = '';
+        if (!$editing) {
+            $page->illustration = '';
+            $page->content = '';
+        }
+
         $page->save();
 
         foreach ($imgsInContent as $find => $replace) {
@@ -80,7 +84,9 @@ class PageController extends Controller
         }
 
         $page->content = $content;
-        $page->illustration = env('MEDIAS_URL') . Storage::disk('s3')->putFileAs("pages/{$page->id}/illustration", $file, $file->getClientOriginalName());;
+        if (($editing && $file) || $editing === false) {
+            $page->illustration = env('MEDIAS_URL') . Storage::disk('s3')->putFileAs("pages/{$page->id}/illustration", $file, $file->getClientOriginalName());;
+        }
 
         $page->save();
     }

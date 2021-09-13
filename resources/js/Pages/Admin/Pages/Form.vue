@@ -67,6 +67,7 @@ import Wysiwyg from '@/Jetstream/Wysiwyg.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
 import { emitter } from "@/Modules/emitter";
+import {Inertia} from "@inertiajs/inertia";
 
 export default {
     props: {
@@ -106,7 +107,7 @@ export default {
     mounted () {
 
         if (this.editing) {
-            this.form = this.$inertia.form({... this.page});
+            this.form = this.$inertia.form({...this.page});
         }
 
         emitter.on('image-added', (blob) => this.form.medias.push(blob))
@@ -120,7 +121,8 @@ export default {
             this.form.slug = this.slug
 
             if (this.editing) {
-                this.form.put(route('pages.update', {page: this.page.id}));
+                Inertia.put(route('pages.update', {page: this.page.id}), this.form);
+                // this.form.put(route('pages.update', {page: this.page.id}));
             } else {
                 this.form.post(route('pages.store'));
             }

@@ -31,7 +31,10 @@ import AdminLayout from '@/Layouts/AdminLayout.vue'
 import Form from "./Form.vue";
 
 export default {
-    title: `Éditer la page`,
+    title() {
+        return `Éditer "${this.page.title}"`
+    },
+
     components: {
         AdminLayout,
         Form,
