@@ -2,6 +2,6 @@
     root * /srv/public
     log
     encode gzip
-    php_fastcgi web:9000
+    php_fastcgi localhost:9000
     file_server
 }
