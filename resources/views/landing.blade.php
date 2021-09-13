@@ -9,7 +9,8 @@
 </head>
 <body class="text-gray-600 body-font">
 <header>
-    <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row justify-end">
+    <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row justify-between">
+        <img src="http://localhost:8080/img/logo.png" class="h-10 w-10" alt="logo" />
         {{-- {{ route('login') }} --}}
         <a href="#"
            class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">
@@ -18,7 +19,7 @@
     </div>
     <div class="landing flex flex-col justify-center">
         <div class="container mx-auto text-center xl:text-left">
-            <h1 class="sm:text-3xl text-2xl font-medium title-font mb-2 text-gray-900">
+            <h1 class="sm:text-text-2xl text-6xl font-medium title-font mb-2 text-gray-900 text-center">
                 L'Allée des Fées
             </h1>
             <!--
@@ -27,10 +28,10 @@
             </div>
             -->
 
-            <img src="http://localhost:8080/img/logo.png" class="py-5 mx-auto xl:mx-0" alt="logo" />
-            <h2 class="sm:text-2xl text-xl font-medium title-font mb-2 text-gray-900">
-                Séverine & Thierry vous proposent <br />
-                un accompagnement bien-être.
+
+            <h2 class="sm:text-2xl text-xl text-center font-medium title-font mb-2 text-gray-900 mt-5">
+                Sèverine & Thierry vous proposent un accompagnement bien-être. <br />
+                Ouvert à tout le monde dans la bienveillance et l'harmonie
             </h2>
         </div>
     </div>
@@ -405,11 +406,10 @@
                 </div>
                 <div class="lg:w-1/2 px-6 mt-4 lg:mt-0">
                     <h2 class="title-font font-semibold text-gray-900 tracking-widest text-xs">EMAIL</h2>
-                    <a href="mailto:thierry.muraz@orange.fr" class="text-indigo-500 leading-relaxed">thierry.muraz@orange.fr</a>
+                    <a href="mailto:adf@alleedesfees.fr" class="text-indigo-500 leading-relaxed">adf@alleedesfees.fr</a>
                     <h2 class="title-font font-semibold text-gray-900 tracking-widest text-xs mt-4">TÉLÉPHONE</h2>
                     <p class="leading-relaxed">
-                        <a href="tel:0033450774754">+33 4 50 77 47 54</a> <br/>
-                        <a href="tel:0033630811984">+33 6 30 81 19 84</a>
+                        <a href="tel:0033450350127">+33 450 35 01 27</a>
                     </p>
                 </div>
             </div>
