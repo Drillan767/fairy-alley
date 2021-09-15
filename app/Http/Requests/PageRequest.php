@@ -24,6 +24,7 @@ class PageRequest extends FormRequest
      */
     public function rules()
     {
+        dd($this);
         $rules = [
             'summary' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],

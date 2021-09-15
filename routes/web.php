@@ -34,7 +34,8 @@ Route::get('/test', function () {
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::middleware(['role:administrator'])->group(function() {
         Route::get('/administration', [AdminController::class, 'index'])->name('admin.index');
-        Route::resource('pages', PageController::class)->except(['show']);
+        Route::post('/pages/{page}', [PageController::class, 'update'])->name('pages.update');
+        Route::resource('pages', PageController::class)->except(['show', 'update']);
     });
 
     Route::middleware(['role:subscriber'])->group(function() {

@@ -67,7 +67,8 @@ import Wysiwyg from '@/Jetstream/Wysiwyg.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
 import { emitter } from "@/Modules/emitter";
-import {Inertia} from "@inertiajs/inertia";
+import { Inertia } from "@inertiajs/inertia";
+import axios from "axios";
 
 export default {
     props: {
@@ -93,6 +94,7 @@ export default {
             form: this.$inertia.form({
                 title: '',
                 slug: '',
+                imgFile: null,
                 illustration: '',
                 summary: '',
                 content: '',
@@ -107,7 +109,7 @@ export default {
     mounted () {
 
         if (this.editing) {
-            this.form = this.$inertia.form({...this.page});
+            this.form = this.$inertia.form({...this.page, imgFile: null});
         }
 
         emitter.on('image-added', (blob) => this.form.medias.push(blob))
@@ -117,12 +119,15 @@ export default {
         submit (status) {
             this.form.published = status;
             this.form.images = this.images;
-            this.form.illustration = this.$refs.illustration.files[0];
+            this.form.imgFile = this.$refs.illustration.files[0];
             this.form.slug = this.slug
 
+            console.log(this.$refs.illustration.files[0]);
+
             if (this.editing) {
-                Inertia.put(route('pages.update', {page: this.page.id}), this.form);
-                // this.form.put(route('pages.update', {page: this.page.id}));
+                this.form.put(route('pages.update', {page: this.page.id}));
+                // axios.put(), formData);
+                // this.form.put(), {forceFormData: true})
             } else {
                 this.form.post(route('pages.store'));
             }
@@ -138,6 +143,7 @@ export default {
 
             if (! illustration) return;
 
+            this.form.imgFile = illustration;
             this.illustrationPreview = URL.createObjectURL(illustration);
         },
     },

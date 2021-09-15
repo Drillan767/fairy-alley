@@ -26,6 +26,7 @@ class PageController extends Controller
 
     public function store(PageRequest $request)
     {
+        dd($request);
         $this->handlePage($request, new Page());
         return redirect()->route('pages.index')->with('success', 'Page créée avec succès.');
     }
@@ -42,7 +43,7 @@ class PageController extends Controller
         return Inertia::render('Admin/Pages/Edit', compact('page'));
     }
 
-    public function update(Request $request, Page $page)
+    public function update(PageRequest $request)
     {
         dd($request);
         $this->handlePage($request, $page, true);
