@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue';
 
 export default ({ command }) => ({
     plugins: [vue()],
-    base: command === 'serve' ? '' : '/build/',
+    base: command === 'serve' ? '' : '/dist/',
     publicDir: 'fake_dir_so_nothing_gets_copied',
     server: {
         strictPort: true,
@@ -12,7 +12,7 @@ export default ({ command }) => ({
     },
     build: {
         manifest: true,
-        outDir: 'public/build',
+        outDir: 'public/dist',
         rollupOptions: {
             input: 'resources/js/app.js',
         },

@@ -1,7 +1,9 @@
 {
     "private": true,
     "scripts": {
+        "predev": "printf \"dev\" > public/hot",
         "dev": "vite",
+        "preprod": "printf \"prod\" > public/hot",
         "production": "vite build"
     },
     "devDependencies": {
