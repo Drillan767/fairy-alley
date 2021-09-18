@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\GroupController;
+use App\Http\Controllers\Admin\LessonController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -34,8 +36,15 @@ Route::get('/test', function () {
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::middleware(['role:administrator'])->group(function() {
         Route::get('/administration', [AdminController::class, 'index'])->name('admin.index');
+
         Route::post('/pages/{page}', [PageController::class, 'update'])->name('pages.update');
         Route::resource('pages', PageController::class)->except(['show', 'update']);
+
+        Route::post('/cours/{lesson}', [LessonController::class, 'update'])->name('cours.update');
+        Route::resource('cours', LessonController::class)->except(['update']);
+
+        Route::post('/groupes/{group}', [GroupController::class, 'update'])->name('groupes.update');
+        Route::resource('groupes', GroupController::class)->except(['update']);
     });
 
     Route::middleware(['role:subscriber'])->group(function() {
