@@ -67,8 +67,8 @@ import Wysiwyg from '@/Jetstream/Wysiwyg.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
 import { emitter } from "@/Modules/emitter";
-import { Inertia } from "@inertiajs/inertia";
-import axios from "axios";
+import {useForm} from "@inertiajs/inertia-vue3";
+import {computed, onMounted, ref} from "vue";
 
 export default {
     props: {
@@ -89,68 +89,30 @@ export default {
         Wysiwyg,
     },
 
-    data () {
-        return {
-            form: this.$inertia.form({
-                title: '',
-                slug: '',
-                imgFile: null,
-                illustration: '',
-                summary: '',
-                content: '',
-                published: false,
-                medias: [],
-            }),
-            illustrationPreview: null,
+    setup (props) {
 
-        }
-    },
+        onMounted(() => emitter.on('image-added', (blob) => form.medias.push(blob)))
 
-    mounted () {
-
-        if (this.editing) {
-            this.form = this.$inertia.form({...this.page, imgFile: null});
+        const data = props.editing ? {
+            ...props.page,
+            imgFile: null,
+            medias: [],
+        } : {
+            title: '',
+            slug: '',
+            illustration: '',
+            imgFile: null,
+            medias:  [],
+            summary: '',
+            content: '',
+            published: false
         }
 
-        emitter.on('image-added', (blob) => this.form.medias.push(blob))
-    },
+        const form = useForm(data)
 
-    methods: {
-        submit (status) {
-            this.form.published = status;
-            this.form.images = this.images;
-            this.form.imgFile = this.$refs.illustration.files[0];
-            this.form.slug = this.slug
-
-            console.log(this.$refs.illustration.files[0]);
-
-            if (this.editing) {
-                this.form.put(route('pages.update', {page: this.page.id}));
-                // axios.put(), formData);
-                // this.form.put(), {forceFormData: true})
-            } else {
-                this.form.post(route('pages.store'));
-            }
-
-        },
-
-        selectNewillustration() {
-            this.$refs.illustration.click();
-        },
-
-        updateillustrationPreview() {
-            const illustration = this.$refs.illustration.files[0];
-
-            if (! illustration) return;
-
-            this.form.imgFile = illustration;
-            this.illustrationPreview = URL.createObjectURL(illustration);
-        },
-    },
-
-    computed: {
-        slug() {
-            let str = this.form.title;
+        const illustrationPreview = ref(null);
+        const slug = computed(() => {
+            let str = form.title;
             str = str.replace(/^\s+|\s+$/g, ""); // trim
             str = str.toLowerCase();
 
@@ -170,7 +132,34 @@ export default {
                 .replace(/-+$/, ""); // trim - from end of text
 
             return str;
+        })
+
+        function submit () {
+            const path = props.editing ? route('pages.update', {page: props.page.id}) : route('pages.store');
+            form.post(path);
         }
-    }
+
+        function selectNewillustration () {
+            document.querySelector('input[type="file"].hidden').click();
+        }
+
+        function updateillustrationPreview () {
+            const illustration = document.querySelector('input[type="file"].hidden').files[0];
+
+            if (! illustration) return;
+
+            form.imgFile = illustration;
+            this.illustrationPreview = URL.createObjectURL(illustration);
+        }
+
+        return {
+            illustrationPreview,
+            form,
+            slug,
+            submit,
+            selectNewillustration,
+            updateillustrationPreview,
+        }
+    },
 }
 </script>

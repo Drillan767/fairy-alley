@@ -26,7 +26,6 @@ class PageController extends Controller
 
     public function store(PageRequest $request)
     {
-        dd($request);
         $this->handlePage($request, new Page());
         return redirect()->route('pages.index')->with('success', 'Page créée avec succès.');
     }
@@ -43,9 +42,8 @@ class PageController extends Controller
         return Inertia::render('Admin/Pages/Edit', compact('page'));
     }
 
-    public function update(PageRequest $request)
+    public function update(PageRequest $request, Page $page)
     {
-        dd($request);
         $this->handlePage($request, $page, true);
         return redirect()->route('pages.index')->with('success', 'Page mise à jour avec succès,');
 
@@ -61,7 +59,7 @@ class PageController extends Controller
     private function handlePage(PageRequest $request, Page $page, $editing = false)
     {
         $content = $request->get('content');
-        $file = $request->file('illustration');
+        $file = $request->file('imgFile');
         $blobs = $request->get('medias') ? Arr::flatten($request->get('medias')) : [];
         $images = $request->file('medias') ? Arr::flatten($request->file('medias')) : [];
         $imgsInContent = array_combine($blobs, $images);
