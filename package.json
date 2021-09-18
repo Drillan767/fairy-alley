@@ -12,7 +12,7 @@
         "@inertiajs/progress": "^0.2.6",
         "@tailwindcss/forms": "^0.2.1",
         "@tailwindcss/typography": "^0.3.0",
-        "@vitejs/plugin-vue": "^1.6.0",
+        "@vitejs/plugin-vue": "^1.6.2",
         "@vue/compiler-sfc": "^3.0.5",
         "autoprefixer": "^10.3.3",
         "axios": "^0.21",
@@ -29,6 +29,8 @@
         "vue-loader": "^16.1.2"
     },
     "dependencies": {
-        "daisyui": "^1.14.0"
+        "@tinymce/tinymce-vue": "^4.0.4",
+        "daisyui": "^1.14.0",
+        "sweetalert2": "^11.1.5"
     }
 }

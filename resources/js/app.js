@@ -4,6 +4,7 @@ import { InertiaProgress } from '@inertiajs/progress';
 import { macy, contact } from "./Modules/landing";
 import mitt from 'mitt';
 import 'dynamic-import-polyfill';
+import titleMixin from './Modules/titleMixin';
 import _ from 'lodash';
 import axios from 'axios';
 import '../sass/app.scss';
@@ -37,6 +38,7 @@ const created = createApp({
         }),
 })
     .mixin({ methods: { route } })
+    .mixin(titleMixin)
     .use(InertiaPlugin);
 
 created.config.globalProperties.emitter = emitter

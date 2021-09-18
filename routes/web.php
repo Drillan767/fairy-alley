@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\PageController;
+use App\Http\Controllers\Admin\PageController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -34,6 +34,8 @@ Route::get('/test', function () {
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::middleware(['role:administrator'])->group(function() {
         Route::get('/administration', [AdminController::class, 'index'])->name('admin.index');
+        Route::post('/pages/{page}', [PageController::class, 'update'])->name('pages.update');
+        Route::resource('pages', PageController::class)->except(['show', 'update']);
     });
 
     Route::middleware(['role:subscriber'])->group(function() {
@@ -42,4 +44,4 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     });
 });
 
-Route::resource('pages', PageController::class);
+Route::get('/page/{slug}', [PageController::class, 'show'])->name('pages.show');

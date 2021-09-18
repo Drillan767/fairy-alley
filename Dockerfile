@@ -1,6 +1,7 @@
 FROM php:8-fpm-alpine
 
 ENV ALPINE_MIRROR "http://dl-cdn.alpinelinux.org/alpine"
+COPY ./docker-php-memlimit.ini /usr/local/etc/php/conf.d/
 
 RUN apk update && apk add --no-cache \
     curl \
