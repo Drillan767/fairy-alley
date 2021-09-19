@@ -1,8 +1,8 @@
 <template>
-    <app-layout title="Dashboard">
+    <user-layout title="Dashboard">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Partie plouc, aka les utilisateurs pas admin
+                Bienvenue, {{ $page.props.user.gender }}. {{ $page.props.user.full_name }}.
             </h2>
         </template>
 
@@ -13,16 +13,16 @@
                 </div>
             </div>
         </div>
-    </app-layout>
+    </user-layout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue'
+import UserLayout from '@/Layouts/UserLayout.vue'
 import Welcome from '@/Jetstream/Welcome.vue'
 
 export default {
     components: {
-        AppLayout,
+        UserLayout,
         Welcome,
     },
 }
