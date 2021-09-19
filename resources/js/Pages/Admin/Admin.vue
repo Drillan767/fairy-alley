@@ -2,7 +2,7 @@
     <admin-layout title="Dashboard">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Partie admin, les rois du monde, etc etc etc, allo ?
+                Administration
             </h2>
         </template>
 
