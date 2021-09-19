@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class LessonRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class LessonRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return Auth::user()->hasRole('administrator');
     }
 
     /**
@@ -24,7 +25,15 @@ class LessonRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'title' => ['required', 'string'],
+            'detail' => ['required', 'string'],
+            'process' => ['required', 'string'],
+            'organization' => ['required', 'string'],
+            'conditions' => ['required', 'string'],
+            'schedule' => ['required', 'array'],
+            'schedule.*.day' => ['required', 'string', 'in:Lundi,Mardi,Mercredi,Jeudi,Vendredi'],
+            'schedule.*.begin' => ['required', 'regex:/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/'],
+            'schedule.*.end' => ['required', 'regex:/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/'],
         ];
     }
 }

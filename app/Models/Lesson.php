@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Lesson extends Model
 {
     use HasFactory;
+
+    protected $casts = [
+        'schedule' => 'array',
+    ];
 }

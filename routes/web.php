@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\{AdminController, PageController, LessonController};
 use App\Http\Controllers\GroupController;
-use App\Http\Controllers\Admin\LessonController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;

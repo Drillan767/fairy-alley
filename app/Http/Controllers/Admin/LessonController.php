@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\LessonRequest;
 use App\Models\Lesson;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Http\Controllers\Controller;
@@ -15,69 +17,48 @@ class LessonController extends Controller
         return Inertia::render('Admin/Lessons/Index', ['lessons' => Lesson::all()]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
+        return Inertia::render('Admin/Lessons/Create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(LessonRequest $request)
     {
-        //
+        $this->handleLesson(new Lesson(), $request);
+
+        return redirect()->route('cours.index')->with('success', 'Cours enregistré avec succès.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Lesson  $lesson
-     * @return \Illuminate\Http\Response
-     */
     public function show(Lesson $lesson)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Lesson  $lesson
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Lesson $lesson)
+    public function edit(Lesson $cour)
     {
-        //
+        return Inertia::render('Admin/Lessons/Edit', ['lesson' => $cour]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Lesson  $lesson
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Lesson $lesson)
+    public function update(LessonRequest $request, Lesson $lesson)
     {
-        //
+        $this->handleLesson($lesson, $request);
+        return redirect()->route('cours.index')->with('success', 'Cours mit à jour avec succès.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Lesson  $lesson
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Lesson $lesson)
+    public function destroy(Lesson $cour)
     {
-        //
+        if (request()->user()->hasRole('administrator')) {
+            $cour->delete();
+        }
+    }
+
+    private function handleLesson(Lesson $lesson, LessonRequest $request)
+    {
+        $lesson->year = now()->year . '-' . now()->addYear()->year;
+        foreach(['title', 'detail', 'process', 'organization', 'conditions', 'schedule'] as $field) {
+            $lesson->$field = $request->get($field);
+        }
+
+        $lesson->save();
     }
 }

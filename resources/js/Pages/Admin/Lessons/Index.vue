@@ -27,31 +27,20 @@
                                 <thead>
                                 <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                                     <th class="py-3 px-6 text-left">Titre</th>
-                                    <th class="py-3 px-6 text-left">Résumé</th>
-                                    <th class="py-3 px-6 text-center">Statut</th>
                                     <th class="py-3 px-6 text-center">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody class="text-gray-600 text-sm font-light">
-<!--                                <tr class="border-b border-gray-200 hover:bg-gray-100" v-for="(page, i) in pageList" :key="i">
+                                <tr class="border-b border-gray-200 hover:bg-gray-100" v-for="(lesson, i) in lessonList" :key="i">
                                     <td class="py-3 px-6 text-left whitespace-nowrap">
                                         <div class="flex items-center">
-                                            <span class="font-medium">{{ page.title }}</span>
+                                            <span class="font-medium">{{ lesson.title }}</span>
                                         </div>
-                                    </td>
-                                    <td class="py-3 px-6 text-left">
-                                        <div class="flex items-center">
-                                            <span>{{ page.summary }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-3 px-6 text-center">
-                                        <span class="bg-green-200 text-green-600 py-1 px-3 rounded-full text-xs" v-if="page.published">Publiée</span>
-                                        <span class="bg-red-200 text-red-600 py-1 px-3 rounded-full text-xs" v-else>Brouillon</span>
                                     </td>
                                     <td class="py-3 px-6 text-center">
                                         <div class="flex item-center justify-center">
 
-                                            <Link :href="route('pages.show', {slug: page.slug})">
+                                            <Link :href="route('cours.edit', {id: lesson.id})">
                                                 <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -60,22 +49,14 @@
                                                 </div>
                                             </Link>
 
-                                            <Link :href="route('pages.edit', {id: page.id})">
-                                                <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                                    </svg>
-                                                </div>
-                                            </Link>
-
-                                            <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110 cursor-pointer" @click="deletePage(page)">
+                                            <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110 cursor-pointer" @click="deletePage(lesson)">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
                                             </div>
                                         </div>
                                     </td>
-                                </tr>-->
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -111,20 +92,20 @@ export default {
 
     data() {
         return {
-            pageList: [],
+            lessonList: [],
         }
     },
 
     mounted() {
-        this.pageList = this.pages
+        this.lessonList = this.lessons
     },
 
     methods: {
-        deletePage(page) {
+        deletePage(lesson) {
             Swal.fire({
                 icon: 'warning',
-                title: "Supprimer la page ?",
-                text: `La page intitulée "${page.title}" va être supprimée, et cette action est irréversible. Confirmer ?`,
+                title: "Supprimer ce cours ?",
+                text: `Le cours intitulé "${lesson.title}" va être supprimé, et cette action est irréversible. Confirmer ?`,
                 showCancelButton: true,
                 cancelButtonText: 'Annuler',
                 confirmButtonText: 'Supprimer',
@@ -132,13 +113,13 @@ export default {
             })
                 .then((result) => {
                     if (result.isConfirmed) {
-                        axios.delete(route('pages.destroy', {page: page.id}))
+                        axios.delete(route('cours.destroy', {cour: lesson.id}))
                             .then(() => {
-                                this.pageList = this.pageList.filter(p => p.id !== page.id)
+                                this.lessonList = this.lessonList.filter(p => p.id !== lesson.id)
                                 Swal.fire({
                                     icon: 'success',
-                                    title: 'Page supprimée.',
-                                    text: 'La page a bien été supprimée'
+                                    title: 'Cours supprimé.',
+                                    text: 'Le cours a bien été supprimée'
                                 })
                             })
                     }
