@@ -2,7 +2,7 @@
     <user-layout title="Dashboard">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Bienvenue, {{ $page.props.user.gender }}. {{ $page.props.user.full_name }}.
+                Bienvenue, {{ $page.props.user.gender === 'M' ? 'M.' : 'Mme' }} {{ $page.props.user.full_name }}.
             </h2>
         </template>
 
