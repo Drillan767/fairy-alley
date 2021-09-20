@@ -26,6 +26,7 @@ class LessonRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string'],
+            'description' => ['required', 'string'],
             'detail' => ['required', 'string'],
             'process' => ['required', 'string'],
             'organization' => ['required', 'string'],

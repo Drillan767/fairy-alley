@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\{AdminController, PageController, LessonController};
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\User\SubscriptionController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -46,7 +47,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     });
 
     Route::middleware(['role:subscriber'])->group(function() {
-        Route::get('/profil', fn() => Inertia::render('Test/Profile'))->name('profile.index');
+        Route::get('/profil', [SubscriptionController::class, 'index'])->name('profile.index');
+        Route::get('/souscription/{lesson}', [SubscriptionController::class, 'create'])->name('subscription.create');
+
 
     });
 });

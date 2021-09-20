@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Lesson;
+use Illuminate\Http\JsonResponse;
+use Inertia\Inertia;
 
 class SubscriptionController extends Controller
 {
@@ -13,7 +16,22 @@ class SubscriptionController extends Controller
      * Remplir YearData et Subscription avec les infos fournies
      * Envoyer une notif à l'admin
      */
-    public function create()
+
+    public function index()
+    {
+        $user = request()->user();
+        if ($user->lesson === null) {
+            $subscribed = false;
+            $data = Lesson::all();
+        } else {
+            $subscribed = true;
+            $data = $user->lesson;
+        }
+
+        return Inertia::render('User/Landing', compact('subscribed', 'data'));
+    }
+
+    public function create(Lesson $lesson)
     {
 
     }

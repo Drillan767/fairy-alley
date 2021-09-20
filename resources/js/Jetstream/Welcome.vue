@@ -5,7 +5,7 @@
                 <jet-application-logo class="block h-12 w-auto" />
             </div>
 
-            <div class="mt-8 text-2xl">
+            <div class="mt-8 font-semibold text-2xl text-gray-800 leading-tight">
                 Welcome to your Jetstream application!
             </div>
 

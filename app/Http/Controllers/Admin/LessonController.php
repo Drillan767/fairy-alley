@@ -55,7 +55,7 @@ class LessonController extends Controller
     private function handleLesson(Lesson $lesson, LessonRequest $request)
     {
         $lesson->year = now()->year . '-' . now()->addYear()->year;
-        foreach(['title', 'detail', 'process', 'organization', 'conditions', 'schedule'] as $field) {
+        foreach(['title', 'description', 'detail', 'process', 'organization', 'conditions', 'schedule'] as $field) {
             $lesson->$field = $request->get($field);
         }
 

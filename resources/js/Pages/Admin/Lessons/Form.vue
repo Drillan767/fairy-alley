@@ -7,6 +7,12 @@
         </div>
 
         <div class="mt-4">
+            <jet-label for="description" value="Description" />
+            <jet-input id="description" type="text" class="mt-1 block w-full" v-model="form.description" />
+            <jet-input-error :message="form.errors.description" class="mt-2" />
+        </div>
+
+        <div class="mt-4">
             <jet-label for="content" value="Détail des cours" />
             <wysiwyg v-model="form.detail" :tiny="tiny" />
             <jet-input-error :message="form.errors.detail" class="mt-2" />
@@ -110,6 +116,7 @@ export default {
             ...props.lesson
         } : {
             title: '',
+            description: '',
             detail: '',
             process: '',
             organization: '',

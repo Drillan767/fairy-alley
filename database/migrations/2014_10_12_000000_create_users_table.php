@@ -31,6 +31,8 @@ class CreateUsersTable extends Migration
             $table->text('other_data')->nullable();
             $table->unsignedBigInteger('group_id')->nullable();
             $table->foreign('group_id')->references('id')->on('groups');
+            $table->unsignedBigInteger('lesson_id')->nullable();
+            $table->foreign('lesson_id')->references('id')->on('lessons');
             $table->rememberToken();
             $table->timestamps();
         });
