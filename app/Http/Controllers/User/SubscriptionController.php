@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SubscriptionRequest;
 use App\Models\Lesson;
 use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
@@ -32,6 +33,17 @@ class SubscriptionController extends Controller
     }
 
     public function create(Lesson $lesson)
+    {
+        $lessons = Lesson::all(['id', 'title'])->map(function($l) {
+            return [
+                'id' => $l->id,
+                'title' => $l->title,
+            ];
+        });
+        return Inertia::render('User/Subscription/Create', compact('lesson', 'lessons'));
+    }
+
+    public function store(SubscriptionRequest $request)
     {
 
     }

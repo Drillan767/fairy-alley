@@ -113,7 +113,7 @@
 </template>
 
 <script>
-import Dashboard from "@Pages/User/Dashboard.vue";
+import Dashboard from "@/Pages/User/Dashboard.vue";
 import { Head, Link } from '@inertiajs/inertia-vue3';
 
 export default {

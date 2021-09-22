@@ -1,9 +1,9 @@
 <template>
     <user-layout title="Éditez vos informations">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h1 class="font-semibold text-xl text-gray-800 leading-tight">
                 Éditez vos informations
-            </h2>
+            </h1>
         </template>
 
         <div>

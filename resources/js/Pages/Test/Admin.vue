@@ -1,9 +1,9 @@
 <template>
     <app-layout title="Dashboard">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h1 class="font-semibold text-xl text-gray-800 leading-tight">
                 Partie admin, les rois du monde, etc etc etc
-            </h2>
+            </h1>
         </template>
 
         <div class="py-12">
