@@ -85,4 +85,9 @@ class User extends Authenticatable
     {
         return "{$this->firstname} {$this->lastname}";
     }
+
+    public function files()
+    {
+        return $this->morphMany(Media::class, 'illustrable');
+    }
 }

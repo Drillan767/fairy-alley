@@ -17,7 +17,7 @@ class CreateYearDataTable extends Migration
             $table->id();
 
             // filled by user
-            $table->date('medical_certificate')->nullable();
+            $table->foreignId('media_id')->nullable()->constrained('medias');
             $table->text('health_data')->nullable();
 
             // seen / editable by admin
@@ -26,16 +26,15 @@ class CreateYearDataTable extends Migration
             $table->text('observations')->nullable();
             $table->boolean('pre_registration_signature')->default(false);
             $table->boolean('deposit_paid')->default(false);
+            $table->dateTime('payment_received_at')->nullable();
 
             // automated
             $table->string('last_year_class')->nullable();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('id')->references('id')->on('users');
-            $table->dateTime('possibility_1')->nullable();
-            $table->dateTime('possibility_2')->nullable();
+            $table->foreignId('user_id')->constrained();
+            $table->string('possibility_1')->nullable();
+            $table->string('possibility_2')->nullable();
             $table->string('reply_transmitted_via')->nullable();
 
-            $table->dateTime('payment_received_at')->nullable();
             $table->timestamps();
         });
     }

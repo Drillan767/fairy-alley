@@ -49,6 +49,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::middleware(['role:subscriber'])->group(function() {
         Route::get('/profil', [SubscriptionController::class, 'index'])->name('profile.index');
         Route::get('/inscription-cours/{lesson}', [SubscriptionController::class, 'create'])->name('subscription.create');
+        Route::post('/subscription', [SubscriptionController::class, 'store'])->name('subscription.store');
 
 
     });

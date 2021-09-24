@@ -14,7 +14,6 @@ import { emitter } from '../Modules/emitter'
 
 export default {
     props: ['value', 'tiny'],
-    // props: ['value'],
     components: {
         editor: Editor,
     },

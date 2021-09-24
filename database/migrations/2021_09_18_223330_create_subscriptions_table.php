@@ -15,10 +15,10 @@ class CreateSubscriptionsTable extends Migration
     {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('lesson_id');
-            $table->foreign('lesson_id')->references('id')->on('lessons');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreignId('lesson_id')->constrained();
+            $table->foreignId('user_id')->constrained();
+            $table->string('possibility_1', 25);
+            $table->string('possibility_2', 25);
             $table->string('schedule_choice');
             $table->text('invites');
             $table->timestamps();
