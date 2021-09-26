@@ -39,7 +39,7 @@
         <div class="mt-4">
             <jet-label for="content" value="Ajouter des horaires" />
             <div
-                v-for="(entry, index) in form.schedule"
+                v-for="(entry, index) in schedule"
                 :key="index"
                 class="flex justify-between mt-5"
             >
@@ -89,6 +89,7 @@ import Wysiwyg from '@/Jetstream/Wysiwyg.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
 import {useForm} from "@inertiajs/inertia-vue3";
+import {computed} from "vue";
 
 export default {
     title: 'Nouveau cours',
@@ -113,7 +114,8 @@ export default {
     setup (props) {
 
         const data = props.editing ? {
-            ...props.lesson
+            ...props.lesson,
+            _method: 'PUT',
         } : {
             title: '',
             description: '',
@@ -134,6 +136,8 @@ export default {
             {date: 'Vendredi'},
         ]
 
+        const schedule = computed(() => Array.isArray(form.schedule) ? form.schedule : JSON.parse(form.schedule))
+
         const add = () => {
             form.schedule.push({ day: '', begin: '', end: ''})
         }
@@ -150,6 +154,7 @@ export default {
         return {
             form,
             submit,
+            schedule,
             add,
             remove,
             options

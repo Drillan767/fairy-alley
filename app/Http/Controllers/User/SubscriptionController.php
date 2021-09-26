@@ -33,8 +33,17 @@ class SubscriptionController extends Controller
 
     public function create(Lesson $lesson)
     {
-        $lessons = Lesson::all()->map(fn ($l) => ['id' => $l->id, 'title' => $l->title]);
-        return Inertia::render('User/Subscription/Create', compact('lesson', 'lessons'));
+        if (auth()->user()->subscription !== null || auth()->user()->lesson_id !== null) {
+            return redirect()->route('profile.index')->with('error', 'Votre inscription a déjà été enregistrée.');
+        } else {
+            $lessons = Lesson::all()->map(fn ($l) => ['id' => $l->id, 'title' => $l->title]);
+            return Inertia::render('User/Subscription/Create', compact('lesson', 'lessons'));
+        }
+    }
+
+    public function edit()
+    {
+
     }
 
     public function store(SubscriptionRequest $request)

@@ -10,9 +10,13 @@
             <!-- component -->
             <div class="overflow-x-auto">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div class="mb-5">
+                    <div class="mb-5 flex justify-between">
                         <a :href="route('cours.index')" class="btn btn-primary">
                             Retour
+                        </a>
+
+                        <a :href="route('cours.groupes.index', {cour: lesson.id})" class="btn btn-primary">
+                            Gérer les groupes
                         </a>
                     </div>
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
