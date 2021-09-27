@@ -20,12 +20,13 @@ class SubscriptionController extends Controller
     public function index()
     {
         $user = request()->user();
-        if ($user->lesson === null) {
+        if ($user->lesson === null && !$user->subscription()->exists()) {
             $subscribed = false;
             $data = Lesson::all();
         } else {
             $subscribed = true;
-            $data = $user->lesson;
+            $data = null;
+            $user->load('subscription', 'lesson');
         }
 
         return Inertia::render('User/Landing', compact('subscribed', 'data'));

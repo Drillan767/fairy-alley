@@ -19,7 +19,6 @@ class CreateSubscriptionsTable extends Migration
             $table->foreignId('user_id')->constrained();
             $table->string('possibility_1', 25);
             $table->string('possibility_2', 25);
-            $table->string('schedule_choice');
             $table->text('invites');
             $table->timestamps();
         });
