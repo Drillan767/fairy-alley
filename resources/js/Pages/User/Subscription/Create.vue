@@ -59,10 +59,8 @@
                                     Choix du cours
                                 </h2>
                                 <div>
-                                    <jet-label for="health_data"
-                                               value="Avez-vous des informations médicales dont vous voudriez nous faire part ?"/>
-                                    <jet-textarea id="health_data" v-model="form.health_data"
-                                                  class="mt-1 block w-full"/>
+                                    <jet-label for="health_data" value="Avez-vous des informations médicales dont vous voudriez nous faire part ?"/>
+                                    <jet-textarea id="health_data" v-model="form.health_data" class="mt-1 block w-full"/>
                                     <jet-input-error :message="form.errors.health_data" class="mt-2"/>
                                 </div>
 

@@ -27,6 +27,8 @@
                                 <thead>
                                 <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                                     <th class="py-3 px-6 text-left">Nom complet</th>
+                                    <th class="py-3 px-6 text-left">Inscription faite le :</th>
+                                    <th class="py-3 px-6 text-left">Statut :</th>
                                     <th class="py-3 px-6 text-center">Actions</th>
                                 </tr>
                                 </thead>
@@ -37,10 +39,20 @@
                                             <span class="font-medium">{{ user.full_name }}</span>
                                         </div>
                                     </td>
+                                    <td class="py-3 px-6 text-left whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <span class="font-medium">{{ user.subscription.created_at }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 px-6 text-left whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <span class="font-medium">{{ user.full_name }}</span>
+                                        </div>
+                                    </td>
                                     <td class="py-3 px-6 text-center">
                                         <div class="flex item-center justify-center">
 
-                                            <Link :href="route('utilisateurs.edit', {utilisateur: user.id})">
+                                            <Link :href="route('utilisateurs.subscribing', {user: user.id})">
                                                 <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

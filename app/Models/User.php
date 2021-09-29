@@ -74,6 +74,11 @@ class User extends Authenticatable
         return $this->hasMany(YearData::class);
     }
 
+    public function currentYearData(): HasOne
+    {
+        return $this->hasOne(YearData::class)->latest();
+    }
+
     public function subscription(): HasOne
     {
         return $this->hasOne(Subscription::class);

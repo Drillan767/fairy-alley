@@ -28,4 +28,33 @@ class UserController extends Controller
 
         return Inertia::render('Admin/Users/List', compact('users'));
     }
+
+    public function subscribing(User $user): Response
+    {
+        return Inertia::render('Admin/Users/Subscribing',
+            [
+                'subscriber' => $user->load(
+                    'subscription.lesson',
+                    'currentYearData.file'
+                )
+            ]
+        );
+    }
+
+    public function subscribe()
+    {
+
+    }
+
+    public function edit(User $utilisateur)
+    {
+        return Inertia::render('Admin/Users/Edit',
+            [
+                'subscriber' => $utilisateur->load(
+                'subscription.lesson',
+                'yearDatas'
+                )
+            ]
+        );
+    }
 }

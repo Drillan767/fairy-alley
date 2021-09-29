@@ -32,7 +32,7 @@
                     <input type="radio" class="form-radio" name="accountType" value="F" v-model="form.gender" :checked="form.gender === 'F'">
                     <span class="ml-2">Femme</span>
                 </label>
-                <jet-input-error :message="form.errors.lastname" class="mt-2" />
+                <jet-input-error :message="form.errors.gender" class="mt-2" />
             </div>
 
             <!-- Email -->

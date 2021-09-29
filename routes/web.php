@@ -45,6 +45,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
 
         Route::get('/utilisateurs', [UserController::class, 'subscribed'])->name('utilisateurs.subscribed');
         Route::get('/preinscriptions', [UserController::class, 'preSubscribed'])->name('utilisateurs.presubscribed');
+        Route::get('/preinscription/{user}/editer', [UserController::class, 'subscribing'])->name('utilisateurs.subscribing');
     });
 
     Route::middleware(['role:subscriber'])->group(function() {
