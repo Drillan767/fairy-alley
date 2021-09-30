@@ -1,3 +1,3 @@
 <template>
-    <img src="/img/logo.png" alt="logo" />
+    <img :src="`${$page.props.BASE_URL}/img/logo.png`" alt="logo" />
 </template>
