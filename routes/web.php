@@ -39,7 +39,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
         Route::resources([
             'pages' => PageController::class,
             'cours' => LessonController::class,
-            'cours.groupes' => GroupController::class,
             'utilisateurs' => UserController::class,
         ]);
 
