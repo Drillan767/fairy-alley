@@ -41,7 +41,8 @@ class HandleInertiaRequests extends Middleware
                 'message' => fn () => $request->session()->get('message'),
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
-            ]
+            ],
+            'BASE_URL' => env('APP_URL'),
         ]);
 
         if (auth()->user()?->hasRole('administrator')) {
