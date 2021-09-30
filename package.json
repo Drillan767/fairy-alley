@@ -11,7 +11,7 @@
         "@inertiajs/inertia-vue3": "^0.5.1",
         "@inertiajs/progress": "^0.2.6",
         "@tailwindcss/forms": "^0.2.1",
-        "@tailwindcss/typography": "^0.3.0",
+        "@tailwindcss/typography": "^0.3.1",
         "@vitejs/plugin-vue": "^1.6.2",
         "@vue/compiler-sfc": "^3.0.5",
         "autoprefixer": "^10.3.3",
@@ -31,6 +31,7 @@
     "dependencies": {
         "@tinymce/tinymce-vue": "^4.0.4",
         "daisyui": "^1.14.0",
+        "dayjs": "^1.10.7",
         "sweetalert2": "^11.1.5"
     }
 }

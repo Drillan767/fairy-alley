@@ -8,7 +8,7 @@
 
         <div class="mt-4">
             <jet-label for="title" value="Lien généré" />
-            <jet-input id="slug" type="text" class="mt-1 block w-full" :value="slug" disabled />
+            <jet-input id="slug" type="text" class="mt-1 block w-full" v-model="form.slug" :value="slug" disabled />
             <jet-input-error :message="form.errors.slug" class="mt-2" />
         </div>
 
@@ -95,6 +95,7 @@ export default {
 
         const data = props.editing ? {
             ...props.page,
+            _method: 'PUT',
             imgFile: null,
             medias: [],
         } : {
@@ -135,6 +136,7 @@ export default {
         })
 
         function submit () {
+            form.slug = this.slug
             const path = props.editing ? route('pages.update', {page: props.page.id}) : route('pages.store');
             form.post(path);
         }

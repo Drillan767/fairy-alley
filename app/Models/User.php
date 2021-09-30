@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany, HasOne};
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -69,8 +69,33 @@ class User extends Authenticatable
         'profile_photo_url', 'full_name',
     ];
 
+    public function yearDatas(): HasMany
+    {
+        return $this->hasMany(YearData::class);
+    }
+
+    public function currentYearData(): HasOne
+    {
+        return $this->hasOne(YearData::class)->latest();
+    }
+
+    public function subscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class);
+    }
+
+    public function lesson(): BelongsTo
+    {
+        return $this->belongsTo(Lesson::class);
+    }
+
     public function getFullNameAttribute(): string
     {
         return "{$this->firstname} {$this->lastname}";
+    }
+
+    public function files()
+    {
+        return $this->morphMany(Media::class, 'illustrable');
     }
 }

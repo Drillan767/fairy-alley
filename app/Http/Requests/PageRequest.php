@@ -14,7 +14,7 @@ class PageRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->hasRole('administrator');
+        return Auth::user()->hasRole('administrator') && Auth::user()->subscription === null;
     }
 
     /**
@@ -33,7 +33,7 @@ class PageRequest extends FormRequest
         if ($this->routeIs('pages.store')) {
             $rules['title'] = ['required', 'string', 'unique:pages,title', 'max:255'];
             $rules['slug'] = ['required', 'string', 'unique:pages,slug', 'max:255'];
-            $rules['illustration'] = ['required', 'mimes:jpg,jpeg,png,webp'];
+            $rules['imgFile'] = ['required', 'mimes:jpg,jpeg,png,webp'];
         } else {
             $rules['title'] = ['required', 'string', 'unique:pages,title,' . $this->id, 'max:255'];
             $rules['slug'] = ['required', 'string', 'unique:pages,slug,' . $this->id, 'max:255'];

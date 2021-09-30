@@ -29,8 +29,7 @@ class CreateUsersTable extends Migration
             $table->string('zipcode', 5)->nullable();
             $table->string('city')->nullable();
             $table->text('other_data')->nullable();
-            $table->unsignedBigInteger('group_id')->nullable();
-            $table->foreign('group_id')->references('id')->on('groups');
+            $table->foreignId('lesson_id')->nullable()->constrained();
             $table->rememberToken();
             $table->timestamps();
         });

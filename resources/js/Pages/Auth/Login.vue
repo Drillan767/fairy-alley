@@ -32,7 +32,7 @@
 
             <div class="flex items-center justify-end mt-4">
                 <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900">
-                    Mot de passe oublié ,
+                    Mot de passe oublié ?
                 </Link>
 
                 <jet-button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
@@ -54,6 +54,7 @@
     import { Head, Link } from '@inertiajs/inertia-vue3';
 
     export default {
+        title: 'Connexion',
         components: {
             Head,
             JetAuthenticationCard,

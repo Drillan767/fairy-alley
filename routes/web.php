@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\Admin\{AdminController, PageController, LessonController};
+use App\Http\Controllers\Admin\{AdminController, PageController, LessonController, UserController};
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\User\SubscriptionController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -35,19 +36,22 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::middleware(['role:administrator'])->group(function() {
         Route::get('/administration', [AdminController::class, 'index'])->name('admin.index');
 
-        Route::post('/pages/{page}', [PageController::class, 'update'])->name('pages.update');
-        Route::resource('pages', PageController::class)->except(['show', 'update']);
+        Route::resources([
+            'pages' => PageController::class,
+            'cours' => LessonController::class,
+            'utilisateurs' => UserController::class,
+        ]);
 
-        Route::post('/cours/{lesson}', [LessonController::class, 'update'])->name('cours.update');
-        Route::resource('cours', LessonController::class)->except(['update']);
-
-        Route::post('/groupes/{group}', [GroupController::class, 'update'])->name('groupes.update');
-        Route::resource('groupes', GroupController::class)->except(['update']);
+        Route::get('/utilisateurs', [UserController::class, 'subscribed'])->name('utilisateurs.subscribed');
+        Route::get('/preinscriptions', [UserController::class, 'preSubscribed'])->name('utilisateurs.presubscribed');
+        Route::get('/preinscription/{user}/editer', [UserController::class, 'subscribing'])->name('utilisateurs.subscribing');
     });
 
     Route::middleware(['role:subscriber'])->group(function() {
-        Route::get('/profil', fn() => Inertia::render('Test/Profile'))->name('profile.index');
-
+        Route::get('/profil', [SubscriptionController::class, 'index'])->name('profile.index');
+        Route::get('/inscription-cours/{lesson}', [SubscriptionController::class, 'create'])->name('subscription.create');
+        Route::get('/inscription/cours/{lesson}/editer', [SubscriptionController::class, 'edit'])->name('subscription.edit');
+        Route::post('/subscription', [SubscriptionController::class, 'store'])->name('subscription.store');
     });
 });
 

@@ -17,6 +17,7 @@
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.5",
         "league/flysystem-aws-s3-v3": "^1.0",
+        "lorisleiva/laravel-actions": "^2.1",
         "shuchkin/simplexlsx": "^0.8.26",
         "shuchkin/simplexlsxgen": "^1.0",
         "spatie/laravel-permission": "^4.4",
@@ -28,7 +29,8 @@
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^9.3.3"
+        "phpunit/phpunit": "^9.3.3",
+        "wulfheart/laravel-actions-ide-helper": "^0.1.0"
     },
     "autoload": {
         "psr-4": {
