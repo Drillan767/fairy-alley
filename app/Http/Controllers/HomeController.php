@@ -9,9 +9,12 @@ use Illuminate\Support\Facades\Notification;
 
 class HomeController extends Controller
 {
+
+
     public function landing()
     {
-        return view('home.landing');
+        $view = auth()->check() ? 'home.landing' : 'home.building';
+        return view($view);
     }
 
     public function contact(ContactRequest $request)
