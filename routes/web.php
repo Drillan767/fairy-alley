@@ -19,7 +19,7 @@ use App\Http\Controllers\HomeController;
 |
 */
 
-Route::view('/', 'landing');
+Route::get('/', [HomeController::class,'landing'])->name('landing');
 
 Route::post('/contact', [HomeController::class, 'contact'])->name('contact');
 

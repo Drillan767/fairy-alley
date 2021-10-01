@@ -1,3 +1,4 @@
+<!doctype html>
 <html data-theme="light" lang="fr">
 <head>
     <meta charset="UTF-8">

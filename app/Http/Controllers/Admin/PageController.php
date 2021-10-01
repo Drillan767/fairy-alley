@@ -33,8 +33,11 @@ class PageController extends Controller
     public function show(string $slug)
     {
         $page = Page::where('slug', $slug)->firstorFail();
-        $user = Auth::user()?->load('roles');
-        return Inertia::render('Admin/Pages/Show', compact('page', 'user'));
+        if (request()->inertia()) {
+            return Inertia::location(url()->current());
+        }
+
+        return view('page', compact('page'));
     }
 
     public function edit(Page $page)
