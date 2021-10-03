@@ -13,30 +13,6 @@
         </div>
 
         <div class="mt-4">
-            <jet-label for="content" value="Détail des cours" />
-            <wysiwyg v-model="form.detail" :tiny="tiny" />
-            <jet-input-error :message="form.errors.detail" class="mt-2" />
-        </div>
-
-        <div class="mt-4">
-            <jet-label for="content" value="Processus de réservation du cours" />
-            <wysiwyg v-model="form.process" :tiny="tiny" />
-            <jet-input-error :message="form.errors.process" class="mt-2" />
-        </div>
-
-        <div class="mt-4">
-            <jet-label for="content" value="Organisation des cours" />
-            <wysiwyg v-model="form.organization" :tiny="tiny" />
-            <jet-input-error :message="form.errors.organization" class="mt-2" />
-        </div>
-
-        <div class="mt-4">
-            <jet-label for="content" value="Conditions" />
-            <wysiwyg v-model="form.conditions" :tiny="tiny" />
-            <jet-input-error :message="form.errors.conditions" class="mt-2" />
-        </div>
-
-        <div class="mt-4">
             <jet-label for="content" value="Ajouter des horaires" />
             <div
                 v-for="(entry, index) in schedule"
@@ -119,11 +95,7 @@ export default {
         } : {
             title: '',
             description: '',
-            detail: '',
-            process: '',
-            organization: '',
             schedule: [{ day: '', begin: '', end: ''}],
-            conditions: '',
         }
 
         const form = useForm(data);
@@ -147,7 +119,7 @@ export default {
         }
 
         function submit () {
-            const path = props.editing ? route('cours.update', {lesson: props.lesson.id}) : route('cours.store');
+            const path = props.editing ? route('cours.update', {cour: props.lesson.id}) : route('cours.store');
             form.post(path);
         }
 

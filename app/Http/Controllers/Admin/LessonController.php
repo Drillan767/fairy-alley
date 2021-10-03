@@ -39,9 +39,9 @@ class LessonController extends Controller
         return Inertia::render('Admin/Lessons/Edit', ['lesson' => $cour]);
     }
 
-    public function update(LessonRequest $request, Lesson $lesson)
+    public function update(LessonRequest $request, Lesson $cour)
     {
-        $this->handleLesson($lesson, $request);
+        $this->handleLesson($cour, $request, true);
         return redirect()->route('cours.index')->with('success', 'Cours mit à jour avec succès.');
     }
 
@@ -52,13 +52,19 @@ class LessonController extends Controller
         }
     }
 
-    private function handleLesson(Lesson $lesson, LessonRequest $request)
+    private function handleLesson(Lesson $lesson, LessonRequest $request, bool $update = false)
     {
-        $lesson->year = now()->year . '-' . now()->addYear()->year;
-        foreach(['title', 'description', 'detail', 'process', 'organization', 'conditions', 'schedule'] as $field) {
-            $lesson->$field = $request->get($field);
-        }
+        $function = $update ? 'update' : 'create';
+        $fields = array_merge(
+            $request->validated(),
+            ['year' => now()->year . ' - ' . now()->addYear()->year]
+        );
 
-        $lesson->save();
+        $lesson->$function($fields);
+
+        /* TODO: change code by this for PHP v8.1
+         ...$request->validated(),
+        'year' => now()->year . '-' . now()->addYear()->year,
+        */
     }
 }

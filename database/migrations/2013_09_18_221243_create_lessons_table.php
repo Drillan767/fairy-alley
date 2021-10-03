@@ -17,11 +17,7 @@ class CreateLessonsTable extends Migration
             $table->id();
             $table->string('title');
             $table->string('description');
-            $table->string('year', 9);
-            $table->text('detail');
-            $table->text('process');
-            $table->text('organization');
-            $table->text('conditions');
+            $table->string('year', 11);
             $table->text('schedule');
             $table->timestamps();
         });

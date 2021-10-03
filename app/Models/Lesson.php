@@ -9,6 +9,13 @@ class Lesson extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'title',
+        'description',
+        'year',
+        'schedule',
+    ];
+
     protected $casts = [
         'schedule' => 'array',
     ];
