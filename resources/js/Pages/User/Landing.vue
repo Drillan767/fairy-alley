@@ -23,8 +23,8 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <LessonList v-if="!subscribed" :data="data"/>
-                    <CurrentLesson v-else :lesson="data" />
+                    <LessonList v-if="!subscribed" :data="data" :headlines="headlines"/>
+                    <CurrentLesson v-else :subscription="user.subscription" :headlines="headlines" />
                 </div>
             </div>
         </div>
@@ -40,7 +40,9 @@ import CurrentLesson from "@/Pages/User/CurrentLesson.vue";
 export default {
     props: {
         subscribed: Boolean,
-        data: Object|Array,
+        lesson: Object|Array,
+        user: Object,
+        headlines: Object,
         flash: {
             type: Object,
             required: false,

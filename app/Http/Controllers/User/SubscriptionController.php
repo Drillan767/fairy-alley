@@ -23,23 +23,28 @@ class SubscriptionController extends Controller
         if ($user->lesson === null && !$user->subscription()->exists()) {
             $subscribed = false;
             $data = Lesson::all();
+            $headlines = collect(config('lesson.headlines')->firstWhere('status_id', 0));
         } else {
             $subscribed = true;
             $data = null;
-            $user->load('subscription', 'lesson');
+            $user->load('subscription.lesson');
+            $headlines = collect(config('lesson.headlines'))->firstWhere('status_id', $user->subscription->status);
         }
 
-        return Inertia::render('User/Landing', compact('subscribed', 'data'));
+        return Inertia::render('User/Landing', compact('subscribed', 'data', 'headlines'));
     }
 
     public function create(Lesson $lesson)
     {
         if (auth()->user()->subscription !== null || auth()->user()->lesson_id !== null) {
             return redirect()->route('profile.index')->with('error', 'Votre inscription a déjà été enregistrée.');
-        } else {
-            $lessons = Lesson::all()->map(fn ($l) => ['id' => $l->id, 'title' => $l->title]);
-            return Inertia::render('User/Subscription/Create', compact('lesson', 'lessons'));
         }
+
+        $lessons = Lesson::all('title');
+        $details = config('lesson.tos');
+        return Inertia::render('User/Subscription/Create',
+            compact('lesson', 'lessons', 'details')
+        );
     }
 
     public function edit()

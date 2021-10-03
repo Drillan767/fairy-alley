@@ -36,7 +36,7 @@ class SubscriptionRequest extends FormRequest
             'invites.*.lastname' => ['required', 'string'],
             'invites.*.email' => ['nullable', 'required_without:phone', 'email:rfc,dns'],
             'invites.*.phone' => ['nullable', 'required_without:email', 'string'],
-            'invites.*.lesson_id' => ['required', 'integer', 'exists:lessons,id'],
+            'invites.*.title' => ['required', 'string', 'exists:lessons,title'],
             'accepts' => ['required', 'accepted'],
         ];
     }
@@ -48,6 +48,7 @@ class SubscriptionRequest extends FormRequest
             'invites.*.lastname' => 'Nom',
             'invites.*.email' => 'email',
             'invites.*.phone' => 'téléphone',
+            'invites.0.title' => 'cours souhaité',
         ];
     }
 
@@ -57,7 +58,7 @@ class SubscriptionRequest extends FormRequest
            'schedule_choice1.required' => 'Veuillez sélectionner une date.',
            'schedule_choice2.different' => 'Vous devez selectionner deux dates différentes.',
            'accepts.accepted' => 'Vous devez accepter les conditions pour vous inscrire.',
-           'invites.*.lesson_id.required' => 'Vous devez sélectionner un cours.'
+           'invites.*.title.required' => 'Vous devez sélectionner un cours.'
        ];
     }
 }

@@ -34,6 +34,7 @@ class SubscriptionHandler
         }
 
         Subscription::create([
+            'status' => Subscription::PENDING,
             'user_id' => $user_id,
             'lesson_id' => $request->get('lesson_id'),
             'possibility_1' => $request->get('schedule_choice1'),

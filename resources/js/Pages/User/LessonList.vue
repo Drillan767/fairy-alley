@@ -5,18 +5,18 @@
         </div>
 
         <div class="mt-8 font-semibold text-2xl text-gray-800 leading-tight">
-            Vous n'êtes pas encore inscrit(e) à un cours.
+            {{ headlines.title }}
         </div>
 
         <div class="mt-6 text-gray-500">
-            Vous pouvez dès à présent en sélectionner un en cliquant sur celui qui vous intéresse parmis la liste ci-dessous :
+            {{ headlines.subtitle }}
         </div>
     </div>
 
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-12 mx-auto">
             <div class="p-4 w-full">
-                <div v-for="(lesson, i) in data" :key="i" class="flex border-2 rounded-lg border-gray-200 border-opacity-50 p-8 sm:flex-row flex-col">
+                <div v-for="(lesson, i) in data" :key="i" class="flex border-2 mb-4 rounded-lg border-gray-200 border-opacity-50 p-8 sm:flex-row flex-col">
                     <div class="flex-1">
                         <h2 class="text-gray-900 text-lg title-font font-medium mb-3">{{ lesson.title }}</h2>
                         <p class="leading-relaxed text-base">
@@ -46,6 +46,7 @@ export default {
 
     props: {
         data: Array,
+        headlines: Object,
     }
 }
 </script>
