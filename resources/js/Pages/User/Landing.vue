@@ -40,7 +40,7 @@ import CurrentLesson from "@/Pages/User/CurrentLesson.vue";
 export default {
     props: {
         subscribed: Boolean,
-        lesson: Object|Array,
+        data: Object|Array,
         user: Object,
         headlines: Object,
         flash: {

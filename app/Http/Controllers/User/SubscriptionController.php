@@ -7,6 +7,7 @@ use App\Http\Requests\SubscriptionRequest;
 use App\Models\Lesson;
 use App\Services\SubscriptionHandler;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class SubscriptionController extends Controller
 {
@@ -17,13 +18,13 @@ class SubscriptionController extends Controller
     public function __construct(public SubscriptionHandler $subscriptionHandler)
     {}
 
-    public function index()
+    public function index(): Response
     {
         $user = request()->user();
         if ($user->lesson === null && !$user->subscription()->exists()) {
             $subscribed = false;
             $data = Lesson::all();
-            $headlines = collect(config('lesson.headlines')->firstWhere('status_id', 0));
+            $headlines = collect(config('lesson.headlines'))->firstWhere('status_id', 0);
         } else {
             $subscribed = true;
             $data = null;

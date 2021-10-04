@@ -17,7 +17,7 @@ class CreateSubscriptionsTable extends Migration
             $table->id();
             $table->foreignId('lesson_id')->constrained();
             $table->foreignId('user_id')->constrained();
-            $table->integer('status', 1)->default(1);
+            $table->smallInteger('status')->default(1);
             $table->text('feedback')->nullable();
             $table->string('possibility_1', 25);
             $table->string('possibility_2', 25)->nullable();

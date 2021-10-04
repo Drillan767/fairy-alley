@@ -34,28 +34,28 @@ return [
             'subtitle' => "Vous pouvez dès à présent en sélectionner un en cliquant sur celui qui vous intéresse parmis la liste ci-dessous :",
         ],
         [
-            'status_id' => 1,
+            'status_id' => 'En attente',
             'title' => 'Votre inscription est en cours de validation.',
             'subtitle' => "Vous recevrez un email lors de la confirmation de celle-ci ou pour toute demande d'informations complémentaires.",
         ],
         [
-            'status_id' => 2,
+            'status_id' => 'Validé',
             'title' => 'Votre espace personnel',
             'subtitle' => 'Retrouvez ci-dessous les informations liées à votre cours',
         ],
         [
-            'status_id' => 3,
+            'status_id' => "En attente d'informations",
             'title' => 'Il manque des informations pour compléter votre inscription',
             'subtitle' => "Veuillez modifier votre demande d'inscription avec les informations que vous a envoyé l'organisatrice.",
         ],
         [
-            'status_id' => 4,
+            'status_id' => 'En attente du paiement',
             'title' => 'En attente de votre paiement',
             'subtitle' => "L'organisatrice indique ne pas avoir encore reçu votre paiement. Si vous l'avez déjà envoyé,
             ne tenez pas compte de ce message, sinon, veuillez l'envoyer dans les plus brefs délais.",
         ],
         [
-            'status_id' => 5,
+            'status_id' => 'Fin des cours',
             'title' => 'Veuillez sélectionner un nouveau cours pour la rentrée prochaine',
             'subtitle' => "La fin d'année est là, il est temps de renouveler votre présence pour l'année prochaine si vous le souhaitez !",
         ]

@@ -17,7 +17,14 @@ class Subscription extends Model
     public const AWAITING_PAYMENT = 4;
     public const SUBSCRIPTION_OVER = 5;
 
-    protected $fillable = ['user_id', 'lesson_id', 'possibility_1', 'possibility_2', 'invites', 'status'];
+    protected $fillable = [
+        'user_id',
+        'lesson_id',
+        'possibility_1',
+        'possibility_2',
+        'invites',
+        'status',
+    ];
 
     protected $casts = [
         'invites' => 'array',
