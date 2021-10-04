@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class SubscriptionValidation extends FormRequest
+class SubscriptionValidation extends UserCoordinatesRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +23,11 @@ class SubscriptionValidation extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
+        return parent::rules() + [
+            'decision' => ['required', 'string', 'in:validate,missing,payment'],
+            'payment_received_at' => ['required', 'boolean'],
+            'pre_registration_signature' => ['required', 'boolean'],
+            'feedback' => ['required', 'string'],
         ];
     }
 }

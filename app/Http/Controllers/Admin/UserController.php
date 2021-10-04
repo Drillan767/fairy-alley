@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionValidation;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Notifications\SubscriptionMissingElements;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -51,7 +52,32 @@ class UserController extends Controller
 
     public function subscribe(SubscriptionValidation $request)
     {
+        $user = User::find($request->get('id'));
+        foreach(['firstname', 'lastname', 'birthday', 'email', 'gender', 'phone', 'pro', 'address1', 'address2', 'zipcode', 'city'] as $field) {
+            $user->$field = $request->get($field);
+        }
+        $user->save();
+
+        $args = [];
+
+        switch ($request->get('decision')) {
+            case 'missing':
+
+                $status = Subscription::NEEDS_INFOS;
+                break;
+
+            case 'payment':
+                break;
+
+            case 'accepted':
+                break;
+        }
+
         dd($request);
+
+        $user->notify(new SubscriptionMissingElements($args));
+
+
     }
 
     public function edit(User $utilisateur)

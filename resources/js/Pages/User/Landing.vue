@@ -38,6 +38,7 @@ import LessonList from "@/Pages/User/LessonList.vue";
 import CurrentLesson from "@/Pages/User/CurrentLesson.vue";
 
 export default {
+    title: 'Profil',
     props: {
         subscribed: Boolean,
         data: Object|Array,
