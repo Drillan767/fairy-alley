@@ -16,7 +16,7 @@ class SubscriptionMissingElements extends Notification
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(public array $subscription)
     {
         //
     }
@@ -41,9 +41,14 @@ class SubscriptionMissingElements extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->subject("Votre dossier d'inscription est incomplet")
+            ->greeting('Bonjour,')
+            ->line("Vous recevez ce message car votre dossier d'inscription est incomplet.")
+            ->line("L'organisatrice a indiqué ceci :")
+            ->line($this->subscription['feedback'])
+            ->line('Pour le modifier, vous pouvez cliquer sur le lien ci-dessous')
+            ->action("Mettre à jour ma demande d'inscription", url(route('subscription.edit', ['lesson' => $this->subscription['lesson_id']])))
+            ->line('Bien cordialement,');
     }
 
     /**

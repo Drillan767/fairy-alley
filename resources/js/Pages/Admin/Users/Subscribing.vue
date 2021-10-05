@@ -123,8 +123,8 @@
                                 <div class="mt-4">
                                     <jet-label value="Possibilités" />
                                     <ul class="list-disc">
-                                        <li v-html="subscriber.current_year_data.possibility_1"/>
-                                        <li v-html="subscriber.current_year_data.possibility_2"/>
+                                        <li v-html="subscriber.subscription.selected_time"/>
+                                        <li v-html="subscriber.subscription.fallback_time"/>
                                     </ul>
                                 </div>
 
@@ -178,24 +178,25 @@
                                 </div>
 
                                 <div class="mt-4">
-                                    <jet-label value="L'inscription a-t-elle été payée ?" />
+                                    <jet-label value="Paiement" />
                                     <div v-if="subscriber.current_year_data.payment_received_at">
-                                        <p>Paiement reçu le {{ dayjs(subscriber.current_year_data.payment_received_at).format('DD/MM/YYYY') }}</p>
+                                        <p>Reçu le {{ subscriber.current_year_data.payment_received_at }}</p>
                                     </div>
                                     <div v-else>
-                                        <label class="inline-flex items-center">
-                                            <input type="checkbox" class="form-checkbox" value="1" v-model="form.payment_received_at">
-                                            <span class="ml-2">Paiement reçu</span>
-                                        </label>
+                                        <jet-label value="Reçu le :" class="mb-2" />
+                                        <jet-input type="date" class="form-checkbox" v-model="form.payment_received_at" />
                                     </div>
                                 </div>
                                 <!-- v-if="reply_transmitted_via !== 'Site internet'" -->
                                 <div class="mt-4" >
-                                    <jet-label value="L'utilisateur a-t-il signé la préinscription ?" />
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" class="form-checkbox" value="1" v-model="form.pre_registration_signature">
-                                        <span class="ml-2">Préinscription signée</span>
-                                    </label>
+                                    <jet-label value="Signature de la préinscription" />
+                                    <div v-if="subscriber.current_year_data.pre_registration_signature">
+                                        <p>Faite le {{ subscriber.current_year_data.pre_registration_signature }}</p>
+                                    </div>
+                                    <div v-else>
+                                        <jet-label value="Faite le" class="mb-2" />
+                                        <jet-input type="date" class="form-checkbox" v-model="form.pre_registration_signature" />
+                                    </div>
                                 </div>
 
                                 <div class="mt-4">
@@ -253,115 +254,85 @@ export default {
             ...props.subscriber,
             // Year data infos.
             decision: '',
-            payment_received_at: false,
-            pre_registration_signature: false,
+            selected_time: '',
+            payment_received_at: '',
+            pre_registration_signature: '',
             observations: '',
             feedback: '',
-
         });
 
         function submit () {
             Swal.fire({
                 icon: 'question',
                 title: 'Que voulez-vous faire ?',
-                input: 'select',
-                inputPlaceholder: 'Sélectionnez une action',
-                inputOptions: {
-                    valid: "Valider l'inscription",
-                    missing: 'Signaler une information manquante',
-                    payment: 'Indiquer que le paiement est manquant',
-                },
+                showDenyButton: true,
+                denyButtonText: 'Marquer comme incomplet',
                 showCancelButton: true,
                 cancelButtonText: 'Annuler',
-                confirmButtonText: 'Valider',
-                inputValidator: (selection) => {
-                    if (!selection) return 'Veuillez sélectionner un choix';
-                },
-                preConfirm: (selection) => {
-                    switch (selection) {
-                        case 'valid':
-                            let fields = [];
-                            if (!form.payment_received_at) fields.push('le paiement');
-                            if (!form.pre_registration_signature) fields.push('la signature');
-                            if (!props.subscriber.current_year_data.file) fields.push('le certificat médical');
+                confirmButtonText: "Valider l'inscription",
+                confirmButtonColor: '#10B981',
+            })
+            .then((result) => {
+                if (result.isConfirmed) {
+                    let fields = [];
+                    if (!form.payment_received_at) fields.push('le paiement');
+                    if (!form.pre_registration_signature) fields.push('la signature');
+                    if (!props.subscriber.current_year_data.file) fields.push('le certificat médical');
 
-                            if (fields.length > 0) {
-                                let list = '';
-                                fields.forEach((field) => {
-                                    list += `<li>- ${field}</li>`
-                                })
+                    if (fields.length > 0) {
+                        let list = '';
+                        fields.forEach((field) => {
+                            list += `<li>- ${field}</li>`
+                        })
 
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Inscription impossible',
-                                    html: `
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Inscription impossible',
+                            html: `
                                     <p>Les champs suivants sont manquants et requis :</p>
                                     <ul>
                                     ${list}
                                     </ul>
                                     `,
-                                    confirmButtonText: 'Valider',
-                                })
-                            } else {
-                                Swal.fire({
-                                    icon: 'info',
-                                    title: "Confirmer l'inscription ?",
-                                    text: "Le processus est irréversible, et un email va être envoyé à la personne. Continuer ?",
-                                    confirmButtonText: 'Valider',
-                                    showCancelButton: true,
-                                    cancelButtonText: 'Annuler',
-                                })
-                                .then((result) => {
-                                    if (result.isConfirmed) {
-                                        form.decision = selection
-                                        send();
-                                    }
-                                })
+                            confirmButtonText: 'Valider',
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'info',
+                            title: "Confirmer l'inscription ?",
+                            text: 'Un email va être envoyé à la personne. Continuer ?',
+                            confirmButtonText: 'Valider',
+                            showCancelButton: true,
+                            cancelButtonText: 'Annuler',
+                        })
+                        .then((result) => {
+                            if (result.isConfirmed) {
+                                send('accepted')
                             }
-                            break;
-
-                        case 'missing':
-                            Swal.fire({
-                                icon: 'info',
-                                text: 'Veuillez indiquer les informations manquantes. Un email sera envoyé à la personne pour le lui informer.',
-                                input: 'textarea',
-                                confirmButtonText: 'Valider',
-                                showCancelButton: true,
-                                cancelButtonText: 'Annuler',
-                                inputValidator: (feedback) => {
-                                    if (!feedback) return 'Le champs est requis';
-                                },
-                                preConfirm: (feedback) => {
-                                    form.decision = selection;
-                                    form.feedback = feedback;
-                                }
-                            })
-                            .then((result) => {
-                                if (result.isConfirmed) {
-                                    send();
-                                }
-                            })
-                            break;
-
-                        case 'payment':
-                            Swal.fire({
-                                icon: 'question',
-                                title: 'Confirmer ?',
-                                text: 'Un email va être envoyé à la personne pour lui informer ce changement de statut. Continuer ?'
-                            })
-                            .then((result) => {
-                                form.decision = selection;
-                                if (result.isConfirmed) {
-                                    send();
-                                }
-                            })
-                            break;
+                        })
                     }
+                } else if (result.isDenied) {
+                    Swal.fire({
+                        icon: 'info',
+                        text: 'Veuillez indiquer les informations manquantes. Un email sera envoyé à la personne pour le lui informer.',
+                        input: 'textarea',
+                        confirmButtonText: 'Valider',
+                        showCancelButton: true,
+                        cancelButtonText: 'Annuler',
+                        inputValidator: (feedback) => {
+                            if (!feedback) return 'Le champs est requis';
+                        },
+                        preConfirm: (feedback) => {
+                            form.feedback = feedback;
+                            send('missing');
+                        }
+                    })
                 }
             })
         }
 
-        function send () {
+        function send (decision) {
+            form.decision = decision;
             form.post(route('utilisateurs.subscribe'));
         }
 

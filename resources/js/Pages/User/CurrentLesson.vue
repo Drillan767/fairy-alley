@@ -25,9 +25,9 @@
                         <p class="leading-relaxed text-base">
                             <b>Horaire(s) choisi(s) :&nbsp;</b>
                             <span>
-                                {{ subscription.possibility_1 }}
+                                {{ subscription.selected_time }}
                             </span>
-                            <span v-if="subscription.possibility_2"> | {{ subscription.possibility_2 }}</span>
+                            <span v-if="subscription.fallback_time"> | {{ subscription.fallback_time }}</span>
                         </p>
                     </div>
                     <div class="flex items-center">

@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\HtmlString;
 
 class SubscriptionAccepted extends Notification
 {
@@ -16,7 +17,7 @@ class SubscriptionAccepted extends Notification
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(protected array $subscription)
     {
         //
     }
@@ -41,9 +42,11 @@ class SubscriptionAccepted extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->greeting('Bonjour,')
+            ->subject('Votre inscription a été accepté')
+            ->line("Vous recevez cet email car votre inscription pour le cours de {$this->subscription['lesson']['title']} a été validée.")
+            ->line(new HtmlString("<p>Votre cours hebdomadaire est fixé au <b>{$this->subscription['selected_time']}</b>."))
+            ->line('Bien cordialement,');
     }
 
     /**

@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
-use App\Casts\Status;
-use App\Http\Requests\SubscriptionRequest;
-use App\Models\{Media, Subscription, YearData};
+use App\Notifications\SubscriptionAccepted;
+use App\Http\Requests\{SubscriptionRequest, SubscriptionValidationRequest};
+use App\Notifications\SubscriptionMissingElements;
+use App\Models\{Invite, Media, Subscription, User, YearData};
 use Illuminate\Support\Facades\Storage;
 
 class SubscriptionHandler
@@ -15,6 +16,7 @@ class SubscriptionHandler
         $yearData = new YearData();
         $yearData->user_id = $user_id;
         $yearData->health_data = $request->get('health_data');
+        $yearData->reply_transmitted_via = 'internet';
 
         $yearData->save();
 
@@ -43,5 +45,55 @@ class SubscriptionHandler
     public function update()
     {
 
+    }
+
+    public function validate(SubscriptionValidationRequest $request): array
+    {
+        $user = User::find($request->get('id'));
+        foreach(['firstname', 'lastname', 'birthday', 'email', 'gender', 'phone', 'pro', 'address1', 'address2', 'zipcode', 'city'] as $field) {
+            $user->$field = $request->get($field);
+        }
+        $user->save();
+
+        $subscription = Subscription::find($request->get('subscription')['id']);
+
+        $yearData = YearData::find($request->get('current_year_data')['id']);
+        $yearData->deposit_paid_at = $request->get('payment_received_at');
+        $yearData->pre_registration_signature = $request->get('pre_registration_signature');
+
+        if ($yearData->observation === null || $yearData->observation === '') {
+            $yearData->observation = 'Motif de refus : "' . $request->get('feedback') . '"';
+        }
+
+        if ($request->get('decision') === 'missing') {
+            $subscription->status = Subscription::NEEDS_INFOS;
+            $subscription->feedback = $request->get('feedback');
+            $subscription->save();
+
+            $user->notify(new SubscriptionMissingElements($subscription->toArray()));
+            $response = ['utilisateurs.presubscribed', 'success', "Le statut de l'inscription a bien été mit à jour."];
+        } elseif ($request->get('decision') === 'accepted') {
+            $user->lesson_id = $subscription->lesson_id;
+            $subscription->selected_time = $request->get('selected_time');
+            $subscription->fallback_time = null;
+            $subscription->status = Subscription::VALIDATED;
+            $user->notify(new SubscriptionAccepted($subscription->toArray()));
+
+            foreach ($subscription->invites as $invite) {
+                Invite::create(
+                    array_merge($invite, ['user_id' => $user->id])
+                );
+            }
+
+            $subscription->invites = null;
+            $response = ['utilisateurs.presubscribed', 'success', "L'inscription a bien été validée."];
+        } else {
+            $response = ['utilisateurs.presubscribed', 'message', 'Ahein'];
+        }
+
+        $subscription->save();
+        $yearData->save();
+
+        return $response;
     }
 }

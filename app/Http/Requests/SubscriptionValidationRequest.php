@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Support\Facades\Auth;
 
-class SubscriptionValidation extends UserCoordinatesRequest
+class SubscriptionValidationRequest extends UserCoordinatesRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,10 @@ class SubscriptionValidation extends UserCoordinatesRequest
     public function rules()
     {
         return parent::rules() + [
-            'decision' => ['required', 'string', 'in:validate,missing,payment'],
-            'payment_received_at' => ['required', 'boolean'],
-            'pre_registration_signature' => ['required', 'boolean'],
-            'feedback' => ['required', 'string'],
+            'decision' => ['required', 'string', 'in:validate,missing'],
+            'payment_received_at' => ['nullable', 'string', 'date_format:Y-m-d'],
+            'pre_registration_signature' => ['nullable', 'string', 'date_format:Y-m-d'],
+            'feedback' => ['nullable', 'required_if:decision,missing', 'string'],
         ];
     }
 }

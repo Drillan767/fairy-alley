@@ -3,16 +3,22 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SubscriptionValidation;
+use App\Http\Requests\SubscriptionValidationRequest;
+use App\Models\Invite;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Models\YearData;
 use App\Notifications\SubscriptionMissingElements;
+use App\Services\SubscriptionHandler;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class UserController extends Controller
 {
+    public function __construct(protected SubscriptionHandler$subscriptionHandler)
+    {}
+
     public function subscribed(): Response
     {
         $users = User::whereNotNull('lesson_id')
@@ -50,34 +56,10 @@ class UserController extends Controller
         );
     }
 
-    public function subscribe(SubscriptionValidation $request)
+    public function subscribe(SubscriptionValidationRequest $request)
     {
-        $user = User::find($request->get('id'));
-        foreach(['firstname', 'lastname', 'birthday', 'email', 'gender', 'phone', 'pro', 'address1', 'address2', 'zipcode', 'city'] as $field) {
-            $user->$field = $request->get($field);
-        }
-        $user->save();
-
-        $args = [];
-
-        switch ($request->get('decision')) {
-            case 'missing':
-
-                $status = Subscription::NEEDS_INFOS;
-                break;
-
-            case 'payment':
-                break;
-
-            case 'accepted':
-                break;
-        }
-
-        dd($request);
-
-        $user->notify(new SubscriptionMissingElements($args));
-
-
+        list($route, $type, $message) = $this->subscriptionHandler->validate($request);
+        return redirect()->route($route)->with($type, $message);
     }
 
     public function edit(User $utilisateur)
