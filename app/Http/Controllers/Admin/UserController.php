@@ -23,6 +23,7 @@ class UserController extends Controller
     {
         $users = User::whereNotNull('lesson_id')
             ->role('subscriber')
+            ->with('subscription')
             ->get();
 
         return Inertia::render('Admin/Users/List', compact('users'));
@@ -31,7 +32,7 @@ class UserController extends Controller
     public function preSubscribed(): Response
     {
         $users = User::role('subscriber')
-            ->with('subscription', function($query) {
+            ->whereHas('subscription', function($query) {
                 $query->whereIn('status', [
                     Subscription::PENDING,
                     Subscription::NEEDS_INFOS,

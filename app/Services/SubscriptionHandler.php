@@ -61,28 +61,31 @@ class SubscriptionHandler
         $yearData->deposit_paid_at = $request->get('payment_received_at');
         $yearData->pre_registration_signature = $request->get('pre_registration_signature');
 
-        if ($yearData->observation === null || $yearData->observation === '') {
-            $yearData->observation = 'Motif de refus : "' . $request->get('feedback') . '"';
-        }
-
         if ($request->get('decision') === 'missing') {
             $subscription->status = Subscription::NEEDS_INFOS;
             $subscription->feedback = $request->get('feedback');
             $subscription->save();
 
+            if ($yearData->observations === null || $yearData->observations === '') {
+                $yearData->observations = 'Motif de refus : "' . $request->get('feedback') . '"';
+            }
+
             $user->notify(new SubscriptionMissingElements($subscription->toArray()));
             $response = ['utilisateurs.presubscribed', 'success', "Le statut de l'inscription a bien été mit à jour."];
         } elseif ($request->get('decision') === 'accepted') {
             $user->lesson_id = $subscription->lesson_id;
+            $user->save();
             $subscription->selected_time = $request->get('selected_time');
             $subscription->fallback_time = null;
             $subscription->status = Subscription::VALIDATED;
-            $user->notify(new SubscriptionAccepted($subscription->toArray()));
+            $user->notify(new SubscriptionAccepted($subscription->load('lesson')->toArray()));
 
-            foreach ($subscription->invites as $invite) {
-                Invite::create(
-                    array_merge($invite, ['user_id' => $user->id])
-                );
+            if ($subscription->invites) {
+                foreach ($subscription->invites as $invite) {
+                    Invite::create(
+                        array_merge($invite, ['user_id' => $user->id])
+                    );
+                }
             }
 
             $subscription->invites = null;

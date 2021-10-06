@@ -21,7 +21,7 @@ class CreateSubscriptionsTable extends Migration
             $table->text('feedback')->nullable();
             $table->string('selected_time', 25);
             $table->string('fallback_time', 25)->nullable();
-            $table->text('invites');
+            $table->text('invites')->nullable();
             $table->timestamps();
         });
     }

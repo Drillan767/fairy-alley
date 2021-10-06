@@ -301,13 +301,20 @@ export default {
                             icon: 'info',
                             title: "Confirmer l'inscription ?",
                             text: 'Un email va être envoyé à la personne. Continuer ?',
+                            input: 'select',
+                            inputValue: props.subscriber.subscription.selected_time,
+                            inputOptions: dates(),
                             confirmButtonText: 'Valider',
                             showCancelButton: true,
                             cancelButtonText: 'Annuler',
-                        })
-                        .then((result) => {
-                            if (result.isConfirmed) {
-                                send('accepted')
+                            inputValidator: (value) => {
+                                if (!value) {
+                                    return 'Vous devez sélectionner quelque chose'
+                                }
+                            },
+                            preConfirm(date) {
+                                form.selected_time = date;
+                                send('accepted');
                             }
                         })
                     }
@@ -336,9 +343,37 @@ export default {
             form.post(route('utilisateurs.subscribe'));
         }
 
+        function dates () {
+            const schedule = JSON.parse(props.subscriber.subscription.lesson.schedule);
+            let date = {};
+            schedule.forEach((day) => {
+                const element = `${day.day} ${day.begin} - ${day.end}`;
+                date[element] = element;
+            });
+
+            return date;
+        }
+
         const years = computed(() => `${dayjs().year()} - ${dayjs().add(1, 'year').year()}`)
+        const choices = computed(() => {
+            return {
+                'Fruits': {
+                    apples: 'Apples',
+                    bananas: 'Bananas',
+                    grapes: 'Grapes',
+                    oranges: 'Oranges'
+                },
+                'Vegetables': {
+                    potato: 'Potato',
+                    broccoli: 'Broccoli',
+                    carrot: 'Carrot'
+                },
+                'icecream': 'Ice cream'
+            }
+        })
 
         return {
+            choices,
             form,
             submit,
             years,

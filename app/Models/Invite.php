@@ -14,7 +14,7 @@ class Invite extends Model
         'lastname',
         'phone',
         'email',
-        'lesson_title',
+        'title',
         'user_id',
     ];
 }

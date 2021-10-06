@@ -19,8 +19,8 @@ class CreateInvitesTable extends Migration
             $table->string('lastname');
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
-            $table->string('lesson_title');
-            $table->text('notes');
+            $table->string('title');
+            $table->text('notes')->nullable();
             $table->foreignId('user_id')->constrained();
             $table->boolean('contacted')->default(false);
             $table->timestamps();

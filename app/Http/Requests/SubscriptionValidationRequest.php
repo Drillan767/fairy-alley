@@ -24,7 +24,7 @@ class SubscriptionValidationRequest extends UserCoordinatesRequest
     public function rules()
     {
         return parent::rules() + [
-            'decision' => ['required', 'string', 'in:validate,missing'],
+            'decision' => ['required', 'string', 'in:accepted,missing'],
             'payment_received_at' => ['nullable', 'string', 'date_format:Y-m-d'],
             'pre_registration_signature' => ['nullable', 'string', 'date_format:Y-m-d'],
             'feedback' => ['nullable', 'required_if:decision,missing', 'string'],
