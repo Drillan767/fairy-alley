@@ -3,16 +3,27 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SubscriptionValidationRequest;
+use App\Models\Invite;
+use App\Models\Subscription;
 use App\Models\User;
+use App\Models\YearData;
+use App\Notifications\SubscriptionMissingElements;
+use App\Services\SubscriptionHandler;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class UserController extends Controller
 {
+    public function __construct(protected SubscriptionHandler$subscriptionHandler)
+    {}
+
     public function subscribed(): Response
     {
         $users = User::whereNotNull('lesson_id')
             ->role('subscriber')
+            ->with('subscription')
             ->get();
 
         return Inertia::render('Admin/Users/List', compact('users'));
@@ -21,9 +32,14 @@ class UserController extends Controller
     public function preSubscribed(): Response
     {
         $users = User::role('subscriber')
-            ->with('subscription')
+            ->whereHas('subscription', function($query) {
+                $query->whereIn('status', [
+                    Subscription::PENDING,
+                    Subscription::NEEDS_INFOS,
+                    Subscription::AWAITING_PAYMENT
+                ]);
+            })
             ->where('lesson_id', null)
-            ->where('group_id', null)
             ->get();
 
         return Inertia::render('Admin/Users/List', compact('users'));
@@ -41,9 +57,10 @@ class UserController extends Controller
         );
     }
 
-    public function subscribe()
+    public function subscribe(SubscriptionValidationRequest $request)
     {
-
+        list($route, $type, $message) = $this->subscriptionHandler->validate($request);
+        return redirect()->route($route)->with($type, $message);
     }
 
     public function edit(User $utilisateur)

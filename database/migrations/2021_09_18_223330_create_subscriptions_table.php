@@ -17,9 +17,11 @@ class CreateSubscriptionsTable extends Migration
             $table->id();
             $table->foreignId('lesson_id')->constrained();
             $table->foreignId('user_id')->constrained();
-            $table->string('possibility_1', 25);
-            $table->string('possibility_2', 25);
-            $table->text('invites');
+            $table->smallInteger('status')->default(1);
+            $table->text('feedback')->nullable();
+            $table->string('selected_time', 25);
+            $table->string('fallback_time', 25)->nullable();
+            $table->text('invites')->nullable();
             $table->timestamps();
         });
     }

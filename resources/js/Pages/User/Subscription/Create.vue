@@ -27,7 +27,7 @@
                                 <h2 class="text-2xl text-gray-700 leading-tight mb-2">
                                     Détail des cours
                                 </h2>
-                                <div v-html="lesson.detail"></div>
+                                <div class="prose" v-html="details.details"></div>
                             </div>
 
                             <div class="mb-4">
@@ -35,7 +35,7 @@
                                     Processus de réservation du cours
                                 </h2>
 
-                                <div class="prose" v-html="lesson.process"></div>
+                                <div class="prose" v-html="details.process"></div>
                             </div>
 
                             <div class="mb-4">
@@ -43,7 +43,7 @@
                                     Organisation des cours
                                 </h2>
 
-                                <div class="prose" v-html="lesson.organization"></div>
+                                <div class="prose" v-html="details.organization"></div>
                             </div>
 
                             <div class="mb-4">
@@ -51,7 +51,7 @@
                                     Acceptation des conditions
                                 </h2>
 
-                                <div class="prose" v-html="lesson.conditions"></div>
+                                <div class="prose" v-html="details.conditions"></div>
                             </div>
 
                             <form class="mt-5" @submit.prevent="submit">
@@ -181,13 +181,13 @@
                                             </div>
                                             <div class="flex-100 px-3">
                                                 <jet-label for="content" value="Cours souhaité"/>
-                                                <select v-model="entry.lesson_id" class="w-full">
+                                                <select v-model="entry.title" class="w-full">
                                                     <option selected>Sélectionner...</option>
-                                                    <option v-for="option in lessons" :key="option" :value="option.id">
+                                                    <option v-for="option in lessons" :key="option" :value="option.title">
                                                         {{ option.title }}
                                                     </option>
                                                 </select>
-                                                <jet-input-error :message="form.errors[`invites.${index}.lesson_id`]" class="mt-2" />
+                                                <jet-input-error :message="form.errors[`invites.${index}.title`]" class="mt-2" />
                                             </div>
                                         </div>
 
@@ -243,7 +243,7 @@ import JetInputError from '@/Jetstream/InputError.vue'
 import JetFileUpload from '@/Jetstream/FileUpload.vue'
 
 export default {
-    props: ['lesson', 'lessons', 'user'],
+    props: ['lesson', 'lessons', 'user', 'details'],
     components: {
         Link,
         UserLayout,
@@ -274,7 +274,7 @@ export default {
         };
 
         const add = () => {
-            form.invites.push({firstname: '', lastname: '', email: '', phone: '', lesson_id: ''})
+            form.invites.push({firstname: '', lastname: '', email: '', phone: '', title: ''})
         }
 
         const schedule = computed(() => {

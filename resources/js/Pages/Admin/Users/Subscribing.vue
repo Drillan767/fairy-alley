@@ -16,7 +16,7 @@
                                 <h2 class="font-semibold text-l text-gray-700 leading-tight mb-5">
                                     Information sur le cours choisi
                                 </h2>
-                                <a class="btn btn-sm" :href="route('cours.show', {cour: subscriber.subscription.lesson.id})" target="_blank">
+                                <a class="btn btn-sm" :href="route('cours.edit', {cour: subscriber.subscription.lesson.id})" target="_blank">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                     </svg>
@@ -123,8 +123,8 @@
                                 <div class="mt-4">
                                     <jet-label value="Possibilités" />
                                     <ul class="list-disc">
-                                        <li v-html="subscriber.current_year_data.possibility_1"/>
-                                        <li v-html="subscriber.current_year_data.possibility_2"/>
+                                        <li v-html="subscriber.subscription.selected_time"/>
+                                        <li v-html="subscriber.subscription.fallback_time"/>
                                     </ul>
                                 </div>
 
@@ -156,7 +156,7 @@
                                             <td>{{ invite.lastname }}</td>
                                             <td>{{ invite.email }}</td>
                                             <td>{{ invite.phone }}</td>
-                                            <td>{{ invite.lesson_id }}</td>
+                                            <td>{{ invite.title }}</td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -178,24 +178,25 @@
                                 </div>
 
                                 <div class="mt-4">
-                                    <jet-label value="L'inscription a-t-elle été payée ?" />
+                                    <jet-label value="Paiement" />
                                     <div v-if="subscriber.current_year_data.payment_received_at">
-                                        <p>Paiement reçu le {{ dayjs(subscriber.current_year_data.payment_received_at).format('DD/MM/YYYY') }}</p>
+                                        <p>Reçu le {{ subscriber.current_year_data.payment_received_at }}</p>
                                     </div>
                                     <div v-else>
-                                        <label class="inline-flex items-center">
-                                            <input type="checkbox" class="form-checkbox" value="1" v-model="form.payment_received_at">
-                                            <span class="ml-2">Paiement reçu</span>
-                                        </label>
+                                        <jet-label value="Reçu le :" class="mb-2" />
+                                        <jet-input type="date" class="form-checkbox" v-model="form.payment_received_at" />
                                     </div>
                                 </div>
                                 <!-- v-if="reply_transmitted_via !== 'Site internet'" -->
                                 <div class="mt-4" >
-                                    <jet-label value="L'utilisateur a-t-il signé la préinscription ?" />
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" class="form-checkbox" value="1" v-model="form.pre_registration_signature">
-                                        <span class="ml-2">Préinscription signée</span>
-                                    </label>
+                                    <jet-label value="Signature de la préinscription" />
+                                    <div v-if="subscriber.current_year_data.pre_registration_signature">
+                                        <p>Faite le {{ subscriber.current_year_data.pre_registration_signature }}</p>
+                                    </div>
+                                    <div v-else>
+                                        <jet-label value="Faite le" class="mb-2" />
+                                        <jet-input type="date" class="form-checkbox" v-model="form.pre_registration_signature" />
+                                    </div>
                                 </div>
 
                                 <div class="mt-4">
@@ -231,6 +232,10 @@ import {computed} from "vue";
 import Swal from "sweetalert2";
 
 export default {
+    title () {
+        return `Inscription de ${this.subscriber.full_name}`
+    },
+
     props: ['subscriber'],
 
     components: {
@@ -246,46 +251,129 @@ export default {
     setup (props) {
         const form = useForm({
             // User info.
-            firstname: props.subscriber.firstname,
-            lastname: props.subscriber.lastname,
-            email: props.subscriber.email,
-            gender: props.subscriber.gender,
-            birthday: props.subscriber.birthday,
-            phone: props.subscriber.phone,
-            pro: props.subscriber.pro,
-            address1: props.subscriber.address1,
-            address2: props.subscriber.address2,
-            zipcode: props.subscriber.zipcode,
-            city: props.subscriber.city,
-
+            ...props.subscriber,
             // Year data infos.
-            payment_received_at: false,
-            pre_registration_signature: false,
+            decision: '',
+            selected_time: '',
+            payment_received_at: '',
+            pre_registration_signature: '',
             observations: '',
-
+            feedback: '',
         });
 
         function submit () {
-            if (form.payment_received_at && form.pre_registration_signature) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: "Valider l'inscription de l'utilisateur ?",
-                    text: `Vous avez indiqué que l'utilisateur ${props.subscriber.full_name} a payé son inscription et
-                    a signé son accord, ce qui signifie qu'il peut rejoindre un groupe dès maintenant. Continuer ?`,
-                    showCancelButton: true,
-                    showDenyButton: true,
-                    confirmButtonText: 'Faire rejoindre un groupe',
-                    cancelButtonText: 'Annuler',
-                    denyButtonText: 'Laisser en préinscription'
-                })
-            }
+            Swal.fire({
+                icon: 'question',
+                title: 'Que voulez-vous faire ?',
+                showDenyButton: true,
+                denyButtonText: 'Marquer comme incomplet',
+                showCancelButton: true,
+                cancelButtonText: 'Annuler',
+                confirmButtonText: "Valider l'inscription",
+                confirmButtonColor: '#10B981',
+            })
+            .then((result) => {
+                if (result.isConfirmed) {
+                    let fields = [];
+                    if (!form.payment_received_at) fields.push('le paiement');
+                    if (!form.pre_registration_signature) fields.push('la signature');
+                    if (!props.subscriber.current_year_data.file) fields.push('le certificat médical');
 
+                    if (fields.length > 0) {
+                        let list = '';
+                        fields.forEach((field) => {
+                            list += `<li>- ${field}</li>`
+                        })
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Inscription impossible',
+                            html: `
+                                    <p>Les champs suivants sont manquants et requis :</p>
+                                    <ul>
+                                    ${list}
+                                    </ul>
+                                    `,
+                            confirmButtonText: 'Valider',
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'info',
+                            title: "Confirmer l'inscription ?",
+                            text: 'Un email va être envoyé à la personne. Continuer ?',
+                            input: 'select',
+                            inputValue: props.subscriber.subscription.selected_time,
+                            inputOptions: dates(),
+                            confirmButtonText: 'Valider',
+                            showCancelButton: true,
+                            cancelButtonText: 'Annuler',
+                            inputValidator: (value) => {
+                                if (!value) {
+                                    return 'Vous devez sélectionner quelque chose'
+                                }
+                            },
+                            preConfirm(date) {
+                                form.selected_time = date;
+                                send('accepted');
+                            }
+                        })
+                    }
+                } else if (result.isDenied) {
+                    Swal.fire({
+                        icon: 'info',
+                        text: 'Veuillez indiquer les informations manquantes. Un email sera envoyé à la personne pour le lui informer.',
+                        input: 'textarea',
+                        confirmButtonText: 'Valider',
+                        showCancelButton: true,
+                        cancelButtonText: 'Annuler',
+                        inputValidator: (feedback) => {
+                            if (!feedback) return 'Le champs est requis';
+                        },
+                        preConfirm: (feedback) => {
+                            form.feedback = feedback;
+                            send('missing');
+                        }
+                    })
+                }
+            })
         }
 
-        //
+        function send (decision) {
+            form.decision = decision;
+            form.post(route('utilisateurs.subscribe'));
+        }
+
+        function dates () {
+            const schedule = JSON.parse(props.subscriber.subscription.lesson.schedule);
+            let date = {};
+            schedule.forEach((day) => {
+                const element = `${day.day} ${day.begin} - ${day.end}`;
+                date[element] = element;
+            });
+
+            return date;
+        }
+
         const years = computed(() => `${dayjs().year()} - ${dayjs().add(1, 'year').year()}`)
+        const choices = computed(() => {
+            return {
+                'Fruits': {
+                    apples: 'Apples',
+                    bananas: 'Bananas',
+                    grapes: 'Grapes',
+                    oranges: 'Oranges'
+                },
+                'Vegetables': {
+                    potato: 'Potato',
+                    broccoli: 'Broccoli',
+                    carrot: 'Carrot'
+                },
+                'icecream': 'Ice cream'
+            }
+        })
 
         return {
+            choices,
             form,
             submit,
             years,

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -40,9 +41,16 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'message' => fn () => $request->session()->get('message'),
                 'success' => fn () => $request->session()->get('success'),
-                'error' => fn () => $request->session()->get('error'),
+                'error'   => fn () => $request->session()->get('error'),
             ],
             'BASE_URL' => env('APP_URL'),
+            'status' => [
+                Subscription::PENDING           => 'En attente',
+                Subscription::VALIDATED         => 'Validé',
+                Subscription::NEEDS_INFOS       => "En attente d'informations",
+                Subscription::AWAITING_PAYMENT  => 'En attente du paiement',
+                Subscription::SUBSCRIPTION_OVER => 'Fin des cours',
+            ],
         ]);
 
         if (auth()->user()?->hasRole('administrator')) {

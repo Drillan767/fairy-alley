@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\LessonRequest;
 use App\Models\Lesson;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Http\Controllers\Controller;
+use Inertia\Response;
 
 class LessonController extends Controller
 {
@@ -29,19 +31,19 @@ class LessonController extends Controller
         return redirect()->route('cours.index')->with('success', 'Cours enregistré avec succès.');
     }
 
-    public function show(Lesson $lesson)
+    public function show()
     {
-        //
+        abort(404);
     }
 
-    public function edit(Lesson $cour)
+    public function edit(Lesson $cour): Response
     {
         return Inertia::render('Admin/Lessons/Edit', ['lesson' => $cour]);
     }
 
-    public function update(LessonRequest $request, Lesson $lesson)
+    public function update(LessonRequest $request, Lesson $cour): RedirectResponse
     {
-        $this->handleLesson($lesson, $request);
+        $this->handleLesson($cour, $request, true);
         return redirect()->route('cours.index')->with('success', 'Cours mit à jour avec succès.');
     }
 
@@ -52,13 +54,24 @@ class LessonController extends Controller
         }
     }
 
-    private function handleLesson(Lesson $lesson, LessonRequest $request)
+    public function users(Lesson $cours): Response
     {
-        $lesson->year = now()->year . '-' . now()->addYear()->year;
-        foreach(['title', 'description', 'detail', 'process', 'organization', 'conditions', 'schedule'] as $field) {
-            $lesson->$field = $request->get($field);
-        }
+        return Inertia::render('Admin/Lessons/Users', ['lesson' => $cours->load('users')]);
+    }
 
-        $lesson->save();
+    private function handleLesson(Lesson $lesson, LessonRequest $request, bool $update = false)
+    {
+        $function = $update ? 'update' : 'create';
+        $fields = array_merge(
+            $request->validated(),
+            ['year' => now()->year . ' - ' . now()->addYear()->year]
+        );
+
+        $lesson->$function($fields);
+
+        /* TODO: change code by this for PHP v8.1
+         ...$request->validated(),
+        'year' => now()->year . '-' . now()->addYear()->year,
+        */
     }
 }

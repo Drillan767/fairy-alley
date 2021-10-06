@@ -42,7 +42,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
             'utilisateurs' => UserController::class,
         ]);
 
+        Route::get('/cours/{cours}/utilisateurs', [LessonController::class, 'users'])->name('cours.users');
+
         Route::get('/utilisateurs', [UserController::class, 'subscribed'])->name('utilisateurs.subscribed');
+        Route::get('/utilisateur/{user}'); //
+        Route::post('/preinscription', [UserController::class, 'subscribe'])->name('utilisateurs.subscribe');
         Route::get('/preinscriptions', [UserController::class, 'preSubscribed'])->name('utilisateurs.presubscribed');
         Route::get('/preinscription/{user}/editer', [UserController::class, 'subscribing'])->name('utilisateurs.subscribing');
     });

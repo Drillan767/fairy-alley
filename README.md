@@ -14,7 +14,4 @@
 
 ##### TODO : 
  - Handle both subscription approval / denial
-
-- If no room is available for the 1st choice, set 2nd choice as default. If none, set default to null.
-- Remove groups that are full?
-- [Note for preselecting element](https://jsfiddle.net/L87xem1y/1/)
+ - Need to remove the Cast, bad idea.

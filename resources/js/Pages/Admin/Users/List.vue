@@ -46,7 +46,7 @@
                                     </td>
                                     <td class="py-3 px-6 text-left whitespace-nowrap">
                                         <div class="flex items-center">
-                                            <span class="font-medium">{{ user.full_name }}</span>
+                                            <span class="font-medium">{{ user.subscription.status }}</span>
                                         </div>
                                     </td>
                                     <td class="py-3 px-6 text-center">

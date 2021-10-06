@@ -22,7 +22,7 @@ class SubscriptionRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'lesson_id' => ['required', 'integer', 'exists:lessons,id'],
@@ -30,35 +30,35 @@ class SubscriptionRequest extends FormRequest
             'health_data' => ['nullable', 'string'],
             'medical_certificate' => ['nullable', 'mimes:png,jpg,pdf', 'max:10000'],
             'schedule_choice1' => ['required', 'string'],
-            'schedule_choice2' => ['required', 'string', 'different:schedule_choice1'],
+            'schedule_choice2' => ['nullable', 'string', 'different:schedule_choice1'],
             'invites' => ['array'],
             'invites.*.firstname' => ['required', 'string'],
             'invites.*.lastname' => ['required', 'string'],
             'invites.*.email' => ['nullable', 'required_without:phone', 'email:rfc,dns'],
             'invites.*.phone' => ['nullable', 'required_without:email', 'string'],
-            'invites.*.lesson_id' => ['required', 'integer', 'exists:lessons,id'],
+            'invites.*.title' => ['required', 'string', 'exists:lessons,title'],
             'accepts' => ['required', 'accepted'],
         ];
     }
 
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'invites.*.firstname' => 'Prénom',
             'invites.*.lastname' => 'Nom',
             'invites.*.email' => 'email',
             'invites.*.phone' => 'téléphone',
+            'invites.0.title' => 'cours souhaité',
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
        return [
            'schedule_choice1.required' => 'Veuillez sélectionner une date.',
-           'schedule_choice2.required' => 'Veuillez sélectionner une date.',
            'schedule_choice2.different' => 'Vous devez selectionner deux dates différentes.',
            'accepts.accepted' => 'Vous devez accepter les conditions pour vous inscrire.',
-           'invites.*.lesson_id.required' => 'Vous devez sélectionner un cours.'
+           'invites.*.title.required' => 'Vous devez sélectionner un cours.'
        ];
     }
 }
