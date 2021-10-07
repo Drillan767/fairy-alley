@@ -1,5 +1,5 @@
 <template>
-    <admin-layout title="Pages">
+    <admin-layout title="Utilisateurs en cours d'inscription">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
                 Utilisateurs en cours d'inscription
