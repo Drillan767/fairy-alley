@@ -16,13 +16,13 @@
 
                 <div class="mt-4">
                     <jet-label value="Illustration" />
-                    <jet-file-upload v-model="form.illustration" />
+                    <jet-file-upload @input="handleUpload" />
                     <jet-input-error :message="form.errors.illustration" class="mt-2" />
                 </div>
 
                 <div class="mt-4">
                     <jet-label value="Page liée" />
-                    <jet-select :choices="pages" v-model="form.page_id" />
+                    <jet-select :choices="pagesList" v-model="form.page_id" />
                     <jet-input-error :message="form.errors.page_id" class="mt-2" />
                 </div>
 
@@ -45,6 +45,7 @@ import JetInputError from '@/Jetstream/InputError.vue';
 import JetFileUpload from '@/Jetstream/FileUpload.vue';
 import JetSelect from '@/Jetstream/Select.vue';
 import {useForm} from "@inertiajs/inertia-vue3";
+import {computed} from "vue";
 
 export default {
     emits: ['close'],
@@ -65,7 +66,7 @@ export default {
         pages: Array,
     },
 
-    setup(props) {
+    setup(props, {emit}) {
 
         const form = useForm({
             title: '',
@@ -75,12 +76,32 @@ export default {
         })
 
         function submit() {
-            form.post(route('services.store'));
+            form.post(route('services.store'), {
+                onSuccess: () => emit('close')
+            });
         }
+
+        const handleUpload = (file) => {
+            form.illustration = file
+        };
+
+        const pagesList = computed(() => {
+            let result = [];
+            props.pages.forEach((page) => {
+                result.push({
+                    label: page.title,
+                    value: page.id,
+                })
+            })
+
+            return result;
+        });
 
         return {
             form,
-            submit
+            submit,
+            handleUpload,
+            pagesList,
         }
     },
 
@@ -88,10 +109,6 @@ export default {
         close() {
             this.$emit('close')
         },
-
-        submit() {
-
-        }
     }
 }
 </script>

@@ -17,7 +17,6 @@ class CreateServicesTable extends Migration
             $table->id();
             $table->string('title');
             $table->string('description');
-            $table->string('illustration');
             $table->foreignId('page_id')->constrained();
             $table->timestamps();
         });

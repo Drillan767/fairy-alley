@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\ServiceRequest;
+use App\Models\Media;
 use App\Models\Page;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ServiceController extends Controller
@@ -24,18 +27,27 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        //
+        abort(404);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(ServiceRequest $request)
     {
-        //
+        $file = $request->file('illustration');
+
+        $service = Service::create([
+            'title' => $request->get('title'),
+            'description' => $request->get('description'),
+            'page_id' => $request->get('page_id'),
+        ]);
+
+        $media = new Media([
+            'title' => $file->getClientOriginalName(),
+            'url' => Storage::disk('s3')->putFileAs("service/{$service->id}", $file, $file->getClientOriginalName()),
+        ]);
+
+        $service->file()->save($media);
+
+        return redirect()->back()->with('success', 'Service enregistré avec succès.');
     }
 
     /**
@@ -57,7 +69,7 @@ class ServiceController extends Controller
      */
     public function edit(Service $service)
     {
-        //
+        abort(404);
     }
 
     /**
