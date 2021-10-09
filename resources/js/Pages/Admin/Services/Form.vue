@@ -63,6 +63,12 @@ export default {
         show: {
             default: false
         },
+
+        service: {
+            type: Object,
+            required: false,
+        },
+
         pages: Array,
     },
 

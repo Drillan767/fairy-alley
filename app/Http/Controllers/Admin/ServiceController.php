@@ -15,7 +15,7 @@ class ServiceController extends Controller
 {
     public function index()
     {
-        $services = Service::all();
+        $services = Service::with('page')->get();
         $pages = Page::all(['id', 'title']);
         return Inertia::render('Admin/Services/Index', compact('services', 'pages'));
     }
