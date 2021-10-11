@@ -45,7 +45,7 @@ import JetInputError from '@/Jetstream/InputError.vue';
 import JetFileUpload from '@/Jetstream/FileUpload.vue';
 import JetSelect from '@/Jetstream/Select.vue';
 import {useForm} from "@inertiajs/inertia-vue3";
-import {computed} from "vue";
+import {computed, watch} from "vue";
 
 export default {
     emits: ['close'],
@@ -61,6 +61,7 @@ export default {
 
     props: {
         show: {
+            type: Boolean,
             default: false
         },
 
@@ -74,12 +75,18 @@ export default {
 
     setup(props, {emit}) {
 
-        const form = useForm({
+        let form = useForm({
             title: '',
             description: '',
             illustration: null,
             page_id: null,
         })
+
+        watch(() => props.service, (fields) => {
+            form.title = fields.title;
+            form.description = fields.description;
+            form.page_id = fields.page_id;
+        });
 
         function submit() {
             form.post(route('services.store'), {

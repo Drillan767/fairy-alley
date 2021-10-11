@@ -53,9 +53,6 @@
                                         </jet-dropdown>
                                     </div>
                                 </div>
-                                <jet-nav-link :href="route('pages.index')" :active="['pages.index', 'pages.show', 'pages.edit'].includes(route().current())">
-                                    Pages
-                                </jet-nav-link>
                                 <jet-nav-link :href="route('cours.index')" :active="['cours.index', 'cours.show', 'cours.edit'].includes(route().current())">
                                     Cours
                                 </jet-nav-link>
