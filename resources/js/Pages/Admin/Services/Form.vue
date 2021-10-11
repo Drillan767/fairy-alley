@@ -83,7 +83,10 @@ export default {
 
         function submit() {
             form.post(route('services.store'), {
-                onSuccess: () => emit('close')
+                onSuccess: () => {
+                    form.reset();
+                    emit('close');
+                }
             });
         }
 

@@ -32,7 +32,7 @@
                                 </tr>
                                 </thead>
                                 <tbody class="text-gray-600 text-sm font-light">
-                                <tr v-for="(service, i) in services" :key="i">
+                                <tr v-for="(service, i) in servicesList" :key="i">
                                     <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
                                         <div class="text-sm leading-5 text-gray-500">{{ service.title }}</div>
                                     </td>
@@ -68,7 +68,7 @@
                 </div>
             </div>
         </div>
-        <Form :show="showModal" @close="closeModal" :pages="pages"/>
+        <Form :show="showModal" :service="service" @close="closeModal" :pages="pages"/>
     </admin-layout>
 </template>
 
@@ -78,6 +78,7 @@ import Form from "@/Pages/Admin/Services/Form.vue";
 import Swal from "sweetalert2";
 import { Link } from "@inertiajs/inertia-vue3";
 import { ref } from 'vue';
+import axios from "axios";
 export default {
     props: {
         services: Array,
@@ -96,8 +97,14 @@ export default {
 
     data () {
         return {
+            servicesList: [],
             showModal: false,
+            service: null,
         }
+    },
+
+    mounted() {
+        this.servicesList = this.services
     },
 
     methods: {
@@ -110,7 +117,7 @@ export default {
         },
 
         editService(service) {
-            console.log(service);
+            this.service = service;
             this.showModal = true;
         },
 
@@ -119,6 +126,23 @@ export default {
                 icon: 'warning',
                 title: 'Supprimer le service ?',
                 text: `Le service intitulé "${service.title}" va être supprimé,`,
+                showCancelButton: true,
+                cancelButtonText: 'Annuler',
+                confirmButtonText: 'Supprimer',
+                confirmButtonColor: '#DC2626',
+            })
+            .then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete(route('services.destroy', {service: service.id}))
+                    .then(() => {
+                        this.servicesList = this.servicesList.filter((s) => s.id !== service.id)
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Service supprimé.',
+                            text: 'Le service a bien été supprimée'
+                        })
+                    })
+                }
             })
         }
     },
