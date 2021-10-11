@@ -22,7 +22,8 @@
         "shuchkin/simplexlsx": "^0.8.26",
         "shuchkin/simplexlsxgen": "^1.0",
         "spatie/laravel-permission": "^4.4",
-        "tightenco/ziggy": "^1.0"
+        "tightenco/ziggy": "^1.0",
+        "wulfheart/pretty_routes": "^0.3.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

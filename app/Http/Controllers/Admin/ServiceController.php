@@ -32,22 +32,9 @@ class ServiceController extends Controller
 
     public function store(ServiceRequest $request)
     {
-        $file = $request->file('illustration');
+        $this->handleServices($request, new Service());
 
-        $service = Service::create([
-            'title' => $request->get('title'),
-            'description' => $request->get('description'),
-            'page_id' => $request->get('page_id'),
-        ]);
-
-        $media = new Media([
-            'title' => $file->getClientOriginalName(),
-            'url' => Storage::disk('s3')->putFileAs("service/{$service->id}", $file, $file->getClientOriginalName()),
-        ]);
-
-        $service->file()->save($media);
-
-        return redirect()->back()->with('success', 'Service enregistré avec succès.');
+        return redirect()->route('services.index')->with('success', 'Service enregistré avec succès.');
     }
 
     /**
@@ -72,26 +59,45 @@ class ServiceController extends Controller
         abort(404);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Service  $service
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Service $service)
+    public function update(ServiceRequest $request, Service $service)
     {
-        //
+        $this->handleServices($request, $service, true);
+        return redirect()->back()->with('success', 'Service mit à jour avec succès.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Service  $service
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Service $service)
     {
-        //
+        if (auth()->user()->hasRole('administrator')) {
+            $service->delete();
+        } else {
+            abort(403);
+        }
+
+    }
+
+    private function handleServices(ServiceRequest $request, Service $service, $update = false)
+    {
+        $method = $update ? 'update' : 'create';
+
+        $service->$method([
+            'title' => $request->get('title'),
+            'description' => $request->get('description'),
+            'page_id' => $request->get('page_id'),
+        ]);
+
+        if ($request->hasFile('illustration')) {
+            $file = $request->file('illustration');
+
+            if ($update) {
+                $service->file()->delete();
+            }
+
+            $media = new Media([
+                'title' => $file->getClientOriginalName(),
+                'url' => Storage::disk('s3')->putFileAs("service/{$service->id}", $file, $file->getClientOriginalName()),
+            ]);
+
+            $service->file()->save($media);
+        }
     }
 }

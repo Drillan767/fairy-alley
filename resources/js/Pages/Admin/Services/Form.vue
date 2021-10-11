@@ -16,7 +16,7 @@
 
                 <div class="mt-4">
                     <jet-label value="Illustration" />
-                    <jet-file-upload @input="handleUpload" />
+                    <jet-file-upload @input="handleUpload" :currentFile="service?.file ?? null" />
                     <jet-input-error :message="form.errors.illustration" class="mt-2" />
                 </div>
 
@@ -65,6 +65,11 @@ export default {
             default: false
         },
 
+        editing: {
+            type: Boolean,
+            required: false,
+        },
+
         service: {
             type: Object,
             required: false,
@@ -89,12 +94,25 @@ export default {
         });
 
         function submit() {
-            form.post(route('services.store'), {
-                onSuccess: () => {
-                    form.reset();
-                    emit('close');
-                }
-            });
+            if (props.service) {
+                form.transform((data) => ({
+                    ...data,
+                    _method: 'PUT',
+                }))
+                .post(route('services.update', {service: props.service.id}), {
+                    onSuccess: () => success()
+                });
+            } else {
+                form.post(route('services.store'), {
+                    onSuccess: () => success()
+                });
+            }
+        }
+
+        function success() {
+            form.reset();
+            emit('close');
+            window.location.reload();
         }
 
         const handleUpload = (file) => {

@@ -24,11 +24,16 @@ class ServiceRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'title' => ['required', 'string'],
             'description' => ['required', 'string', 'max:255'],
-            'illustration' => ['required', 'file', 'mimes:jpg,jpeg,png,webp'],
             'page_id' => ['required', 'integer', 'exists:pages,id']
         ];
+
+        if ($this->getMethod() === 'POST') {
+            $rules['illustration'] = ['required', 'file', 'mimes:jpg,jpeg,png,webp'];
+        }
+
+        return $rules;
     }
 }

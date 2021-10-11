@@ -118,7 +118,8 @@ export default {
 
         editService(service) {
             this.service = service;
-            this.showModal = true;
+            this.service.illustration = this.service.file.url
+                this.showModal = true;
         },
 
         deleteService(service) {
