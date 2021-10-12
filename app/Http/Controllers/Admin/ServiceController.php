@@ -79,7 +79,7 @@ class ServiceController extends Controller
     {
         $method = $update ? 'update' : 'create';
 
-        $service->$method([
+        $service = $service->$method([
             'title' => $request->get('title'),
             'description' => $request->get('description'),
             'page_id' => $request->get('page_id'),

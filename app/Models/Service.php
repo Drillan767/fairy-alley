@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Service extends Model
@@ -16,9 +16,9 @@ class Service extends Model
         return $this->morphOne(Media::class, 'illustrable');
     }
 
-    public function page(): BelongsTo
+    public function page(): HasOne
     {
-        return $this->belongsTo(Page::class);
+        return $this->hasOne(Page::class, 'id', 'page_id');
     }
 
     protected $fillable =  [
