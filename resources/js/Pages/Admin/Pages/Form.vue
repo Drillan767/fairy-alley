@@ -135,8 +135,9 @@ export default {
             return str;
         })
 
-        function submit () {
-            form.slug = this.slug
+        function submit (status) {
+            form.published = status;
+            form.slug = this.slug;
             const path = props.editing ? route('pages.update', {page: props.page.id}) : route('pages.store');
             form.post(path);
         }

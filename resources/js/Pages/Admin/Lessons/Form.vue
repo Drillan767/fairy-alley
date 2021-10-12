@@ -106,6 +106,8 @@ export default {
             {date: 'Mercredi'},
             {date: 'Jeudi'},
             {date: 'Vendredi'},
+            {date: 'Samedi'},
+            {date: 'Dimanche'},
         ]
 
         const schedule = computed(() => Array.isArray(form.schedule) ? form.schedule : JSON.parse(form.schedule))

@@ -1,4 +1,9 @@
 <template>
+    <div v-if="currentFile" class="my-2">
+        <span>Image actuelle :</span>
+        <img :src="currentFile.url" alt="illustration" class="rounded"/>
+    </div>
+
     <label :for="id" class="block h-64 relative overflow-hidden rounded">
         <input
             :id="id"
@@ -12,11 +17,11 @@
         <slot>
           <strong>Sélectionnez un fichier, ou glissez-le ici</strong>
         </slot>
-        <small v-if="files.length" :class="`text-gray-600 block`">
+        <div class="text-gray-600 block text-sm">
           <slot name="file" :files="files" :uploadInfo="uploadInfo">
             {{ uploadInfo }}
           </slot>
-        </small>
+        </div>
       </div>
     </span>
     </label>
@@ -28,7 +33,14 @@ import { ref, computed } from 'vue'
 export default {
     props: {
         file: {},
-        id: { type: String, default: 'drag-and-drop-input' },
+        currentFile: {
+            type: Object,
+            required: false,
+        },
+        id: {
+            type: String,
+            default: 'drag-and-drop-input'
+        },
         multiple: { type: Boolean, default: false },
     },
 
@@ -38,9 +50,14 @@ export default {
         const files = ref([])
 
         const uploadInfo = computed(() => {
-            return files.value.length === 1
-                ? files.value[0].name
-                : `${files.value.length} fichiers sélectionnés`
+            if (props.currentFile && files.value.length === 0) {
+                return props.currentFile.title;
+            } else {
+                return files.value.length === 1
+                    ? files.value[0].name
+                    : `${files.value.length} fichiers sélectionnés`
+            }
+
         })
 
         const handleUpload = (e) => {

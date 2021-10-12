@@ -17,4 +17,9 @@ class Media extends Model
     {
         return $this->morphTo();
     }
+
+    public function getUrlAttribute($value)
+    {
+        return $this->url = env('MEDIAS_URL') . $value;
+    }
 }

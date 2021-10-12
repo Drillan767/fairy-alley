@@ -12,6 +12,7 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "inertiajs/inertia-laravel": "^0.4.3",
+        "intervention/image": "^2.7",
         "laravel/framework": "^8.54",
         "laravel/jetstream": "^2.3",
         "laravel/sanctum": "^2.6",
@@ -21,7 +22,8 @@
         "shuchkin/simplexlsx": "^0.8.26",
         "shuchkin/simplexlsxgen": "^1.0",
         "spatie/laravel-permission": "^4.4",
-        "tightenco/ziggy": "^1.0"
+        "tightenco/ziggy": "^1.0",
+        "wulfheart/pretty_routes": "^0.3.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

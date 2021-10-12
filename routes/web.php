@@ -1,7 +1,11 @@
 <?php
 
-use App\Http\Controllers\Admin\{AdminController, PageController, LessonController, UserController};
-use App\Http\Controllers\GroupController;
+use App\Http\Controllers\Admin\{AdminController,
+    PageController,
+    LessonController,
+    ServiceController,
+    UserController
+};
 use App\Http\Controllers\User\SubscriptionController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +44,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
             'pages' => PageController::class,
             'cours' => LessonController::class,
             'utilisateurs' => UserController::class,
+            'services' => ServiceController::class,
         ]);
 
         Route::get('/cours/{cours}/utilisateurs', [LessonController::class, 'users'])->name('cours.users');

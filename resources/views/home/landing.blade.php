@@ -33,172 +33,22 @@
 <section>
     <div class="container px-5 py-10 mx-auto">
         <div id="macy" class="mt-10">
-            <div>
-                <div class="bg-gray-100 p-6 rounded-lg">
-                    <img class="h-40 rounded w-full object-cover object-center mb-6" src="https://picsum.photos/720/400?random=1" alt="content">
-                    <h2 class="text-lg text-gray-900 font-medium title-font mb-4">Ouvert à tout le monde dans la bienveillance et l'harmonie</h2>
-                    <p class="leading-relaxed text-base">
-                        Cherchant à prendre principalement de leurs corps : physique, émotionnel et mental ainsi que d'approfondir leur intériorisation, centré sur leur être essentiel
-                    </p>
-                    <a class="mt-3 text-indigo-500 inline-flex items-center">En savoir plus
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
+            @foreach($services as $service)
+                <div>
+                    <div class="bg-gray-100 p-6 rounded-lg">
+                        <img class="h-40 rounded w-full object-cover object-center mb-6" src="{{ $service->file->url }}" alt="content">
+                        <h2 class="text-lg text-gray-900 font-medium title-font mb-4">{{ $service->title }}</h2>
+                        <p class="leading-relaxed text-base">
+                            {{ $service->description }}
+                        </p>
+                        <a href="{{ route('pages.show', ['slug' => $service->page->slug]) }}" class="mt-3 text-indigo-500 inline-flex items-center">En savoir plus
+                            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
+                                <path d="M5 12h14M12 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
                 </div>
-            </div>
-
-            <div>
-                <div class="bg-gray-100 p-6 rounded-lg">
-                    <img class="h-40 rounded w-full object-cover object-center mb-6" src="https://picsum.photos/720/400?random=2" alt="content">
-                    <h2 class="text-lg text-gray-900 font-medium title-font mb-4">Dans un lieu préservé</h2>
-                    <p class="leading-relaxed text-base">
-                        Conçu pour le ressourcement, protégé de toute onde électromagnétique.
-                    </p>
-                    <a class="mt-3 text-indigo-500 inline-flex items-center">En savoir plus
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-
-            <div>
-                <div class="bg-gray-100 p-6 rounded-lg">
-                    <img class="h-40 rounded w-full object-cover object-center mb-6" src="https://picsum.photos/720/400?random=3" alt="content">
-                    <h2 class="text-lg text-gray-900 font-medium title-font mb-4">Un vrai Retour à La Source©</h2>
-                    <p class="leading-relaxed text-base">
-                        Dans un centre avant-gardiste pour la qualité de l'eau grâce au Biodynamiseur®
-                    </p>
-                    <a class="mt-3 text-indigo-500 inline-flex items-center">En savoir plus
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-
-            <div>
-                <div class="bg-gray-100 p-6 rounded-lg">
-                    <img class="h-40 rounded w-full object-cover object-center mb-6" src="https://picsum.photos/720/400?random=4" alt="content">
-                    <h2 class="text-lg text-gray-900 font-medium title-font mb-4">Massages ayurvédiques</h2>
-                    <p class="leading-relaxed text-base">
-                        Samvahan & gymnastique posturale globale
-                    </p>
-                    <a class="mt-3 text-indigo-500 inline-flex items-center">En savoir plus
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-
-            <div>
-                <div class="bg-gray-100 p-6 rounded-lg">
-                    <img class="h-40 rounded w-full object-cover object-center mb-6" src="https://picsum.photos/720/400?random=5" alt="content">
-                    <h2 class="text-lg text-gray-900 font-medium title-font mb-4">Bol d'air Jacquier</h2>
-                    <p class="leading-relaxed text-base">
-                        Gastropub indxgo juice poutine, ramps microdosing banh mi pug VHS try-hard ugh iceland kickstarter tumblr live-edge tilde
-                    </p>
-                    <a class="mt-3 text-indigo-500 inline-flex items-center">En savoir plus
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-
-            <div>
-                <div class="bg-gray-100 p-6 rounded-lg">
-                    <img class="h-40 rounded w-full object-cover object-center mb-6" src="https://picsum.photos/720/400?random=6" alt="content">
-                    <h2 class="text-lg text-gray-900 font-medium title-font mb-4">Luminothérapie</h2>
-                    <p class="leading-relaxed text-base">
-                        Pour rééquilibrer entre autres la sécrétion de mélatonine/sérotonine
-                    </p>
-                    <a class="mt-3 text-indigo-500 inline-flex items-center">En savoir plus
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-            <div>
-                <div class="bg-gray-100 p-6 rounded-lg">
-                    <img class="h-40 rounded w-full object-cover object-center mb-6" src="https://picsum.photos/720/400?random=7" alt="content">
-                    <h2 class="text-lg text-gray-900 font-medium title-font mb-4">Géoécologie</h2>
-                    <p class="leading-relaxed text-base">
-                        Gastropub indxgo juice poutine, ramps microdosing banh mi pug VHS try-hard ugh iceland kickstarter tumblr live-edge tilde
-                    </p>
-                    <a class="mt-3 text-indigo-500 inline-flex items-center">En savoir plus
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-            <div>
-                <div class="bg-gray-100 p-6 rounded-lg">
-                    <img class="h-40 rounded w-full object-cover object-center mb-6" src="https://picsum.photos/720/400?random=8" alt="content">
-                    <h2 class="text-lg text-gray-900 font-medium title-font mb-4">
-                        Souscrivez à notre abonnement
-                    </h2>
-                    <p class="leading-relaxed text-base">
-                        Accédez à nos ateliers en libre service
-                    </p>
-                    <a class="mt-3 text-indigo-500 inline-flex items-center">En savoir plus
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-            <div>
-                <div class="bg-gray-100 p-6 rounded-lg">
-                    <img class="h-40 rounded w-full object-cover object-center mb-6" src="https://picsum.photos/720/400?random=9" alt="content">
-                    <h2 class="text-lg text-gray-900 font-medium title-font mb-4">
-                        Thérapie florale
-                    </h2>
-                    <p class="leading-relaxed text-base">
-                        Avec les élixirs floraux du bush australien
-                    </p>
-                    <a class="mt-3 text-indigo-500 inline-flex items-center">En savoir plus
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-            <div>
-                <div class="bg-gray-100 p-6 rounded-lg">
-                    <img class="h-40 rounded w-full object-cover object-center mb-6" src="https://picsum.photos/720/400?random=10" alt="content">
-                    <h2 class="text-lg text-gray-900 font-medium title-font mb-4">
-                        Conférences régulières
-                    </h2>
-                    <p class="leading-relaxed text-base">
-                        La qualité de l’eau, le plasma marin de Quinton, les élixirs floraux, la méditation, la musique des plantes, les procédés pour assainir une maison d’habitation, etc.
-                    </p>
-                    <a class="mt-3 text-indigo-500 inline-flex items-center">En savoir plus
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-            <div>
-                <div class="bg-gray-100 p-6 rounded-lg">
-                    <img class="h-40 rounded w-full object-cover object-center mb-6" src="https://picsum.photos/720/400?random=11" alt="content">
-                    <h2 class="text-lg text-gray-900 font-medium title-font mb-4">
-                        Accompagnement en coaching de vie
-                    </h2>
-                    <p class="leading-relaxed text-base">
-                        Personnellement ou professionnellement
-                    </p>
-                    <a class="mt-3 text-indigo-500 inline-flex items-center">En savoir plus
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                </div>
+            @endforeach
             </div>
         </div>
         <div class="flex flex-wrap -m-4">
