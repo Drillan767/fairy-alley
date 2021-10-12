@@ -4,7 +4,8 @@ use App\Http\Controllers\Admin\{AdminController,
     PageController,
     LessonController,
     ServiceController,
-    UserController
+    UserController,
+    ToolsController,
 };
 use App\Http\Controllers\User\SubscriptionController;
 use Illuminate\Foundation\Application;
@@ -54,6 +55,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
         Route::post('/preinscription', [UserController::class, 'subscribe'])->name('utilisateurs.subscribe');
         Route::get('/preinscriptions', [UserController::class, 'preSubscribed'])->name('utilisateurs.presubscribed');
         Route::get('/preinscription/{user}/editer', [UserController::class, 'subscribing'])->name('utilisateurs.subscribing');
+
+        Route::get('/importer-utilisateurs', [ToolsController::class, 'importForm'])->name('import.form');
+        Route::post('/import-users', [ToolsController::class, 'importUsers'])->name('import.store');
     });
 
     Route::middleware(['role:subscriber'])->group(function() {
