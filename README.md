@@ -15,3 +15,4 @@
 ##### TODO : 
  - Handle both subscription approval / denial
  - Need to remove the Cast, bad idea.
+ - Cast for lesson schedule needs to be json_decode'd twice, needs investigations

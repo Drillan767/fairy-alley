@@ -15,7 +15,7 @@
         <div class="mt-4">
             <jet-label for="content" value="Ajouter des horaires" />
             <div
-                v-for="(entry, index) in schedule"
+                v-for="(entry, index) in form.schedule"
                 :key="index"
                 class="flex justify-between mt-5"
             >
