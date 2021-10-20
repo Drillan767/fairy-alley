@@ -20,7 +20,7 @@
             Accès membres
         </a>
     </div>
-    <div style="background-image: url({{ $page->illustration }})" class="h-50vh bg-center"></div>
+    <div style="background-image: url('{{ $page->illustration }}')" class="h-50vh bg-center"></div>
     <div class="container max-w-5xl mx-auto -mt-32">
         <div class="bg-white w-full p-8 md:p-24 text-xl md:text-2xl text-gray-800 leading-normal">
             <h2 class="text-center font-bold break-normal text-3xl md:text-5xl mb-8">
