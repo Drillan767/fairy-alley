@@ -4,18 +4,13 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Password;
 use SimpleXLSX;
 
 class UserImportHandler
 {
-    private array $test = [];
-
     public function handle(UploadedFile $file)
     {
-        $result = [];
         $file = SimpleXLSX::parseFile($file);
-        // regex address: /(.*) (\d{5}) (.*)$/i
         if ($file) {
             $rows = collect($file->rows())
                 ->map(fn($row) => array_filter($row));
@@ -72,20 +67,15 @@ class UserImportHandler
                         }
 
                         $data['password'] = '';
-
-
                     }
                     if (!User::firstWhere('email', $data['email'])) {
                         $user = User::create($data);
                         $user->assignRole('subscriber');
-                        Password::sendResetLink([$user->email]);
-                    } else {
-                        $result[] = "L'utilisateur dont le mail est {$data['email']} est déjà inscrit.";
                     }
-
-
                 })
             ;
+
+            return ['success', 'Les utilisateurs ont été importés avec succès'];
         } else {
             return ['error', 'Impossible de charger le fichier'];
         }
