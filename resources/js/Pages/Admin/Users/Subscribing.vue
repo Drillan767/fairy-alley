@@ -286,15 +286,42 @@ export default {
                         })
 
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Inscription impossible',
+                            icon: 'warning',
+                            title: "Valider l'inscription malgré les éléments manquants ?",
                             html: `
                                     <p>Les champs suivants sont manquants et requis :</p>
                                     <ul>
                                     ${list}
                                     </ul>
+                                    <p>Continuer malgré tout ?</p>
                                     `,
                             confirmButtonText: 'Valider',
+                            showCancelButton: true,
+                            cancelButtonText: 'Annuler',
+                        })
+                        .then((result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: "Sélectionner une heure pour le cours",
+                                    text: 'Un email va être envoyé à la personne avec les informations relatives au cours.',
+                                    input: 'select',
+                                    inputValue: props.subscriber.subscription.selected_time,
+                                    inputOptions: dates(),
+                                    confirmButtonText: 'Valider',
+                                    showCancelButton: true,
+                                    cancelButtonText: 'Annuler',
+                                    inputValidator: (value) => {
+                                        if (!value) {
+                                            return 'Vous devez sélectionner quelque chose'
+                                        }
+                                    },
+                                    preConfirm(date) {
+                                        form.selected_time = date;
+                                        send('accepted');
+                                    }
+                                })
+                            }
                         })
                     } else {
                         Swal.fire({
@@ -344,9 +371,8 @@ export default {
         }
 
         function dates () {
-            const schedule = JSON.parse(props.subscriber.subscription.lesson.schedule);
             let date = {};
-            schedule.forEach((day) => {
+            props.subscriber.subscription.lesson.schedule.forEach((day) => {
                 const element = `${day.day} ${day.begin} - ${day.end}`;
                 date[element] = element;
             });

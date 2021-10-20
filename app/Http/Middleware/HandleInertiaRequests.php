@@ -43,6 +43,7 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error'   => fn () => $request->session()->get('error'),
             ],
+            'logo' => env('MEDIAS_URL') . 'system/logo.png',
             'BASE_URL' => env('APP_URL'),
             'status' => [
                 Subscription::PENDING           => 'En attente',

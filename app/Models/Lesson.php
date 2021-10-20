@@ -21,11 +21,6 @@ class Lesson extends Model
         'schedule' => 'array',
     ];
 
-    public function getScheduleAttribute($value)
-    {
-        return json_decode(json_decode($value));
-    }
-
     public function users(): HasMany
     {
         return $this->hasMany(User::class);

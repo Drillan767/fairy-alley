@@ -66,18 +66,8 @@ class LessonFactory extends Factory
                 ],
                 [
                     'day' => 'Jeudi',
-                    'begin' => '09:45',
-                    'end' => '11:00',
-                ],
-                [
-                    'day' => 'Jeudi',
                     'begin' => '18:00',
                     'end' => '19:15',
-                ],
-                [
-                    'day' => 'Jeudi',
-                    'begin' => '09:45',
-                    'end' => '11:00',
                 ],
                 [
                     'day' => 'Vendredi',

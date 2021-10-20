@@ -43,8 +43,8 @@
                                                 <jet-dropdown-link :href="route('pages.index')">
                                                     Pages
                                                 </jet-dropdown-link>
-                                                <jet-dropdown-link href="#">
-                                                    Articles
+                                                <jet-dropdown-link :href="route('cours.index')">
+                                                    Cours
                                                 </jet-dropdown-link>
                                                 <jet-dropdown-link :href="route('services.index')">
                                                     Services
@@ -53,10 +53,6 @@
                                         </jet-dropdown>
                                     </div>
                                 </div>
-
-                                <jet-nav-link :href="route('cours.index')" :active="['cours.index', 'cours.show', 'cours.edit'].includes(route().current())">
-                                    Cours
-                                </jet-nav-link>
                                 <div class="hidden sm:flex sm:items-center">
                                     <!-- Settings Dropdown -->
                                     <div class="relative">

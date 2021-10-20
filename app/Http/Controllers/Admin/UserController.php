@@ -32,6 +32,7 @@ class UserController extends Controller
     public function preSubscribed(): Response
     {
         $users = User::role('subscriber')
+            ->has('subscription')
             ->with('subscription', function($query) {
                 $query->whereIn('status', [
                     Subscription::PENDING,
