@@ -252,7 +252,7 @@
                     <a href="mailto:adf@alleedesfees.fr" class="text-indigo-500 leading-relaxed">adf@alleedesfees.fr</a>
                     <h2 class="title-font font-semibold text-gray-900 tracking-widest text-xs mt-4">TÉLÉPHONE</h2>
                     <p class="leading-relaxed">
-                        <a href="tel:0033450350127">+33 450 35 01 27</a>
+                        <a href="tel:0033630811984">+33 630 81 19 84</a>
                     </p>
                 </div>
             </div>

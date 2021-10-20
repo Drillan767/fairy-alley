@@ -1,14 +1,3 @@
 <template>
-    <img :src="logo" alt="logo" />
+    <img :src="$page.props.logo" alt="logo" />
 </template>
-<script>
-import logo from '@/Static/logo.png'
-
-export default {
-    data () {
-        return {
-            logo,
-        }
-    }
-}
-</script>

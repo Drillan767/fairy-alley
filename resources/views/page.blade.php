@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row justify-between absolute top-0 left-0 right-0">
-        <img src="http://localhost:8080/img/logo.png" class="h-10 w-10" alt="logo" />
+        <img src="/img/logo.png" class="h-10 w-10" alt="logo" />
         <h1 class="sm:text-text-xl text-3xl font-medium title-font mb-2 text-gray-900 text-center">
             L'Allée des Fées
         </h1>
