@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionValidationRequest;
 use App\Models\Invite;
+use App\Models\Lesson;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Models\YearData;
@@ -23,10 +24,15 @@ class UserController extends Controller
     {
         $users = User::whereNotNull('lesson_id')
             ->role('subscriber')
-            ->with('subscription')
+            ->with('lesson')
+            ->whereHas('subscription', function ($query) {
+                $query->where('status', Subscription::VALIDATED);
+            })
             ->get();
 
-        return Inertia::render('Admin/Users/List', compact('users'));
+        $lessons = Lesson::all('id', 'title');
+
+        return Inertia::render('Admin/Users/List', compact('users', 'lessons'));
     }
 
     public function preSubscribed(): Response
@@ -43,7 +49,7 @@ class UserController extends Controller
             ->where('lesson_id', null)
             ->get();
 
-        return Inertia::render('Admin/Users/List', compact('users'));
+        return Inertia::render('Admin/Users/Presubscribed', compact('users'));
     }
 
     public function subscribing(User $user): Response

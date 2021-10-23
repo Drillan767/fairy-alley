@@ -8,7 +8,9 @@ use App\Http\Controllers\Admin\{AdminController,
     ToolsController,
 };
 use App\Http\Controllers\User\SubscriptionController;
+use App\Notifications\TestNotification;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\HomeController;

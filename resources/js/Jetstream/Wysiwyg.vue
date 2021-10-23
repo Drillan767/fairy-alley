@@ -28,13 +28,13 @@ export default {
                 plugins: [
                     'advlist autolink lists link charmap print preview anchor',
                     'image searchreplace visualblocks fullscreen',
-                    'insertdatetime wordcount',
+                    'insertdatetime wordcount table',
                 ],
                 toolbar:
                     'bold italic link| \
-                    alignleft alignjustify | \
-                    bullist numlist outdent indent | \
-                    image removeformat undo redo fullscreen',
+                    alignleft alignjustify alignright alignjustify | \
+                    bullist numlist outdent indent | fontselect fontsizeselect | \
+                    table image removeformat undo redo fullscreen',
 
                 images_upload_handler: function (blobInfo, success, failure) {
                     const blob = URL.createObjectURL(blobInfo.blob());
