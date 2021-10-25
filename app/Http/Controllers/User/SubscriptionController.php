@@ -12,9 +12,6 @@ use Inertia\Response;
 
 class SubscriptionController extends Controller
 {
-    /*
-     * Envoyer une notif à l'admin
-     */
 
     public function __construct(public SubscriptionHandler $subscriptionHandler)
     {}
@@ -59,9 +56,15 @@ class SubscriptionController extends Controller
         );
     }
 
-    public function store(SubscriptionRequest $request)
+    public function store(SubscriptionRequest $request): RedirectResponse
     {
         $this->subscriptionHandler->create($request);
+        return redirect()->route('profile.index')->with('success', 'Votre inscription a bien été prise en compte');
+    }
+
+    public function update(SubscriptionRequest $request): RedirectResponse
+    {
+        $this->subscriptionHandler->update($request);
         return redirect()->route('profile.index')->with('success', 'Votre inscription a bien été prise en compte');
     }
 }

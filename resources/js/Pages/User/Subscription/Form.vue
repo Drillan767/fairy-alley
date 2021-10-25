@@ -31,7 +31,7 @@
                 <div class="collapse-content">
                     <div class="grid sm:grid-cols-4 gap-6">
                         <label
-                            v-for="(day, i) in schedule"
+                            v-for="(day, i) in lesson.schedule"
                             :key="i"
                             class="relative bg-white p-5 rounded-lg shadow-md cursor-pointer flex flex-col items-center"
                             :for="`date_s1_${i}`">
@@ -68,7 +68,7 @@
                 <div class="collapse-content">
                     <div class="grid sm:grid-cols-4 gap-6">
                         <label
-                            v-for="(day, i) in schedule"
+                            v-for="(day, i) in lesson.schedule"
                             :key="i"
                             class="relative bg-white p-5 rounded-lg shadow-md cursor-pointer flex flex-col items-center"
                             :for="`date_s2_${i}`">
@@ -192,13 +192,16 @@ export default {
 
     setup(props) {
 
+
+
         const form = useForm({
+            _method: props.editing ? 'PUT' : 'POST',
             lesson_id: props.lesson.id,
             user_id: props.user.id,
             medical_certificate: null,
             schedule_choice1: props.editing ? props.user.subscription.selected_time : '',
             schedule_choice2: props.editing ? props.user.subscription.fallback_time : '',
-            invites: [],
+            invites: props.editing ? props.user.subscription.invites : [],
             health_data: props.editing ? props.user.current_year_data.health_data : '',
             accepts: props.editing,
         })
@@ -211,10 +214,6 @@ export default {
             form.invites.push({firstname: '', lastname: '', email: '', phone: '', title: ''})
         }
 
-        const schedule = computed(() => {
-            return Array.isArray(props.lesson.schedule) ? props.lesson.schedule : JSON.parse(props.lesson.schedule);
-        })
-
         const schedule1_title = computed(() => form.schedule_choice1 === '' ? 'Sélectionner un premier créneau horaire' : form.schedule_choice1)
         const schedule2_title = computed(() => form.schedule_choice2 === '' ? 'Sélectionner un deuxième créneau horaire' : form.schedule_choice2)
 
@@ -223,7 +222,7 @@ export default {
         }
 
         function submit() {
-            form.post(route('subscription.store'))
+            form.post(route(props.editing ? 'subscription.store' : 'utilisateurs.updateSubscription'))
         }
 
         return {
@@ -234,8 +233,21 @@ export default {
             schedule1_title,
             schedule2_title,
             handleUpload,
-            schedule,
         }
     }
 }
 </script>
+
+<style scoped>
+input[type="radio"]:checked + span {
+    display: block;
+}
+
+.flex-50 {
+    flex: 50%;
+}
+
+.flex-100 {
+    flex: 100%;
+}
+</style>

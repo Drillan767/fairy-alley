@@ -42,8 +42,9 @@ class SubscriptionHandler
         ]);
     }
 
-    public function update()
+    public function update(SubscriptionRequest $request)
     {
+        $user = User::with('current_year_data', 'subscription')->find($request->get('user_id'));
 
     }
 
