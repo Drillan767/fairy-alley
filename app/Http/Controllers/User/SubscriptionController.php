@@ -48,7 +48,7 @@ class SubscriptionController extends Controller
 
     public function edit(Lesson $lesson): Response|RedirectResponse
     {
-        $user = auth()->user()->load('subscription', 'currentYearData');
+        $user = auth()->user()->load('subscription', 'currentYearData.file');
         $lessons = Lesson::all('title');
         $details = config('lesson.tos');
         return Inertia::render('User/Subscription/Edit',

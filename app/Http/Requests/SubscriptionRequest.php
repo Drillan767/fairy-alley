@@ -34,7 +34,7 @@ class SubscriptionRequest extends FormRequest
             'invites' => ['array'],
             'invites.*.firstname' => ['required', 'string'],
             'invites.*.lastname' => ['required', 'string'],
-            'invites.*.email' => ['nullable', 'required_without:phone', 'email:rfc,dns'],
+            'invites.*.email' => ['nullable', 'required_without:phone', /*'email:rfc,dns'*/],
             'invites.*.phone' => ['nullable', 'required_without:email', 'string'],
             'invites.*.title' => ['required', 'string', 'exists:lessons,title'],
             'accepts' => ['required', 'accepted'],

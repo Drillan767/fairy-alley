@@ -18,7 +18,10 @@
         <div class="mt-4">
             <div>
                 <jet-label for="health_data" value="Certificat médical"/>
-                <jet-file-upload @input="handleUpload"/>
+                <jet-file-upload
+                    @input="handleUpload"
+                    :current-file="user.current_year_data.file"
+                />
                 <jet-input-error :message="form.errors.medical_certificate" class="mt-2"/>
             </div>
         </div>
@@ -102,8 +105,7 @@
                     <div class="flex-50 px-3 mb-2">
                         <jet-label for="content" value="Prénom"/>
                         <jet-input v-model="entry.firstname" class="mt-1 block w-full" type="text"/>
-                        <jet-input-error :message="form.errors[`invites.${index}.firstname`]"
-                                         class="mt-2"/>
+                        <jet-input-error :message="form.errors[`invites.${index}.firstname`]" class="mt-2"/>
                     </div>
                     <div class="flex-50 px-3 mb-2">
                         <jet-label for="content" value="Nom"/>
