@@ -42,9 +42,31 @@ class SubscriptionHandler
         ]);
     }
 
-    public function update()
+    public function update(SubscriptionRequest $request)
     {
+        $user = User::with('currentYearData.file', 'subscription')->find($request->get('user_id'));
+        $user->subscription->update([
+            'status' => Subscription::PENDING,
+            'selected_time' => $request->get('schedule_choice1'),
+            'fallback_time' => $request->get('schedule_choice2'),
+            'invites' => $request->get('invites') ?? [],
+        ]);
 
+        $yearData = $user->currentYearData;
+        $yearData->health_data = $request->get('health_data');
+        $yearData->save();
+
+        if ($request->hasFile('medical_certificate')) {
+            $file = $request->file('medical_certificate');
+            $yearData->save();
+
+            $media = $yearData->file ?? new Media();
+            $media->title = $file->getClientOriginalName();
+            $media->url = Storage::disk('s3')->putFileAs("user/{$user->id}", $file, $file->getClientOriginalName());
+            $yearData->file()->save($media);
+
+            // Send notification saying an update was made to the subscription
+        }
     }
 
     public function validate(SubscriptionValidationRequest $request): array

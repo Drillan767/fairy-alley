@@ -1,9 +1,4 @@
 <template>
-    <div v-if="currentFile" class="my-2">
-        <span>Image actuelle :</span>
-        <img :src="currentFile.url" alt="illustration" class="rounded"/>
-    </div>
-
     <label :for="id" class="block h-64 relative overflow-hidden rounded">
         <input
             :id="id"
@@ -13,17 +8,17 @@
             @change="handleUpload"
         />
         <span class="overlayed bg-gray-100 border-gray-200 border-2 text-gray-800 pointer-events-none flex justify-center items-center">
-      <div class="flex h-full flex-col justify-center items-center cursor-pointer">
-        <slot>
-          <strong>Sélectionnez un fichier, ou glissez-le ici</strong>
-        </slot>
-        <div class="text-gray-600 block text-sm">
-          <slot name="file" :files="files" :uploadInfo="uploadInfo">
-            {{ uploadInfo }}
-          </slot>
-        </div>
-      </div>
-    </span>
+            <div class="flex h-full flex-col justify-center items-center cursor-pointer">
+                <slot>
+                  <strong>Sélectionnez un fichier, ou glissez-le ici</strong>
+                </slot>
+                <div class="text-gray-600 block text-sm">
+                    <slot name="file" :files="files" :uploadInfo="uploadInfo">
+                        {{ uploadInfo }}
+                    </slot>
+                </div>
+            </div>
+        </span>
     </label>
 </template>
 
@@ -51,7 +46,7 @@ export default {
 
         const uploadInfo = computed(() => {
             if (props.currentFile && files.value.length === 0) {
-                return props.currentFile.title;
+                return `Fichier actuel : ${props.currentFile.title}`;
             } else {
                 return files.value.length === 1
                     ? files.value[0].name

@@ -381,25 +381,8 @@ export default {
         }
 
         const years = computed(() => `${dayjs().year()} - ${dayjs().add(1, 'year').year()}`)
-        const choices = computed(() => {
-            return {
-                'Fruits': {
-                    apples: 'Apples',
-                    bananas: 'Bananas',
-                    grapes: 'Grapes',
-                    oranges: 'Oranges'
-                },
-                'Vegetables': {
-                    potato: 'Potato',
-                    broccoli: 'Broccoli',
-                    carrot: 'Carrot'
-                },
-                'icecream': 'Ice cream'
-            }
-        })
 
         return {
-            choices,
             form,
             submit,
             years,

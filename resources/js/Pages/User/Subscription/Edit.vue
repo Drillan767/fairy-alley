@@ -47,7 +47,7 @@
                                 <div class="prose max-w-none" v-html="details.conditions"></div>
                             </div>
 
-                            <Form :lesson="lesson" :lessons="lessons" :user="user" />
+                            <Form :editing="true" :lesson="lesson" :lessons="lessons" :user="user" />
                         </div>
                     </div>
                 </div>
@@ -57,16 +57,16 @@
 </template>
 
 <script>
-import UserLayout from '@/Layouts/UserLayout.vue'
 import { Link } from "@inertiajs/inertia-vue3";
+import UserLayout from '@/Layouts/UserLayout.vue'
 import Form from "./Form.vue";
 
 export default {
     props: ['lesson', 'lessons', 'user', 'details'],
     components: {
+        UserLayout,
         Link,
         Form,
-        UserLayout,
-    },
+    }
 }
 </script>
