@@ -57,7 +57,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
         Route::post('/preinscription', [UserController::class, 'subscribe'])->name('utilisateurs.subscribe');
         Route::get('/preinscriptions', [UserController::class, 'preSubscribed'])->name('utilisateurs.presubscribed');
         Route::get('/preinscription/{user}/editer', [UserController::class, 'subscribing'])->name('utilisateurs.subscribing');
-        // Route::post('/preinscription/{user}', [UserController::class, 'updateSubscription'])->name('utilisateurs.updateSubscription');
+        Route::put('/preinscription/{user}', [UserController::class, 'updateSubscription'])->name('utilisateurs.updateSubscription');
 
         Route::get('/importer-utilisateurs', [ToolsController::class, 'importForm'])->name('import.form');
         Route::post('/import-users', [ToolsController::class, 'importUsers'])->name('import.store');

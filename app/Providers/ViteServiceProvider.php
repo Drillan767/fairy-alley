@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Exception;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\ServiceProvider;
@@ -32,7 +33,7 @@ class ViteServiceProvider extends ServiceProvider
             if (app()->environment('local')) {
                 try {
                     $devServerRuns = file_get_contents(public_path('hot'));
-                } catch (\Exception) {}
+                } catch (Exception) {}
 
                 if ($devServerRuns) {
                     $html = '

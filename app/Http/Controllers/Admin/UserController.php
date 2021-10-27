@@ -4,21 +4,22 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionValidationRequest;
-use App\Models\Invite;
-use App\Models\Lesson;
-use App\Models\Subscription;
-use App\Models\User;
-use App\Models\YearData;
+use App\Models\{Lesson, Subscription, User};
 use App\Notifications\SubscriptionMissingElements;
 use App\Services\SubscriptionHandler;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\Http\RedirectResponse;
+use Inertia\{Inertia, Response};
 
 class UserController extends Controller
 {
-    public function __construct(protected SubscriptionHandler$subscriptionHandler)
+    public function __construct(protected SubscriptionHandler $subscriptionHandler)
     {}
+
+    public function show(User $utilisateur)
+    {
+        $utilisateur->load('currentYearData.file', 'lesson', 'subscription');
+        return Inertia::render('Admin/Users/Show', ['user' => $utilisateur]);
+    }
 
     public function subscribed(): Response
     {
@@ -56,15 +57,12 @@ class UserController extends Controller
     {
         return Inertia::render('Admin/Users/Subscribing',
             [
-                'subscriber' => $user->load(
-                    'subscription.lesson',
-                    'currentYearData.file'
-                )
+                'subscriber' => $user->load('subscription.lesson','currentYearData.file')
             ]
         );
     }
 
-    public function subscribe(SubscriptionValidationRequest $request)
+    public function subscribe(SubscriptionValidationRequest $request): RedirectResponse
     {
         list($route, $type, $message) = $this->subscriptionHandler->validate($request);
         return redirect()->route($route)->with($type, $message);
@@ -74,10 +72,7 @@ class UserController extends Controller
     {
         return Inertia::render('Admin/Users/Edit',
             [
-                'subscriber' => $utilisateur->load(
-                'subscription.lesson',
-                'yearDatas'
-                )
+                'subscriber' => $utilisateur->load('subscription.lesson', 'yearDatas')
             ]
         );
     }

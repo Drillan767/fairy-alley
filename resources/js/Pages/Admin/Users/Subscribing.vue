@@ -2,7 +2,7 @@
     <admin-layout title="Pages">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ subscriber.full_name }}
+                Inscription de {{ subscriber.full_name }}
             </h1>
         </template>
 
@@ -164,27 +164,40 @@
 
                                 <div class="mt-4">
                                     <jet-label value="Certificat médical" />
-                                    <div v-if="subscriber.current_year_data.file">
-                                        <a class="btn btn-sm btn-outline" :href="subscriber.current_year_data.file.url" target="_blank">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                            </svg>
-                                            {{ subscriber.current_year_data.file.title }}
-                                        </a>
-                                    </div>
-                                    <div v-else>
-                                        <p>Non fourni</p>
-                                    </div>
+                                    <jet-file-upload
+                                        @input="handleUpload"
+                                        :current-file="subscriber.current_year_data.file"
+                                    />
+                                    <jet-input-error :message="form.errors.medical_certificate" class="mt-2"/>
                                 </div>
 
                                 <div class="mt-4">
                                     <jet-label value="Paiement" />
-                                    <div v-if="subscriber.current_year_data.payment_received_at">
-                                        <p>Reçu le {{ subscriber.current_year_data.payment_received_at }}</p>
-                                    </div>
-                                    <div v-else>
-                                        <jet-label value="Reçu le :" class="mb-2" />
-                                        <jet-input type="date" class="form-checkbox" v-model="form.payment_received_at" />
+                                    <div class="mt-4">
+                                        <div
+                                            v-for="(entry, index) in form.payments"
+                                            :key="index"
+                                            class="flex items-end"
+                                        >
+                                            <div>
+                                                <jet-label :value="form.payments.length > 1 ? `Paiement n° ${index + 1}` : 'Reçu le :'" />
+                                                <div class="flex flex-wrap w-4/5 -mx-3">
+                                                    <div class="flex-50 px-3">
+                                                        <jet-input v-model="entry.date" class="mt-1 block w-full" type="date"/>
+                                                        <jet-input-error :message="form.errors[`payments.${index}.date`]" class="mt-2"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="flex justify-center items-center w-1/5">
+                                                <div v-if="form.payments.length > 1">
+                                                    <jet-secondary-button @click="removePayment(index)">Retirer</jet-secondary-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-8" v-if="form.payments.length < 3">
+                                            <jet-button type="button" @click="addPayment">Ajouter une mensualité</jet-button>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- v-if="reply_transmitted_via !== 'Site internet'" -->
@@ -220,13 +233,14 @@
 
 <script>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import JetInput from '@/Jetstream/Input.vue'
-import JetButton from '@/Jetstream/Button.vue'
-import JetLabel from '@/Jetstream/Label.vue'
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
-import JetInputError from '@/Jetstream/InputError.vue'
+import JetInput from '@/Jetstream/Input.vue';
+import JetButton from '@/Jetstream/Button.vue';
+import JetLabel from '@/Jetstream/Label.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import JetInputError from '@/Jetstream/InputError.vue';
+import JetFileUpload from '@/Jetstream/FileUpload.vue';
 import { useForm } from "@inertiajs/inertia-vue3";
-import JetTextarea from '@/Jetstream/Textarea.vue'
+import JetTextarea from '@/Jetstream/Textarea.vue';
 import dayjs from 'dayjs';
 import {computed} from "vue";
 import Swal from "sweetalert2";
@@ -246,6 +260,7 @@ export default {
         JetSecondaryButton,
         JetInputError,
         JetTextarea,
+        JetFileUpload,
     },
 
     setup (props) {
@@ -254,12 +269,25 @@ export default {
             ...props.subscriber,
             // Year data infos.
             decision: '',
+            medical_certificate: null,
             selected_time: '',
-            payment_received_at: '',
             pre_registration_signature: '',
-            observations: '',
+            payments: props.subscriber.current_year_data?.payments ?? [{date: ''}],
+            observations: props.subscriber.current_year_data?.observations ?? '',
             feedback: '',
         });
+
+        const handleUpload = (file) => {
+            form.medical_certificate = file
+        };
+
+        const addPayment = () => {
+            form.payments.push({date: ''})
+        }
+
+        const removePayment = (index) => {
+            form.payments.splice(index, 1)
+        }
 
         function submit () {
             Swal.fire({
@@ -275,7 +303,7 @@ export default {
             .then((result) => {
                 if (result.isConfirmed) {
                     let fields = [];
-                    if (!form.payment_received_at) fields.push('le paiement');
+                    if (form.payments.length === 0 || form.payments[0].date === '') fields.push('le paiement');
                     if (!form.pre_registration_signature) fields.push('la signature');
                     if (!props.subscriber.current_year_data.file) fields.push('le certificat médical');
 
@@ -385,7 +413,10 @@ export default {
         return {
             form,
             submit,
+            addPayment,
+            removePayment,
             years,
+            handleUpload,
         }
     }
 }

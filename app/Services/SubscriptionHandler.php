@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 
 class SubscriptionHandler
 {
+    public function __construct(protected FileHandler $fileHandler)
+    {}
     public function create(SubscriptionRequest $request)
     {
         $user_id = $request->get('user_id');
@@ -57,13 +59,7 @@ class SubscriptionHandler
         $yearData->save();
 
         if ($request->hasFile('medical_certificate')) {
-            $file = $request->file('medical_certificate');
-            $yearData->save();
-
-            $media = $yearData->file ?? new Media();
-            $media->title = $file->getClientOriginalName();
-            $media->url = Storage::disk('s3')->putFileAs("user/{$user->id}", $file, $file->getClientOriginalName());
-            $yearData->file()->save($media);
+            $this->fileHandler->uploadOrReplace($request->file('medical_certificate'), $yearData, $user);
 
             // Send notification saying an update was made to the subscription
         }
@@ -80,8 +76,14 @@ class SubscriptionHandler
         $subscription = Subscription::find($request->get('subscription')['id']);
 
         $yearData = YearData::find($request->get('current_year_data')['id']);
-        $yearData->deposit_paid_at = $request->get('payment_received_at');
+        $yearData->payments = $request->get('payments');
         $yearData->pre_registration_signature = $request->get('pre_registration_signature');
+
+        if ($request->hasFile('medical_certificate')) {
+            $this->fileHandler->uploadOrReplace($request->file('medical_certificate'), $yearData, $user);
+
+            // Send notification saying an update was made to the subscription
+        }
 
         if ($request->get('decision') === 'missing') {
             $subscription->status = Subscription::NEEDS_INFOS;

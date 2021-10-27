@@ -1,9 +1,5 @@
 <template>
     <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-        <div>
-            <jet-application-logo class="block h-12 w-auto" />
-        </div>
-
         <div class="mt-8 font-semibold text-2xl text-gray-800 leading-tight">
             {{ headlines.title }}
         </div>
@@ -30,9 +26,9 @@
                             <span v-if="subscription.fallback_time"> | {{ subscription.fallback_time }}</span>
                         </p>
                     </div>
-                    <div class="flex items-center">
+                    <div class="flex items-center" v-if="subscription.status !== 'Validé'">
                         <Link :href="route('subscription.edit', {lesson: subscription.lesson.id})" class="btn btn-primary">
-                            Modifier les informations
+                            Modifier mes informations
                         </Link>
                     </div>
                 </div>

@@ -20,7 +20,7 @@
                 <jet-label for="health_data" value="Certificat médical"/>
                 <jet-file-upload
                     @input="handleUpload"
-                    :current-file="user.current_year_data.file"
+                    :current-file="user.current_year_data?.file"
                 />
                 <jet-input-error :message="form.errors.medical_certificate" class="mt-2"/>
             </div>
@@ -193,9 +193,6 @@ export default {
     },
 
     setup(props) {
-
-
-
         const form = useForm({
             _method: props.editing ? 'PUT' : 'POST',
             lesson_id: props.lesson.id,
@@ -204,7 +201,7 @@ export default {
             schedule_choice1: props.editing ? props.user.subscription.selected_time : '',
             schedule_choice2: props.editing ? props.user.subscription.fallback_time : '',
             invites: props.editing ? props.user.subscription.invites : [],
-            health_data: props.editing ? props.user.current_year_data.health_data : '',
+            health_data: props.editing ? props.user.current_year_data?.health_data : '',
             accepts: props.editing,
         })
 
@@ -224,7 +221,7 @@ export default {
         }
 
         function submit() {
-            form.post(route(props.editing ? 'subscription.store' : 'utilisateurs.updateSubscription'))
+            form.post(route(props.editing ? 'subscription.update' : 'subscription.store'))
         }
 
         return {

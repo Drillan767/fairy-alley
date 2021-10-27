@@ -11,7 +11,7 @@ class SubscriptionValidationRequest extends UserCoordinatesRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return Auth::user()->hasRole('administrator');
     }
@@ -25,7 +25,7 @@ class SubscriptionValidationRequest extends UserCoordinatesRequest
     {
         return parent::rules() + [
             'decision' => ['required', 'string', 'in:accepted,missing'],
-            'payment_received_at' => ['nullable', 'string', 'date_format:Y-m-d'],
+            'payments' => ['nullable', 'array'],
             'pre_registration_signature' => ['nullable', 'string', 'date_format:Y-m-d'],
             'feedback' => ['nullable', 'required_if:decision,missing', 'string'],
         ];
