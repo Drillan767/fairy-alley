@@ -25,10 +25,17 @@ export default {
                 entity_encoding: 'raw',
                 height: 500,
                 menubar: false,
+                paste_use_dialog : false,
+                paste_auto_cleanup_on_paste : true,
+                paste_convert_headers_to_strong : false,
+                paste_strip_class_attributes : "all",
+                paste_remove_spans : true,
+                paste_remove_styles : true,
+                paste_text_sticky : true,
                 plugins: [
                     'advlist autolink lists link charmap print preview anchor',
                     'image searchreplace visualblocks fullscreen',
-                    'insertdatetime wordcount table',
+                    'insertdatetime wordcount table, paste',
                 ],
                 toolbar:
                     'bold italic link| \

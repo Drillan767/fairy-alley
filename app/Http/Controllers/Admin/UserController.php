@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionValidationRequest;
+use Illuminate\Http\Request;
 use App\Models\{Lesson, Subscription, User};
-use App\Notifications\SubscriptionMissingElements;
 use App\Services\SubscriptionHandler;
 use Illuminate\Http\RedirectResponse;
 use Inertia\{Inertia, Response};
@@ -75,5 +75,14 @@ class UserController extends Controller
                 'subscriber' => $utilisateur->load('subscription.lesson', 'yearDatas')
             ]
         );
+    }
+
+    public function redirectHome(Request $request): \Illuminate\Http\Response|RedirectResponse
+    {
+        if ($request->ajax()) {
+            return Inertia::location(route('landing'));
+        }
+
+        return redirect()->route('landing');
     }
 }
