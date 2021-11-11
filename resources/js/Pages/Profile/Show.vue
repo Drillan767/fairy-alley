@@ -1,5 +1,5 @@
 <template>
-    <user-layout title="Éditez vos informations">
+    <component :is="roleList.includes('subscriber') ? 'UserLayout' : 'AdminLayout'" title="Éditez vos informations">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
                 Éditez vos informations
@@ -39,11 +39,12 @@
                 </template>
             </div>
         </div>
-    </user-layout>
+    </component>
 </template>
 
 <script>
     import UserLayout from '@/Layouts/UserLayout.vue'
+    import AdminLayout from "@/Layouts/AdminLayout.vue";
     import DeleteUserForm from '@/Pages/Profile/Partials/DeleteUserForm.vue'
     import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
     import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue'
@@ -52,16 +53,29 @@
     import UpdateProfileOtherDataForm from "@/Pages/Profile/Partials/UpdateProfileOtherDataForm.vue";
 
     export default {
+        title: 'Éditez vos informations',
         props: ['sessions'],
 
         components: {
             UpdateProfileOtherDataForm,
             UserLayout,
+            AdminLayout,
             DeleteUserForm,
             JetSectionBorder,
             UpdatePasswordForm,
             UpdateProfileInformationForm,
             UpdateProfileCoordinatesForm
         },
+
+        computed: {
+            roleList() {
+                let roles = [];
+                this.$page.props.user.roles.forEach((role) => {
+                    roles.push(role.name);
+                })
+
+                return roles;
+            }
+        }
     }
 </script>

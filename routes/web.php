@@ -52,7 +52,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
 
         Route::get('/cours/{cours}/utilisateurs', [LessonController::class, 'users'])->name('cours.users');
 
-        Route::get('/utilisateurs', [UserController::class, 'subscribed'])->name('utilisateurs.subscribed');
+        Route::get('/utilisateurs', [UserController::class, 'index'])->name('utilisateurs.index');
         Route::get('/utilisateur/{user}'); //
         Route::post('/preinscription', [UserController::class, 'subscribe'])->name('utilisateurs.subscribe');
         Route::get('/preinscriptions', [UserController::class, 'preSubscribed'])->name('utilisateurs.presubscribed');
@@ -69,6 +69,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
         Route::get('/inscription/cours/{lesson}/editer', [SubscriptionController::class, 'edit'])->name('subscription.edit');
         Route::post('/subscription', [SubscriptionController::class, 'store'])->name('subscription.store');
         Route::put('/subscription', [SubscriptionController::class, 'update'])->name('subscription.update');
+        Route::get('/home', [UserController::class, 'redirectHome'])->name('redirect.home');
     });
 });
 

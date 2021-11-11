@@ -11,8 +11,8 @@
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
-                            <div class="flex-shrink-0 flex items-center">
-                                <Link href="#">
+                            <div class="flex-shrink-0 flex items-center" @click="home">
+                                <Link href="/">
                                     <jet-application-mark class="block h-9 w-auto" />
                                 </Link>
                             </div>
@@ -31,11 +31,7 @@
                             <div class="ml-3 relative">
                                 <jet-dropdown align="right" width="48">
                                     <template #trigger>
-                                        <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
-                                            <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.user.profile_photo_url" :alt="$page.props.user.name" />
-                                        </button>
-
-                                        <span v-else class="inline-flex rounded-md">
+                                        <span class="inline-flex rounded-md">
                                             <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition">
                                                 {{ $page.props.user.full_name }}
 
@@ -165,12 +161,8 @@ export default {
     },
 
     methods: {
-        switchToTeam(team) {
-            this.$inertia.put(route('current-team.update'), {
-                'team_id': team.id
-            }, {
-                preserveState: false
-            })
+        home() {
+            this.$inertia.get(route('redirect.home'))
         },
 
         logout() {

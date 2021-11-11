@@ -2,11 +2,12 @@
     <admin-layout title="Pages">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ user.full_name }}
+                {{ currentUser.full_name }}
             </h1>
         </template>
 
         <div class="py-12">
+            <!-- component -->
             <!-- component -->
             <div class="overflow-x-auto">
                 <form @submit.prevent="submit">
@@ -93,17 +94,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="max-w-7xl mx-auto mt-5 sm:px-6 lg:px-8 mb-5" v-if="user.lesson">
+                    <div class="max-w-7xl mx-auto mt-5 sm:px-6 lg:px-8 mb-5" v-if="currentUser.lesson">
                         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                             <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
                                 <h2 class="font-semibold text-l text-gray-700 leading-tight mb-5">
                                     Information sur le cours choisi
                                 </h2>
-                                <a class="btn btn-sm" :href="route('cours.edit', {cour: user.lesson.id})" target="_blank">
+                                <a class="btn btn-sm" :href="route('cours.edit', {cour: currentUser.lesson.id})" target="_blank">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                     </svg>
-                                    {{ user.lesson.title }}
+                                    {{ currentUser.lesson.title }}
                                 </a>
                             </div>
                         </div>
@@ -128,7 +129,7 @@ import JetInputError from '@/Jetstream/InputError.vue';
 import { useForm } from "@inertiajs/inertia-vue3";
 
 export default {
-    props: ['user'],
+    props: ['currentUser'],
     components: {
         AdminLayout,
         JetButton,
@@ -139,7 +140,7 @@ export default {
 
     setup (props) {
         const form = useForm({
-            ...props.user
+            ...props.currentUser
         })
 
         return {

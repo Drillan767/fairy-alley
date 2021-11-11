@@ -58,6 +58,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'created_at' => 'datetime:d/m/Y',
     ];
 
     /**
@@ -66,7 +67,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $appends = [
-        'profile_photo_url', 'full_name',
+        'full_name',
     ];
 
     public function yearDatas(): HasMany

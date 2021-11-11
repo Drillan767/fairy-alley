@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
@@ -21,12 +22,15 @@ class DatabaseSeeder extends Seeder
 
     private function generateUsers()
     {
-        $users = User::factory(2)->create();
         foreach(['administrator', 'subscriber'] as $role) {
             Role::create(['name' => $role]);
         }
+        $users = User::factory(2)->create();
+
 
         $users[0]->assignRole('administrator');
         $users[1]->assignRole('subscriber');
+
+        Lesson::factory()->create();
     }
 }

@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionValidationRequest;
+use Illuminate\Http\Request;
 use App\Models\{Lesson, Subscription, User};
-use App\Notifications\SubscriptionMissingElements;
 use App\Services\SubscriptionHandler;
 use Illuminate\Http\RedirectResponse;
 use Inertia\{Inertia, Response};
@@ -18,19 +18,12 @@ class UserController extends Controller
     public function show(User $utilisateur)
     {
         $utilisateur->load('currentYearData.file', 'lesson', 'subscription');
-        return Inertia::render('Admin/Users/Show', ['user' => $utilisateur]);
+        return Inertia::render('Admin/Users/Show', ['currentUser' => $utilisateur]);
     }
 
-    public function subscribed(): Response
+    public function index(): Response
     {
-        $users = User::whereNotNull('lesson_id')
-            ->role('subscriber')
-            ->with('lesson')
-            ->whereHas('subscription', function ($query) {
-                $query->where('status', Subscription::VALIDATED);
-            })
-            ->get();
-
+        $users = User::with('roles', 'lesson')->get();
         $lessons = Lesson::all('id', 'title');
 
         return Inertia::render('Admin/Users/List', compact('users', 'lessons'));
@@ -75,5 +68,14 @@ class UserController extends Controller
                 'subscriber' => $utilisateur->load('subscription.lesson', 'yearDatas')
             ]
         );
+    }
+
+    public function redirectHome(Request $request): \Illuminate\Http\Response|RedirectResponse
+    {
+        if ($request->ajax()) {
+            return Inertia::location(route('landing'));
+        }
+
+        return redirect()->route('landing');
     }
 }

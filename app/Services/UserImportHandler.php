@@ -8,12 +8,16 @@ use SimpleXLSX;
 
 class UserImportHandler
 {
-    public function handle(UploadedFile $file)
+    public function handle(UploadedFile $file): array
     {
         $file = SimpleXLSX::parseFile($file);
         if ($file) {
             $rows = collect($file->rows())
-                ->map(fn($row) => array_filter($row));
+                ->map(function ($row) {
+                    unset($row[0]);
+                    array_filter($row);
+                    return $row;
+                });
 
             $columnMatcher = [
                 'Nom' => 'lastname',
@@ -26,6 +30,7 @@ class UserImportHandler
                 'Hommes / Femmes' => 'gender',
                 'Autre' => 'other_data',
                 'Remarques admin' => 'other_data_admin',
+                'type' => 'type',
             ];
 
             $mapped = collect($rows->first())->map(fn($label) => $columnMatcher[$label]);
