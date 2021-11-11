@@ -13,7 +13,11 @@ class UserImportHandler
         $file = SimpleXLSX::parseFile($file);
         if ($file) {
             $rows = collect($file->rows())
-                ->map(fn($row) => array_filter($row));
+                ->map(function ($row) {
+                    unset($row[0]);
+                    array_filter($row);
+                    return $row;
+                });
 
             $columnMatcher = [
                 'Nom' => 'lastname',

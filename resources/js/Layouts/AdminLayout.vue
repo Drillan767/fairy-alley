@@ -71,8 +71,8 @@
                                             </template>
 
                                             <template #content>
-                                                <jet-dropdown-link :href="route('utilisateurs.subscribed')">
-                                                    Membres inscrits
+                                                <jet-dropdown-link :href="route('utilisateurs.index')">
+                                                    Tous les utilisateurs
                                                 </jet-dropdown-link>
                                                 <jet-dropdown-link :href="route('utilisateurs.presubscribed')">
                                                     En préinscription
