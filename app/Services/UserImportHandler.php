@@ -89,11 +89,10 @@ class UserImportHandler
                         $lesson_id = Lesson::where('ref', $data['ref'])->first('id')?->id;
                         if ($lesson_id) {
                             $data['lesson_id'] = $lesson_id;
-                            unset($data['ref']);
                         } else {
                             $errors[] = "Impossible de trouver un cours dont la référence est \"{$data['ref']}\" pour {$data['email']}";
-                            return;
                         }
+                        unset($data['ref']);
                         $user = User::create($data);
                         $user->assignRole('subscriber');
                         $total++;
@@ -106,9 +105,8 @@ class UserImportHandler
                 $errors,
             ];
 
-            return ['success', "$total utilisateurs ont été importés."];
         } else {
-            return ['error', 'Impossible de charger le fichier'];
+            return [null, ['Impossible de charger le fichier']];
         }
     }
 }
