@@ -13,6 +13,12 @@
         </div>
 
         <div class="mt-4">
+            <jet-label for="description" value="Réference" />
+            <jet-input id="description" type="text" class="mt-1 block w-full" v-model="form.ref" />
+            <jet-input-error :message="form.errors.ref" class="mt-2" />
+        </div>
+
+        <div class="mt-4">
             <jet-label for="content" value="Ajouter des horaires" />
             <div
                 v-for="(entry, index) in form.schedule"
@@ -95,6 +101,7 @@ export default {
         } : {
             title: '',
             description: '',
+            ref: '',
             schedule: [{ day: '', begin: '', end: ''}],
         }
 

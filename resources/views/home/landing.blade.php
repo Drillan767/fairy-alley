@@ -11,7 +11,7 @@
 <body class="text-gray-600 body-font">
 <header>
     <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row justify-between absolute top-0 left-0 right-0">
-        <img src="http://localhost:8080/img/logo.png" class="h-10 w-10" alt="logo" />
+        <img src="/img/logo.png" class="h-10 w-10" alt="logo" />
         <h1 class="sm:text-text-xl text-3xl font-medium title-font mb-2 text-gray-900 text-center">
             L'Allée des Fées
         </h1>
@@ -36,7 +36,10 @@
             @foreach($services as $service)
                 <div>
                     <div class="bg-gray-100 p-6 rounded-lg">
-                        <img class="h-40 rounded w-full object-cover object-center mb-6" src="{{ $service->file->url }}" alt="content">
+                        <a href="{{ route('pages.show', ['slug' => $service->page->slug]) }}">
+                            <img class="h-40 rounded w-full object-cover object-center mb-6" src="{{ $service->file->url }}" alt="content">
+                        </a>
+
                         <h2 class="text-lg text-gray-900 font-medium title-font mb-4">{{ $service->title }}</h2>
                         <p class="leading-relaxed text-base">
                             {{ $service->description }}
@@ -51,6 +54,27 @@
             @endforeach
             </div>
         </div>
+</section>
+<section>
+    <div class="container px-5 py-10 mx-auto">
+        <div class="md:flex md:-mx-4 md:items-center xl:py-4">
+            <div class="md:w-1/2 px-4">
+                <p class="text-2xl text-gray-900">
+                    Venez profiter d'un environnement unique pour découvrir l'univers de la relaxation et du bien-être.
+                </p>
+            </div>
+            <div class="md:w-1/2 px-4 sm:text-center mt-12 md:mt-0">
+                <a href="{{ route('register') }}"
+                    class="flex mx-auto mt-16 text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg block sm:inline-block">
+                    Inscription
+                </a>
+                <a href="#"
+                    class="flex mx-auto mt-16 text-indigo-500 white border hover:bg-indigo-50 border-indigo-500 py-2 px-8 focus:outline-none rounded text-lg block sm:inline-block">
+                    En savoir plus
+                </a>
+            </div>
+        </div>
+    </div>
 </section>
 <section>
     <div class="container px-5 py-10 mx-auto">

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use SimpleXLSX;
@@ -10,6 +11,9 @@ class UserImportHandler
 {
     public function handle(UploadedFile $file): array
     {
+        $total = 0;
+        $errors = [];
+        $lessons = Lesson::all();
         $file = SimpleXLSX::parseFile($file);
         if ($file) {
             $rows = collect($file->rows())
@@ -31,13 +35,14 @@ class UserImportHandler
                 'Autre' => 'other_data',
                 'Remarques admin' => 'other_data_admin',
                 'type' => 'type',
+                'Role' => 'role',
             ];
 
             $mapped = collect($rows->first())->map(fn($label) => $columnMatcher[$label]);
 
             $rows
                 ->forget(0)
-                ->each(function ($row) use ($mapped) {
+                ->each(function ($row) use ($mapped, &$errors, &$total) {
                     $data = [];
                     foreach($row as $i => $value) {
                         switch ($mapped[$i]) {
@@ -68,19 +73,40 @@ class UserImportHandler
                                 }
                                 break;
 
+                            case 'role':
+                                $data['ref'] = $value;
+                                    break;
+
                             default: $data[$mapped[$i]] = $value;
                         }
 
                         $data['password'] = '';
                     }
-                    if (!User::firstWhere('email', $data['email'])) {
+
+                    if (User::firstWhere('email', $data['email'])) {
+                        $errors[] = "L'email {$data['email']}' est déjà prit.";
+                    } else {
+                        $lesson_id = Lesson::where('ref', $data['ref'])->first('id')?->id;
+                        if ($lesson_id) {
+                            $data['lesson_id'] = $lesson_id;
+                            unset($data['ref']);
+                        } else {
+                            $errors[] = "Impossible de trouver un cours dont la référence est \"{$data['ref']}\" pour {$data['email']}";
+                            return;
+                        }
                         $user = User::create($data);
                         $user->assignRole('subscriber');
+                        $total++;
                     }
                 })
             ;
 
-            return ['success', 'Les utilisateurs ont été importés avec succès'];
+            return [
+                "$total utilisateurs ont été importés.",
+                $errors,
+            ];
+
+            return ['success', "$total utilisateurs ont été importés."];
         } else {
             return ['error', 'Impossible de charger le fichier'];
         }

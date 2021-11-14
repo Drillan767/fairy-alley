@@ -34,6 +34,7 @@ class User extends Authenticatable
         'city',
         'email',
         'birthday',
+        'lesson_id',
         'phone',
         'pro',
         'password',

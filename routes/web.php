@@ -69,8 +69,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
         Route::get('/inscription/cours/{lesson}/editer', [SubscriptionController::class, 'edit'])->name('subscription.edit');
         Route::post('/subscription', [SubscriptionController::class, 'store'])->name('subscription.store');
         Route::put('/subscription', [SubscriptionController::class, 'update'])->name('subscription.update');
-        Route::get('/home', [UserController::class, 'redirectHome'])->name('redirect.home');
+
     });
 });
 
+Route::get('/home', [UserController::class, 'redirectHome'])->name('redirect.home');
 Route::get('/page/{slug}', [PageController::class, 'show'])->name('pages.show');
+
+require_once __DIR__ . '/fortify.php';
