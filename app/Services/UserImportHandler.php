@@ -42,7 +42,7 @@ class UserImportHandler
 
             $rows
                 ->forget(0)
-                ->each(function ($row) use ($mapped, &$errors, &$total) {
+                ->each(function ($row) use ($mapped, &$errors, &$total, $lessons) {
                     $data = [];
                     foreach($row as $i => $value) {
                         switch ($mapped[$i]) {
@@ -86,7 +86,7 @@ class UserImportHandler
                     if (User::firstWhere('email', $data['email'])) {
                         $errors[] = "L'email {$data['email']}' est déjà prit.";
                     } else {
-                        $lesson_id = Lesson::where('ref', $data['ref'])->first('id')?->id;
+                        $lesson_id = $lessons->where('ref', $data['ref'])->first()?->id;
                         if ($lesson_id) {
                             $data['lesson_id'] = $lesson_id;
                         } else {

@@ -69,6 +69,7 @@ class User extends Authenticatable
      */
     protected $appends = [
         'full_name',
+        'role',
     ];
 
     public function yearDatas(): HasMany
@@ -91,13 +92,18 @@ class User extends Authenticatable
         return $this->belongsTo(Lesson::class);
     }
 
+    public function files()
+    {
+        return $this->morphMany(Media::class, 'illustrable');
+    }
+
     public function getFullNameAttribute(): string
     {
         return "$this->firstname $this->lastname";
     }
 
-    public function files()
+    public function getRoleAttribute()
     {
-        return $this->morphMany(Media::class, 'illustrable');
+        return $this->getRoleNames()->first();
     }
 }
