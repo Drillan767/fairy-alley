@@ -41,7 +41,12 @@
                                     </td>
                                     <td class="py-3 px-6 text-left whitespace-nowrap">
                                         <div class="flex items-center">
-                                            <span class="font-medium">{{ user.subscription.status }}</span>
+                                            <span class="font-medium">
+                                                {{ user.subscription.status }}
+                                                <template v-if="user.subscription.status === 'En attente d\'informations'">
+                                                    &nbsp;: {{ user.subscription.feedback }}
+                                                </template>
+                                            </span>
                                         </div>
                                     </td>
                                     <td class="py-3 px-6 text-center">

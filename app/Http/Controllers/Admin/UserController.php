@@ -21,10 +21,38 @@ class UserController extends Controller
         return Inertia::render('Admin/Users/Show', ['currentUser' => $utilisateur]);
     }
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $users = User::with('roles', 'lesson')->get();
         $lessons = Lesson::all('id', 'title');
+        $users = [];
+
+
+        if (!empty($request->all())) {
+            // dd($request->all());
+            switch ($request->get('type')) {
+                case 'filter':
+                    $column = $request->get('column');
+                    // TODO: handle subscription status + add filter handling at the same time.
+                    if (isset($column['lesson'])) {
+                        if ($column['lesson'] === '0') {
+                            $users = User::whereNull('lesson_id')->with('lesson')->get();
+                        } else {
+                            $users = User::where('lesson_id', $column['lesson'])->with('lesson')->get();
+                        }
+                    }
+                    break;
+
+                case 'sort':
+                    // dd($request->all());
+                    $users = User::with('lesson')->get();
+                    break;
+            }
+        } else {
+            $users = User::with('lesson')->get();
+        }
+
+
+
 
         return Inertia::render('Admin/Users/List', compact('users', 'lessons'));
     }
@@ -77,5 +105,18 @@ class UserController extends Controller
         }
 
         return redirect()->route('landing');
+    }
+
+    public function destroy(User $user)
+    {
+        if (auth()->user()->role === 'administrator') {
+            $user->yearDatas->each->delete();
+            $user->files->each->delete();
+            $user->subscription()->delete();
+            $user->roles()->detach();
+            $user->delete();
+        } else {
+            abort(403);
+        }
     }
 }

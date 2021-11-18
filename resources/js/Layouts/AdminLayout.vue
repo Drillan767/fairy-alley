@@ -11,8 +11,8 @@
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
-                            <div class="flex-shrink-0 flex items-center">
-                                <Link :href="route('admin.index')">
+                            <div class="flex-shrink-0 flex items-center" @click="home">
+                                <Link href="/">
                                     <jet-application-mark class="block h-9 w-auto" />
                                 </Link>
                             </div>
@@ -253,6 +253,10 @@ export default {
             }, {
                 preserveState: false
             })
+        },
+
+        home() {
+            this.$inertia.get(route('redirect.home'))
         },
 
         logout() {
