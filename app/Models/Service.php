@@ -25,5 +25,6 @@ class Service extends Model
         'title',
         'description',
         'page_id',
+        'order',
     ];
 }

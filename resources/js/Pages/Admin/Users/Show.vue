@@ -91,6 +91,12 @@
                                         <jet-input-error :message="form.errors.city" class="mt-2" />
                                     </div>
                                 </div>
+
+                                <div class="mt-4">
+                                    <jet-label for="address2" value="Autres informations" />
+                                    <jet-textarea id="address2" type="text" class="mt-1 block w-full" v-model="form.other_data" />
+                                    <jet-input-error :message="form.errors.other_data" class="mt-2" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -124,27 +130,39 @@
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import JetButton from '@/Jetstream/Button.vue';
 import JetInput from '@/Jetstream/Input.vue';
+import JetTextarea from '@/Jetstream/Textarea.vue';
 import JetLabel from '@/Jetstream/Label.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import { useForm } from "@inertiajs/inertia-vue3";
 
 export default {
+    title () {
+        return this.currentUser.full_name;
+    },
+
     props: ['currentUser'],
     components: {
         AdminLayout,
         JetButton,
         JetInput,
+        JetTextarea,
         JetLabel,
         JetInputError
     },
 
     setup (props) {
         const form = useForm({
+            _method: 'PUT',
             ...props.currentUser
         })
 
+        const submit = () => {
+            form.post(route('utilisateurs.update', {utilisateur: props.currentUser.id}))
+        }
+
         return {
             form,
+            submit,
         }
     }
 }

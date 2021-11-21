@@ -23,6 +23,31 @@
                     </div>
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
+                            <div class="pb-2.5 flex justify-end">
+                                <button
+                                    class="btn btn-sm mr-1"
+                                    :class="{'btn-ghost': filter !== 'asc'}"
+                                    @click="sortPages('asc')"
+                                >
+                                    Alphabetique
+                                    &nbsp;
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                                    </svg>
+
+                                </button>
+                                <button
+                                    class="btn btn-sm mr-1"
+                                    :class="{'btn-ghost': filter !== 'desc'}"
+                                    @click="sortPages('desc')"
+                                >
+                                    Alphabetique
+                                    &nbsp;
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
+                                    </svg>
+                                </button>
+                            </div>
                             <table class="min-w-max w-full table-auto">
                                 <thead>
                                 <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
@@ -41,7 +66,9 @@
                                     </td>
                                     <td class="py-3 px-6 text-left">
                                         <div class="flex items-center">
-                                            <span>{{ page.summary }}</span>
+                                            <span>
+                                                {{ truncateSummary(page.summary) }}
+                                            </span>
                                         </div>
                                     </td>
                                     <td class="py-3 px-6 text-center">
@@ -112,6 +139,7 @@ export default {
     data() {
         return {
             pageList: [],
+            filter: '',
         }
     },
 
@@ -120,6 +148,14 @@ export default {
     },
 
     methods: {
+        sortPages(method) {
+            if (method === 'asc') {
+                this.pageList.sort(((a, b) => a['title'] > b['title'] ? 1 : -1))
+            } else {
+                this.pageList.sort(((a, b) => a['title'] < b['title'] ? 1 : -1))
+            }
+        },
+
         deletePage(page) {
             Swal.fire({
                 icon: 'warning',
@@ -143,6 +179,15 @@ export default {
                     })
                 }
             })
+        },
+
+        truncateSummary(summary) {
+            const defaultLength = 70;
+            if (summary.length > defaultLength) {
+                return summary.slice(0, (defaultLength - 3)) + '...';
+            } else {
+                return summary;
+            }
         }
     }
 }

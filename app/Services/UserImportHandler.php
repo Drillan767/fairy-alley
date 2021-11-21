@@ -84,7 +84,7 @@ class UserImportHandler
                     }
 
                     if (User::firstWhere('email', $data['email'])) {
-                        $errors[] = "L'email {$data['email']}' est déjà prit.";
+                        $errors[] = "L'email {$data['email']}' est déjà pris.";
                     } else {
                         $lesson_id = $lessons->where('ref', $data['ref'])->first()?->id;
                         if ($lesson_id) {

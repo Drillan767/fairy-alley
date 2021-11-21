@@ -42,6 +42,7 @@ Route::get('/test', function () {
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::middleware(['role:administrator'])->group(function() {
         Route::get('/administration', [AdminController::class, 'index'])->name('admin.index');
+        Route::post('/services/order', [ServiceController::class, 'order'])->name('services.order');
 
         Route::resources([
             'pages' => PageController::class,
@@ -49,6 +50,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
             'utilisateurs' => UserController::class,
             'services' => ServiceController::class,
         ]);
+
 
         Route::get('/cours/{cours}/utilisateurs', [LessonController::class, 'users'])->name('cours.users');
 

@@ -19,11 +19,8 @@
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
                             <vue-good-table
-                                mode="remote"
                                 :columns="columns"
                                 :rows="userList"
-                                @on-column-filter="onColumnFilter"
-                                @on-sort-change="onSortChange"
                                 :search-options="searchOptions"
                             >
                                 <template #table-row="props">
@@ -89,23 +86,23 @@ export default {
         }
     },
 
-    data () {
-        return {
-            searchOptions: {
-                enabled: true,
-                placeholder: 'Rechercher...',
-            }
-        }
-    },
-
     setup (props) {
 
         const userList = ref(props.users);
+        const searchOptions = {
+            enabled: true,
+            placeholder: 'Rechercher...',
+        };
 
         const columns = [
             {
-                label: 'Nom complet',
-                field: 'full_name',
+                label: 'Prénom',
+                field: 'firstname',
+                sortable: true,
+            },
+            {
+                label: 'Nom de famille',
+                field: 'lastname',
                 sortable: true,
             },
             {
@@ -140,17 +137,11 @@ export default {
                         }),
                     ],
                     filterFn: (data, filterString) => {
-                        if (data) {
-                            const lessonId = parseInt(filterString);
-                            /*const search = lessonId !== 0 ? lessonId : undefined;
-                            const filtered = userList.value.filter((u) => u.lesson?.id === search);
-                            return filtered*/
-                            if (lessonId === 0) {
-                                userList.value = props.users.splice(0, 5);
-                                return userList;
-                            } else {
-                                return userList.value.filter((u) => u.lesson_id === lessonId);
-                            }
+                        const lessonId = parseInt(filterString);
+                        if (lessonId === 0) {
+                            return data === null;
+                        } else {
+                            return data && data.id === lessonId;
                         }
                     }
                 }
@@ -174,23 +165,14 @@ export default {
                 }
             },
             {
+                label: 'Notes',
+                field: 'other_data',
+            },
+            {
                 label: 'Actions',
                 field: 'actions'
             }
-        ]
-
-        const onColumnFilter = (params) => {
-            sortFilterUsers('filter', params.columnFilters)
-        }
-
-        const onSortChange = (params) => {
-            const {field, type} = params[0];
-            sortFilterUsers('sort', field, type)
-        }
-
-        const sortFilterUsers = (type, column, value = null) => {
-            Inertia.get(route('utilisateurs.index', {type, column, value}));
-        }
+        ];
 
         function deleteUser(user) {
             const feminine = {
@@ -214,7 +196,7 @@ export default {
                     if (result.isConfirmed) {
                         axios.delete(route('utilisateurs.destroy', {utilisateur: user.id}))
                         .then(() => {
-                            userList.value = props.users.filter((u) => u.id !== user.id)
+                            this.userList = props.users.filter((u) => u.id !== user.id)
                             Swal.fire({
                                 icon: 'success',
                                 title: `${user.full_name} a été ${feminine.deleted} avec succès.`
@@ -236,12 +218,11 @@ export default {
         })
 
         return {
+            userList,
+            searchOptions,
             deleteUser,
-            onColumnFilter,
-            onSortChange,
             lessonList,
             columns,
-            userList,
         }
     }
 }

@@ -23,7 +23,11 @@
                     </div>
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-                            <table class="min-w-max w-full table-auto">
+                            <div v-if="orderChanged" class="flex items-center justify-between bg-blue-800 text-white text-sm font-bold px-4 py-3 mb-5">
+                                <p>Sauvegarder l'ordre des services ?</p>
+                                <button @click="updateServiceOrder">Enregistrer</button>
+                            </div>
+                            <table class="table table-striped w-full">
                                 <thead>
                                 <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                                     <th class="py-3 px-6 text-left">Titre</th>
@@ -31,37 +35,34 @@
                                     <th class="py-3 px-6 text-center">Actions</th>
                                 </tr>
                                 </thead>
-                                <tbody class="text-gray-600 text-sm font-light">
-                                <tr v-for="(service, i) in servicesList" :key="i">
-                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                        <div class="text-sm leading-5 text-gray-500">{{ service.title }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                        <div class="text-sm leading-5 text-gray-500">
-                                            <a :href="route('pages.show', {slug: service.page.slug})">
-                                                {{ service.page.title }}
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                        <div class="flex justify-center">
-                                            <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110" @click="editService(service)">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                </svg>
-                                            </div>
+                                <draggable v-model="servicesList" tag="tbody" item-key="id" @end="log">
+                                    <template #item="{ element }">
+                                        <tr>
+                                            <td>{{ element.title }}</td>
+                                            <td>
+                                                <a :href="route('pages.show', {slug: element.page.slug})">
+                                                    {{ element.page.title }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <div class="flex justify-center">
+                                                    <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110" @click="editService(element)">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                        </svg>
+                                                    </div>
 
-                                            <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110 cursor-pointer" @click="deleteService(service)">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                            </div>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                </tbody>
+                                                    <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110 cursor-pointer" @click="deleteService(element)">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </draggable>
                             </table>
                         </div>
                     </div>
@@ -75,9 +76,9 @@
 <script>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import Form from "@/Pages/Admin/Services/Form.vue";
+import draggable from "vuedraggable";
 import Swal from "sweetalert2";
 import { Link } from "@inertiajs/inertia-vue3";
-import { ref } from 'vue';
 import axios from "axios";
 export default {
     props: {
@@ -93,13 +94,17 @@ export default {
         Form,
         AdminLayout,
         Link,
+        draggable,
     },
 
     data () {
         return {
+            orderChanged: false,
+            currentServiceOrder: [],
             servicesList: [],
             showModal: false,
             service: null,
+            dragging: false
         }
     },
 
@@ -114,6 +119,18 @@ export default {
 
         closeModal () {
             this.showModal = false;
+        },
+
+        log () {
+            this.orderChanged = true;
+            this.currentOrder = this.servicesList.map((s) => {
+                return {id: s.id, order: s.order}
+            })
+        },
+
+        updateServiceOrder() {
+            axios.post(route('services.order'), this.currentOrder)
+                .then(() => this.orderChanged = false);
         },
 
         editService(service) {
@@ -145,7 +162,7 @@ export default {
                     })
                 }
             })
-        }
+        },
     },
 }
 </script>

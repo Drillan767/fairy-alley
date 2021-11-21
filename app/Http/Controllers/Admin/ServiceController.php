@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\ServiceRequest;
-use App\Models\Media;
-use App\Models\Page;
-use App\Models\Service;
+use App\Models\{Media, Page, Service};
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -15,7 +14,9 @@ class ServiceController extends Controller
 {
     public function index()
     {
-        $services = Service::with('page', 'file')->get();
+        $services = Service::with('page', 'file')
+            ->orderBy('order')
+            ->get();
         $pages = Page::all(['id', 'title']);
         return Inertia::render('Admin/Services/Index', compact('services', 'pages'));
     }
@@ -77,13 +78,11 @@ class ServiceController extends Controller
 
     private function handleServices(ServiceRequest $request, Service $service, $update = false)
     {
-        $method = $update ? 'update' : 'create';
+        $service->title = $request->get('title');
+        $service->description = $request->get('description');
+        $service->page_id = $request->get('page_id');
 
-        $service = $service->$method([
-            'title' => $request->get('title'),
-            'description' => $request->get('description'),
-            'page_id' => $request->get('page_id'),
-        ]);
+        $service->save();
 
         if ($request->hasFile('illustration')) {
             $file = $request->file('illustration');
@@ -98,6 +97,17 @@ class ServiceController extends Controller
             ]);
 
             $service->file()->save($media);
+        }
+    }
+
+    public function order(Request $request)
+    {
+        if ($request->user()->hasRole('administrator')) {
+            foreach ($request->all() as $i => $service) {
+                DB::table('services')
+                    ->where('id', $service['id'])
+                    ->update(['order' => ($i + 1)]);
+            }
         }
     }
 }

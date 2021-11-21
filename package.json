@@ -27,7 +27,8 @@
         "vite": "^2.5.1",
         "vue": "^3.0.5",
         "vue-good-table-next": "^0.0.1",
-        "vue-loader": "^16.1.2"
+        "vue-loader": "^16.1.2",
+        "vuedraggable": "^4.1.0"
     },
     "dependencies": {
         "@tinymce/tinymce-vue": "^4.0.4",
