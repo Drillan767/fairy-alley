@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\{AdminController,
     UserController,
     ToolsController,
 };
+use App\Http\Controllers\FirstContactController;
 use App\Http\Controllers\User\SubscriptionController;
 use App\Notifications\TestNotification;
 use Illuminate\Foundation\Application;
@@ -76,6 +77,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
 });
 
 Route::get('/home', [UserController::class, 'redirectHome'])->name('redirect.home');
+Route::get('/inscription', [FirstContactController::class, 'create'])->name('fc.create');
+Route::post('/inscription', [FirstContactController::class, 'store'])->name('fc.store');
 Route::get('/page/{slug}', [PageController::class, 'show'])->name('pages.show');
 
 require_once __DIR__ . '/fortify.php';
