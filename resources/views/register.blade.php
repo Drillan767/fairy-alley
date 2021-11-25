@@ -48,9 +48,9 @@
                 @csrf
                 <div class="grid grid-cols-6 gap-4">
                     <div class="col-span-6 sm:col-span-3">
-                        <label for="firstname" class="block text-sm font-medium text-gray-700">Nom</label>
-                        <input type="text" name="firstname" id="firstname">
-                        @error('title')
+                        <label for="lastname" class="block text-sm font-medium text-gray-700">Nom</label>
+                        <input type="text" name="lastname" id="lastname">
+                        @error('lastname')
                             <div class="alert alert-danger">{{ $message }}</div>
                         @enderror
                     </div>
@@ -58,26 +58,42 @@
                     <div class="col-span-6 sm:col-span-3">
                         <label for="lastname" class="block text-sm font-medium text-gray-700">Prénom</label>
                         <input type="text" name="lastname" id="lastname">
+                        @error('lastname')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="col-span-6 sm:col-span-3">
                         <label for="email" class="block text-sm font-medium text-gray-700">Adresse email</label>
                         <input type="email" name="email" id="email" autocomplete="email">
+                        @error('email')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
+
                     </div>
 
                     <div class="col-span-6 sm:col-span-3">
                         <label for="birthday" class="block text-sm font-medium text-gray-700">Date de naissance</label>
                         <input type="date" name="birthday" id="birthday">
+                        @error('birthday')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="col-span-6 sm:col-span-3">
                         <label for="phone" class="block text-sm font-medium text-gray-700">Téléphone portable</label>
                         <input type="text" name="phone" id="phone">
+                        @error('phone')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="col-span-6 sm:col-span-3">
                         <label for="pro" class="block text-sm font-medium text-gray-700">Téléphone fixe / professionnel</label>
                         <input type="text" name="pro" id="pro">
+                        @error('pro')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="col-span-6">
@@ -88,8 +104,8 @@
                     <div class="col-span-6 sm:col-span-4">
                         <label for="family_situation" class="block text-sm font-medium text-gray-700">Situation familiale</label>
                         <select id="family_situation" name="family_situation">
-                            <option value="Célibataire">Célibataire</option>
-                            <option value="Marié(e)">Marié(e)</option>
+                            <option value="Célibataire / Divorcé(e)">Célibataire</option>
+                            <option value="Marié(e) / paxé(e)">Marié(e) / paxé(e)</option>
                             <option value="Veuf / Veuve">Veuf / Veuve</option>
                         </select>
                     </div>

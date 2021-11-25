@@ -19,8 +19,8 @@ class CreateFirstContactsTable extends Migration
             $table->string('lastname');
             $table->date('birthday')->nullable();
             $table->string('email')->unique();
-            $table->string('phone', 20);
-            $table->string('pro', 20);
+            $table->string('phone', 20)->nullable();
+            $table->string('pro', 20)->nullable();
             $table->string('work')->nullable();
             $table->string('address')->nullable();
             $table->string('address2')->nullable();
