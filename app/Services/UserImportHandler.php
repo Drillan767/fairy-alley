@@ -14,6 +14,7 @@ class UserImportHandler
         $total = 0;
         $errors = [];
         $lessons = Lesson::all();
+        $users = User::all();
         $file = SimpleXLSX::parseFile($file);
         if ($file) {
             $rows = collect($file->rows())
@@ -42,7 +43,7 @@ class UserImportHandler
 
             $rows
                 ->forget(0)
-                ->each(function ($row) use ($mapped, &$errors, &$total, $lessons) {
+                ->each(function ($row) use ($users, $mapped, &$errors, &$total, $lessons) {
                     $data = [];
                     foreach($row as $i => $value) {
                         switch ($mapped[$i]) {

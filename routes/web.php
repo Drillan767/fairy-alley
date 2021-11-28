@@ -52,15 +52,20 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
             'services' => ServiceController::class,
         ]);
 
+        Route::resource('premiers-contacts', FirstContactController::class)
+            ->except('edit', 'update')
+            ->parameters(['premiers-contacts' => 'contact']);
+
 
         Route::get('/cours/{cours}/utilisateurs', [LessonController::class, 'users'])->name('cours.users');
 
         Route::get('/utilisateurs', [UserController::class, 'index'])->name('utilisateurs.index');
-        Route::get('/utilisateur/{user}'); //
         Route::post('/preinscription', [UserController::class, 'subscribe'])->name('utilisateurs.subscribe');
         Route::get('/preinscriptions', [UserController::class, 'preSubscribed'])->name('utilisateurs.presubscribed');
         Route::get('/preinscription/{user}/editer', [UserController::class, 'subscribing'])->name('utilisateurs.subscribing');
         Route::put('/preinscription/{user}', [UserController::class, 'updateSubscription'])->name('utilisateurs.updateSubscription');
+        // Route::get('/premiers-contacts', [FirstContactController::class, 'index'])->name('firstcontact.index');
+        // Route::get('/premiers-contacts/{contact}', [FirstContactController::class, 'show'])->name('firstcontact.show');
 
         Route::get('/importer-utilisateurs', [ToolsController::class, 'importForm'])->name('import.form');
         Route::post('/import-users', [ToolsController::class, 'importUsers'])->name('import.store');

@@ -77,6 +77,9 @@
                                                 <jet-dropdown-link :href="route('utilisateurs.presubscribed')">
                                                     En préinscription
                                                 </jet-dropdown-link>
+                                                <jet-dropdown-link :href="route('premiers-contacts.index')">
+                                                    Premiers contacts
+                                                </jet-dropdown-link>
                                             </template>
                                         </jet-dropdown>
                                     </div>

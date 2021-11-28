@@ -8,4 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class FirstContact extends Model
 {
     use HasFactory;
+
+    protected $casts = [
+        'created_at' => 'datetime:d/m/Y'
+    ];
+
+    protected $appends = [
+        'full_name',
+    ];
+
+    public function getFullNameAttribute()
+    {
+        return "$this->firstname $this->lastname";
+    }
 }

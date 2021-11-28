@@ -57,7 +57,6 @@
 
 <script>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import { Inertia } from '@inertiajs/inertia';
 import { Link } from '@inertiajs/inertia-vue3';
 import 'vue-good-table-next/dist/vue-good-table-next.css'
 import { VueGoodTable } from 'vue-good-table-next';

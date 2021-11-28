@@ -51,15 +51,15 @@
                         <label for="lastname" class="block text-sm font-medium text-gray-700">Nom</label>
                         <input type="text" name="lastname" id="lastname">
                         @error('lastname')
-                            <div class="alert alert-danger">{{ $message }}</div>
+                            <p class="text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <div class="col-span-6 sm:col-span-3">
-                        <label for="lastname" class="block text-sm font-medium text-gray-700">Prénom</label>
-                        <input type="text" name="lastname" id="lastname">
-                        @error('lastname')
-                            <div class="alert alert-danger">{{ $message }}</div>
+                        <label for="firstname" class="block text-sm font-medium text-gray-700">Prénom</label>
+                        <input type="text" name="firstname" id="firstname">
+                        @error('firstname')
+                            <p class="text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -67,16 +67,15 @@
                         <label for="email" class="block text-sm font-medium text-gray-700">Adresse email</label>
                         <input type="email" name="email" id="email" autocomplete="email">
                         @error('email')
-                        <div class="alert alert-danger">{{ $message }}</div>
+                        <p class="text-sm text-red-600">{{ $message }}</p>
                         @enderror
-
                     </div>
 
                     <div class="col-span-6 sm:col-span-3">
                         <label for="birthday" class="block text-sm font-medium text-gray-700">Date de naissance</label>
                         <input type="date" name="birthday" id="birthday">
                         @error('birthday')
-                        <div class="alert alert-danger">{{ $message }}</div>
+                        <p class="text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -84,7 +83,7 @@
                         <label for="phone" class="block text-sm font-medium text-gray-700">Téléphone portable</label>
                         <input type="text" name="phone" id="phone">
                         @error('phone')
-                        <div class="alert alert-danger">{{ $message }}</div>
+                        <p class="text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -92,13 +91,16 @@
                         <label for="pro" class="block text-sm font-medium text-gray-700">Téléphone fixe / professionnel</label>
                         <input type="text" name="pro" id="pro">
                         @error('pro')
-                        <div class="alert alert-danger">{{ $message }}</div>
+                        <p class="text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <div class="col-span-6">
                         <label for="work" class="block text-sm font-medium text-gray-700">Profession</label>
                         <input type="text" name="work" id="work">
+                        @error('work')
+                        <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="col-span-6 sm:col-span-4">
@@ -108,31 +110,49 @@
                             <option value="Marié(e) / paxé(e)">Marié(e) / paxé(e)</option>
                             <option value="Veuf / Veuve">Veuf / Veuve</option>
                         </select>
+                        @error('family_situation')
+                        <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="col-span-6 sm:col-span-2">
                         <label for="nb_children" class="block text-sm font-medium text-gray-700">Nombre d'enfants à charge</label>
-                        <input type="number" name="nb_children" id="nb_children">
+                        <input type="number" name="nb_children" id="nb_children" value="0">
+                        @error('nb_children')
+                        <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="col-span-6 mt-4">
                         <label for="address" class="block text-sm font-medium text-gray-700">Adresse</label>
                         <input type="text" name="address" id="address">
+                        @error('address')
+                        <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="col-span-6">
                         <label for="address2" class="block text-sm font-medium text-gray-700">Complément d'adresse</label>
                         <input type="text" name="address2" id="address2">
+                        @error('address1')
+                        <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="col-span-6 sm:col-span-3 lg:col-span-2">
                         <label for="zipcode" class="block text-sm font-medium text-gray-700">Code postal</label>
                         <input type="text" name="zipcode" id="zipcode">
+                        @error('zipcode')
+                        <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="col-span-6 sm:col-span-6 lg:col-span-4">
                         <label for="city" class="block text-sm font-medium text-gray-700">Ville</label>
                         <input type="text" name="city" id="city">
+                        @error('city')
+                        <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="col-span-6 sm:col-span-6">
@@ -140,6 +160,9 @@
                             Avez-vous eu des problèmes de santé ?
                         </label>
                         <textarea name="health_issues" id="health_issues"></textarea>
+                        @error('health_issues')
+                        <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="col-span-6 sm:col-span-6">
@@ -147,6 +170,9 @@
                             Avez-vous des problèmes de santé actuellement ? (certificat médical d’aptitude pour la gymnastique)
                         </label>
                         <textarea name="current_health_issues" id="current_health_issues"></textarea>
+                        @error('current_health_issues')
+                        <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="col-span-6 sm:col-span-6">
@@ -154,6 +180,9 @@
                             Suivez-vous un traitement médical ? Si oui lequel ?
                         </label>
                         <textarea name="medical_treatment" id="medical_treatment"></textarea>
+                        @error('medical_treatment')
+                        <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="col-span-6 sm:col-span-6">
@@ -161,6 +190,9 @@
                             Sports, loisirs, autres activités :
                         </label>
                         <textarea name="sports" id="sports"></textarea>
+                        @error('sports')
+                        <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="col-span-6 sm:col-span-6">
@@ -168,6 +200,9 @@
                             Que recherchez-vous à travers des cours de gymnastique ?
                         </label>
                         <textarea name="objectives" id="objectives"></textarea>
+                        @error('objectives')
+                        <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="col-span-6 sm:col-span-6">
@@ -175,6 +210,9 @@
                             Compléments d’information ?
                         </label>
                         <textarea name="other_data" id="other_data"></textarea>
+                        @error('other_data')
+                        <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
 
