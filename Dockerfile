@@ -10,8 +10,20 @@ RUN apk update && apk add --no-cache \
     caddy \
     npm \
     git \
+    freetype-dev \
+    libpng \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    libwebp-dev \
     wget \
+    zlib-dev \
     libmcrypt-dev
+
+RUN docker-php-ext-configure gd \
+        --with-jpeg=/usr/include/  \
+        --with-freetype=/usr/include/
+
+RUN docker-php-ext-install -j$(getconf _NPROCESSORS_ONLN) gd
 
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
