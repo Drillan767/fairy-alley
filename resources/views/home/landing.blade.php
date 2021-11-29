@@ -37,7 +37,7 @@
                 <div>
                     <div class="bg-gray-100 p-6 rounded-lg">
                         <a href="{{ route('pages.show', ['slug' => $service->page->slug]) }}">
-                            <img class="h-40 rounded w-full object-cover object-center mb-6" src="{{ $service->file->url }}" alt="content">
+                            <img class="h-40 rounded w-full object-cover object-center mb-6" src="{{ $service->thumbnail->url }}" alt="content">
                         </a>
 
                         <h2 class="text-lg text-gray-900 font-medium title-font mb-4">{{ $service->title }}</h2>

@@ -35,11 +35,11 @@ class HandleImage implements ShouldQueue
     {
         /**
          * TODO:
-         * 1. Parse path, retrieve service id, load it
-         * 2. Get image, resize it, upload it to s3
-         * 2.5. Keep aspect ratio
-         * 3. Delete original(s)
-         * 4. Create / update related media
+         * 1. x Parse path, retrieve service id, load it
+         * 2. x Get image, resize it, upload it to s3
+         * 2.5. x Keep aspect ratio
+         * 3. x Delete original(s)
+         * 4. x Create / update related media
          * 5. Ensure nothing breaks afterwards after editing / showing / deleting service
          * 6. Cleanup Service model
          */

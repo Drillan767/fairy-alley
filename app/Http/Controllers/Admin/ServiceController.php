@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\ServiceRequest;
 use App\Jobs\HandleImage;
+use App\Services\FileHandler;
 use Intervention\Image\Facades\Image;
 use App\Models\{Media, Page, Service};
 use Illuminate\Http\Request;
@@ -14,15 +15,9 @@ use Inertia\Inertia;
 
 class ServiceController extends Controller
 {
-
-    private array $dimensions = [
-        'banner'    => [2000, 500],
-        'thumbnail' => [305, 160],
-    ];
-
     public function index()
     {
-        $services = Service::with('page', 'banner')
+        $services = Service::with('page', 'banner', 'thumbnail')
             ->orderBy('order')
             ->get();
         $pages = Page::all(['id', 'title']);
@@ -94,9 +89,15 @@ class ServiceController extends Controller
 
         if ($request->hasFile('illustration')) {
             $file = $request->file('illustration');
-            $path = "tmp/service/$service->id";
-            Storage::disk('local')->putFileAs(storage_path($path), $file, $file->getClientOriginalName());
-            HandleImage::dispatchAfterResponse($path);
+            $path = Storage::disk('local')
+                ->putFileAs(
+                    storage_path("tmp/service/$service->id"),
+                    $file,
+                    $file->getClientOriginalName()
+                );
+            (new FileHandler())->resizeServiceImage($path, $service);
+
+            // HandleImage::dispatchAfterResponse($path);
         }
     }
 
