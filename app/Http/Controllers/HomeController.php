@@ -12,7 +12,7 @@ class HomeController extends Controller
     public function landing()
     {
         $view = auth()->check() ? 'home.landing' : 'home.building';
-        $services = Service::with('file', 'page')
+        $services = Service::with('thumbnail', 'page')
             ->orderBy('order')
             ->get();
         return view($view, compact('services'));

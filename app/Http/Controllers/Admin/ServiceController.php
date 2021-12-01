@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\ServiceRequest;
+use App\Jobs\HandleImage;
+use App\Services\FileHandler;
+use Intervention\Image\Facades\Image;
 use App\Models\{Media, Page, Service};
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -14,7 +17,7 @@ class ServiceController extends Controller
 {
     public function index()
     {
-        $services = Service::with('page', 'file')
+        $services = Service::with('page', 'banner', 'thumbnail')
             ->orderBy('order')
             ->get();
         $pages = Page::all(['id', 'title']);
@@ -86,17 +89,15 @@ class ServiceController extends Controller
 
         if ($request->hasFile('illustration')) {
             $file = $request->file('illustration');
+            $path = Storage::disk('local')
+                ->putFileAs(
+                    storage_path("tmp/service/$service->id"),
+                    $file,
+                    $file->getClientOriginalName()
+                );
+            (new FileHandler())->resizeServiceImage($path, $service);
 
-            if ($update) {
-                $service->file()->delete();
-            }
-
-            $media = new Media([
-                'title' => $file->getClientOriginalName(),
-                'url' => Storage::disk('s3')->putFileAs("service/{$service->id}", $file, $file->getClientOriginalName()),
-            ]);
-
-            $service->file()->save($media);
+            // HandleImage::dispatchAfterResponse($path);
         }
     }
 

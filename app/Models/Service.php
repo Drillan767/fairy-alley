@@ -5,15 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Service extends Model
 {
     use HasFactory;
 
-    public function file(): MorphOne
+    public function banner(): MorphOne
     {
         return $this->morphOne(Media::class, 'illustrable');
+    }
+
+    public function thumbnail(): MorphOne
+    {
+        return $this->morphOne(Media::class, 'illustrable');
+    }
+
+    public function files(): MorphMany
+    {
+        return $this->morphMany(Media::class, 'illustrable');
     }
 
     public function page(): HasOne

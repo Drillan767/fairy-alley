@@ -135,7 +135,7 @@ export default {
 
         editService(service) {
             this.service = service;
-            this.service.illustration = this.service.file.url
+            this.service.illustration = this.service.banner.url
                 this.showModal = true;
         },
 
