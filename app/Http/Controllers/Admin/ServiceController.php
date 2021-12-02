@@ -96,8 +96,6 @@ class ServiceController extends Controller
                     $file->getClientOriginalName()
                 );
             (new FileHandler())->resizeServiceImage($path, $service);
-
-            // HandleImage::dispatchAfterResponse($path);
         }
     }
 

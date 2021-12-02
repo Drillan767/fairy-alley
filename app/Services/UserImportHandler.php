@@ -2,8 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Lesson;
-use App\Models\User;
+use App\Models\{Lesson, Media, Page, Service, User};
 use Illuminate\Http\UploadedFile;
 use SimpleXLSX;
 
@@ -13,18 +12,22 @@ class UserImportHandler
     {
         $total = 0;
         $errors = [];
+        $createdServices = [];
         $lessons = Lesson::all();
         $users = User::all();
+        $services = null;
         $file = SimpleXLSX::parseFile($file);
+
         if ($file) {
             $rows = collect($file->rows())
                 ->map(function ($row) {
                     unset($row[0]);
-                    array_filter($row);
-                    return $row;
+                    return array_filter($row);
                 });
 
-            $columnMatcher = [
+            $labels = $rows->first();
+
+            $userColumns = [
                 'Nom' => 'lastname',
                 'Prénom' => 'firstname',
                 'Portable' => 'phone',
@@ -33,13 +36,29 @@ class UserImportHandler
                 'Email' => 'email',
                 'Adresse' => 'address1',
                 'Hommes / Femmes' => 'gender',
-                'Autre' => 'other_data',
-                'Remarques admin' => 'other_data_admin',
-                'type' => 'type',
+                'Remarques admin' => 'other_data',
                 'Role' => 'role',
             ];
 
-            $mapped = collect($rows->first())->map(fn($label) => $columnMatcher[$label]);
+            // $userColumns[$label])
+
+            $mapped = [];
+            foreach ($labels as $i => $label) {
+                if (array_key_exists($label, $userColumns)) {
+                    $mapped[$i] = $userColumns[$label];
+                }
+            }
+
+            foreach($rows as $key => $row) {
+                if ($key === 0) {
+                    $createdServices = $this->handleMissingServices($row);
+                    $services = Service::all();
+                }
+
+                if ($key !== 0) {
+                    dd($row);
+                }
+            }
 
             $rows
                 ->forget(0)
@@ -103,11 +122,49 @@ class UserImportHandler
 
             return [
                 "$total utilisateurs ont été importés.",
+                $createdServices,
                 $errors,
             ];
 
         } else {
-            return [null, ['Impossible de charger le fichier']];
+            return [null, ['Impossible de charger le fichier'], null];
         }
+    }
+
+    private function handleMissingServices(array $row): array
+    {
+        $page = Page::first(['id']);
+        $services = Service::all();
+        $createdServices = [];
+
+        $serviceList = array_slice($row, 12);
+        foreach($serviceList as $item) {
+            $found = $services->firstWhere('title', $item);
+            if (!$found) {
+                $service = Service::create([
+                    'title' => $item,
+                    'description' => "Service créé pour \"$item\".",
+                    'page_id' => $page->id,
+                    'order' => $services->count() + 1,
+                ]);
+
+                $banner = new Media([
+                    'title' => $item,
+                    'url' => "https://via.placeholder.com/2000x500?text=Banniere+pour+\"$item\"",
+                ]);
+                $service->banner()->save($banner);
+
+                $thumbnail = new Media([
+                    'title' => $item,
+                    'url' => "https://via.placeholder.com/2000x500?text=Vignette+pour+\"$item\"",
+                ]);
+
+                $service->thumbnail()->save($thumbnail);
+
+                $createdServices[] = $service->title;
+            }
+        }
+
+        return $createdServices;
     }
 }
