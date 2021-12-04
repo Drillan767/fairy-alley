@@ -22,6 +22,9 @@
                                 :columns="columns"
                                 :rows="userList"
                                 :search-options="searchOptions"
+                                :sort-options="sortOption"
+                                @on-sort-change="onSortChange"
+                                @on-column-filter="onColumnFilter"
                             >
                                 <template #table-row="props">
                                     <div v-if="props.column.field === 'lesson'">
@@ -60,7 +63,7 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { Link } from '@inertiajs/inertia-vue3';
 import 'vue-good-table-next/dist/vue-good-table-next.css'
 import { VueGoodTable } from 'vue-good-table-next';
-import {computed, ref} from "vue";
+import {computed, ref, toRaw} from "vue";
 import Swal from "sweetalert2";
 
 export default {
@@ -86,11 +89,32 @@ export default {
     },
 
     setup (props) {
-
         const userList = ref(props.users);
         const searchOptions = {
             enabled: true,
             placeholder: 'Rechercher...',
+        };
+
+        const sortOption = {
+            enabled: true,
+            initialSortBy: JSON.parse(localStorage.getItem('sort')),
+        };
+
+        const onSortChange = (params) => {
+            const sortValue = params ? toRaw(params[0]) : null;
+            if (sortValue) {
+                const { type } = sortValue;
+                if (type !== 'none') {
+                    localStorage.setItem('sort', JSON.stringify(sortValue));
+                } else {
+                    localStorage.setItem('sort', "{}")
+                }
+            }
+        };
+
+        const onColumnFilter = (params) => {
+            const filterValue = toRaw(params.columnFilters);
+            localStorage.setItem('filter', JSON.stringify(filterValue));
         };
 
         const columns = [
@@ -125,7 +149,8 @@ export default {
                 field: 'lesson',
                 filterOptions: {
                     enabled: true,
-                    placeholder: 'Cours',
+                    filterValue: JSON.parse(localStorage.getItem('filter'))?.lesson,
+                    placeholder: 'Sélectionner...',
                     filterDropdownItems: [
                         {
                             text: 'Aucun',
@@ -219,7 +244,10 @@ export default {
         return {
             userList,
             searchOptions,
+            sortOption,
+            onColumnFilter,
             deleteUser,
+            onSortChange,
             lessonList,
             columns,
         }

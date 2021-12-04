@@ -22,7 +22,7 @@
     </div>
     <div class="landing flex flex-col justify-center">
         <div class="container mx-auto text-center xl:text-left">
-            <h2 class="sm:text-2xl text-xl text-center font-medium title-font mb-2 text-gray-900 mt-5">
+            <h2 class="sm:text-2xl text-xl text-center font-medium title-font mb-2 text-white mt-5">
                 Sèverine & Thierry vous proposent un accompagnement bien-être. <br />
                 Ouvert à tout le monde dans la bienveillance et l'harmonie
             </h2>
