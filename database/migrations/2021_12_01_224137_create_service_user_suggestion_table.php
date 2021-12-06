@@ -13,11 +13,11 @@ class CreateServiceUserSuggestionTable extends Migration
      */
     public function up()
     {
+        // Suggestion
         Schema::create('service_user', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('service_id')->constrained();
-            $table->boolean('suggested')->nullable();
         });
 
         Schema::create('service_subscription', function (Blueprint $table) {

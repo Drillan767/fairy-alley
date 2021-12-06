@@ -21,11 +21,10 @@ class ToolsController extends Controller
 
     public function importUsers(ImportUsersRequest $request)
     {
-        list($success, $errors, $services) = $this->importHandler->handle($request->file('file'));
+        list($success, $errors) = $this->importHandler->handle($request->file('file'));
         return redirect()
             ->back()
             ->with('success', $success)
-            ->with('message', $services)
             ->with('error', $errors ?? null);
     }
 }

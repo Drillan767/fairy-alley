@@ -2,21 +2,22 @@
 
 namespace App\Services;
 
-use App\Models\{Lesson, Media, Page, Service, User};
+use App\Models\{Lesson, Service, Subscription, User};
 use Illuminate\Http\UploadedFile;
 use SimpleXLSX;
 
 class UserImportHandler
 {
+    private int $total = 0;
+    private array $errors = [];
+    private $lesson = null;
+
     public function handle(UploadedFile $file): array
     {
-        $total = 0;
-        $errors = [];
-        $createdServices = [];
-        $lessons = Lesson::all();
-        $users = User::all();
-        $services = null;
         $file = SimpleXLSX::parseFile($file);
+
+        $services = Service::all();
+        $this->lesson = Lesson::first();
 
         if ($file) {
             $rows = collect($file->rows())
@@ -25,6 +26,7 @@ class UserImportHandler
                     return array_filter($row);
                 });
 
+            $servicesFound = array_slice($rows->first(), 12, count($rows->first()), true);
             $labels = $rows->first();
 
             $userColumns = [
@@ -39,9 +41,6 @@ class UserImportHandler
                 'Remarques admin' => 'other_data',
                 'Role' => 'role',
             ];
-
-            // $userColumns[$label])
-
             $mapped = [];
             foreach ($labels as $i => $label) {
                 if (array_key_exists($label, $userColumns)) {
@@ -49,22 +48,12 @@ class UserImportHandler
                 }
             }
 
-            foreach($rows as $key => $row) {
-                if ($key === 0) {
-                    $createdServices = $this->handleMissingServices($row);
-                    $services = Service::all();
-                }
+            $rows->forget(0);
 
-                if ($key !== 0) {
-                    dd($row);
-                }
-            }
-
-            $rows
-                ->forget(0)
-                ->each(function ($row) use ($users, $mapped, &$errors, &$total, $lessons) {
-                    $data = [];
-                    foreach($row as $i => $value) {
+            foreach($rows as $row) {
+                $data = [];
+                foreach($row as $i => $value) {
+                    if ($i < 11) {
                         switch ($mapped[$i]) {
                             case 'address1':
                                 $matches = null;
@@ -85,45 +74,36 @@ class UserImportHandler
                                 }
                                 break;
 
-                            case 'other_data_admin':
-                                if (isset($data['other_data'])) {
-                                    $data['other_data'] = $data['other_data'] .= $value;
-                                } else {
-                                    $data['other_data'] = $value;
-                                }
-                                break;
-
                             case 'role':
-                                $data['ref'] = $value;
-                                    break;
+                                $data['role'] = $value;
+                                break;
 
                             default: $data[$mapped[$i]] = $value;
                         }
-
-                        $data['password'] = '';
-                    }
-
-                    if (User::firstWhere('email', $data['email'])) {
-                        $errors[] = "L'email {$data['email']}' est déjà pris.";
-                    } else {
-                        $lesson_id = $lessons->where('ref', $data['ref'])->first()?->id;
-                        if ($lesson_id) {
-                            $data['lesson_id'] = $lesson_id;
-                        } else {
-                            $errors[] = "Impossible de trouver un cours dont la référence est \"{$data['ref']}\" pour {$data['email']}";
+                    } elseif ($i === 11) {
+                        $data['hour'] = trim(preg_replace('/\s\s+/', ' ', $value));
+                    } elseif ($i > 11) {
+                        if ($value !== '') {
+                            $service = $services->firstWhere('title', $servicesFound[($i + 1)]);
+                            if ($service) {
+                                $data['services'][] = $service->id;
+                            } else {
+                                if (!array_key_exists($service, $this->errors)) {
+                                    $this->errors[$service] = "Le service \"$service\" n'a pas été trouvé.";
+                                }
+                            }
                         }
-                        unset($data['ref']);
-                        $user = User::create($data);
-                        $user->assignRole('subscriber');
-                        $total++;
                     }
-                })
-            ;
+
+                    $data['password'] = '';
+                }
+
+                $this->createUser($data);
+            }
 
             return [
-                "$total utilisateurs ont été importés.",
-                $createdServices,
-                $errors,
+                "$this->total utilisateurs ont été importés.",
+                $this->errors,
             ];
 
         } else {
@@ -131,40 +111,41 @@ class UserImportHandler
         }
     }
 
-    private function handleMissingServices(array $row): array
+    private function createUser($data)
     {
-        $page = Page::first(['id']);
-        $services = Service::all();
-        $createdServices = [];
+        $roles = [
+            'Inscrit' => 'subscriber',
+            'Invité' => 'guest',
+            'Admin' => 'administrator',
+        ];
 
-        $serviceList = array_slice($row, 12);
-        foreach($serviceList as $item) {
-            $found = $services->firstWhere('title', $item);
-            if (!$found) {
-                $service = Service::create([
-                    'title' => $item,
-                    'description' => "Service créé pour \"$item\".",
-                    'page_id' => $page->id,
-                    'order' => $services->count() + 1,
-                ]);
+        if (User::where('email', $data['email'])->count()) {
+            $this->errors[] = "L'email {$data['email']}' est déjà pris.";
+        } else {
+            $user = new User();
 
-                $banner = new Media([
-                    'title' => $item,
-                    'url' => "https://via.placeholder.com/2000x500?text=Banniere+pour+\"$item\"",
-                ]);
-                $service->banner()->save($banner);
-
-                $thumbnail = new Media([
-                    'title' => $item,
-                    'url' => "https://via.placeholder.com/2000x500?text=Vignette+pour+\"$item\"",
-                ]);
-
-                $service->thumbnail()->save($thumbnail);
-
-                $createdServices[] = $service->title;
+            foreach(['firstname', 'lastname', 'email', 'password', 'gender', 'other_data'] as $field) {
+                if (isset($data[$field])) {
+                    $user->$field = $data[$field];
+                }
             }
-        }
 
-        return $createdServices;
+            $user->save();
+            $user->assignRole($roles[$data['role']]);
+
+            if (isset($data['services'])) {
+                $user->suggestions()->sync($data['services']);
+            }
+
+            $subscription = new Subscription();
+            $subscription->user_id = $user->id;
+            $subscription->lesson_id = $this->lesson->id;
+            $subscription->status = $user->hasRole('guest') ? Subscription::PENDING : Subscription::VALIDATED;
+            $subscription->selected_time = $data['hour'];
+            $subscription->save();
+
+            $this->total++;
+
+        }
     }
 }
