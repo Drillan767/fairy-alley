@@ -10,7 +10,7 @@
     @routes
 </head>
 <body>
-    <div class="building flex items-center justify-center flex-col">
+    <div class="building flex items-center justify-center flex-col text-gray-100">
         <h1 class="text-center font-bold break-normal text-3xl md:text-5xl mb-8">
             L'allée des fées
         </h1>

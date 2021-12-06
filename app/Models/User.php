@@ -98,6 +98,11 @@ class User extends Authenticatable
         return $this->morphMany(Media::class, 'illustrable');
     }
 
+    public function suggestions()
+    {
+        return $this->belongsToMany(Service::class, 'service_user');
+    }
+
     public function getFullNameAttribute(): string
     {
         return "$this->firstname $this->lastname";

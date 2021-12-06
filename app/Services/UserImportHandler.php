@@ -2,29 +2,34 @@
 
 namespace App\Services;
 
-use App\Models\Lesson;
-use App\Models\User;
+use App\Models\{Lesson, Service, Subscription, User};
 use Illuminate\Http\UploadedFile;
 use SimpleXLSX;
 
 class UserImportHandler
 {
+    private int $total = 0;
+    private array $errors = [];
+    private $lesson = null;
+
     public function handle(UploadedFile $file): array
     {
-        $total = 0;
-        $errors = [];
-        $lessons = Lesson::all();
-        $users = User::all();
         $file = SimpleXLSX::parseFile($file);
+
+        $services = Service::all();
+        $this->lesson = Lesson::first();
+
         if ($file) {
             $rows = collect($file->rows())
                 ->map(function ($row) {
                     unset($row[0]);
-                    array_filter($row);
-                    return $row;
+                    return array_filter($row);
                 });
 
-            $columnMatcher = [
+            $servicesFound = array_slice($rows->first(), 12, count($rows->first()), true);
+            $labels = $rows->first();
+
+            $userColumns = [
                 'Nom' => 'lastname',
                 'Prénom' => 'firstname',
                 'Portable' => 'phone',
@@ -33,19 +38,22 @@ class UserImportHandler
                 'Email' => 'email',
                 'Adresse' => 'address1',
                 'Hommes / Femmes' => 'gender',
-                'Autre' => 'other_data',
-                'Remarques admin' => 'other_data_admin',
-                'type' => 'type',
+                'Remarques admin' => 'other_data',
                 'Role' => 'role',
             ];
+            $mapped = [];
+            foreach ($labels as $i => $label) {
+                if (array_key_exists($label, $userColumns)) {
+                    $mapped[$i] = $userColumns[$label];
+                }
+            }
 
-            $mapped = collect($rows->first())->map(fn($label) => $columnMatcher[$label]);
+            $rows->forget(0);
 
-            $rows
-                ->forget(0)
-                ->each(function ($row) use ($users, $mapped, &$errors, &$total, $lessons) {
-                    $data = [];
-                    foreach($row as $i => $value) {
+            foreach($rows as $row) {
+                $data = [];
+                foreach($row as $i => $value) {
+                    if ($i < 11) {
                         switch ($mapped[$i]) {
                             case 'address1':
                                 $matches = null;
@@ -66,48 +74,78 @@ class UserImportHandler
                                 }
                                 break;
 
-                            case 'other_data_admin':
-                                if (isset($data['other_data'])) {
-                                    $data['other_data'] = $data['other_data'] .= $value;
-                                } else {
-                                    $data['other_data'] = $value;
-                                }
-                                break;
-
                             case 'role':
-                                $data['ref'] = $value;
-                                    break;
+                                $data['role'] = $value;
+                                break;
 
                             default: $data[$mapped[$i]] = $value;
                         }
-
-                        $data['password'] = '';
-                    }
-
-                    if (User::firstWhere('email', $data['email'])) {
-                        $errors[] = "L'email {$data['email']}' est déjà pris.";
-                    } else {
-                        $lesson_id = $lessons->where('ref', $data['ref'])->first()?->id;
-                        if ($lesson_id) {
-                            $data['lesson_id'] = $lesson_id;
-                        } else {
-                            $errors[] = "Impossible de trouver un cours dont la référence est \"{$data['ref']}\" pour {$data['email']}";
+                    } elseif ($i === 11) {
+                        $data['hour'] = trim(preg_replace('/\s\s+/', ' ', $value));
+                    } elseif ($i > 11) {
+                        if ($value !== '') {
+                            $service = $services->firstWhere('title', $servicesFound[($i + 1)]);
+                            if ($service) {
+                                $data['services'][] = $service->id;
+                            } else {
+                                if (!array_key_exists($service, $this->errors)) {
+                                    $this->errors[$service] = "Le service \"$service\" n'a pas été trouvé.";
+                                }
+                            }
                         }
-                        unset($data['ref']);
-                        $user = User::create($data);
-                        $user->assignRole('subscriber');
-                        $total++;
                     }
-                })
-            ;
+
+                    $data['password'] = '';
+                }
+
+                $this->createUser($data);
+            }
 
             return [
-                "$total utilisateurs ont été importés.",
-                $errors,
+                "$this->total utilisateurs ont été importés.",
+                $this->errors,
             ];
 
         } else {
-            return [null, ['Impossible de charger le fichier']];
+            return [null, ['Impossible de charger le fichier'], null];
+        }
+    }
+
+    private function createUser($data)
+    {
+        $roles = [
+            'Inscrit' => 'subscriber',
+            'Invité' => 'guest',
+            'Admin' => 'administrator',
+        ];
+
+        if (User::where('email', $data['email'])->count()) {
+            $this->errors[] = "L'email {$data['email']}' est déjà pris.";
+        } else {
+            $user = new User();
+
+            foreach(['firstname', 'lastname', 'email', 'password', 'gender', 'other_data'] as $field) {
+                if (isset($data[$field])) {
+                    $user->$field = $data[$field];
+                }
+            }
+
+            $user->save();
+            $user->assignRole($roles[$data['role']]);
+
+            if (isset($data['services'])) {
+                $user->suggestions()->sync($data['services']);
+            }
+
+            $subscription = new Subscription();
+            $subscription->user_id = $user->id;
+            $subscription->lesson_id = $this->lesson->id;
+            $subscription->status = $user->hasRole('guest') ? Subscription::PENDING : Subscription::VALIDATED;
+            $subscription->selected_time = $data['hour'];
+            $subscription->save();
+
+            $this->total++;
+
         }
     }
 }
