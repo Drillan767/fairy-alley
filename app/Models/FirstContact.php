@@ -10,7 +10,8 @@ class FirstContact extends Model
     use HasFactory;
 
     protected $casts = [
-        'created_at' => 'datetime:d/m/Y'
+        'birthday' => 'datetime:d/m/Y',
+        'created_at' => 'datetime:d/m/Y',
     ];
 
     protected $appends = [

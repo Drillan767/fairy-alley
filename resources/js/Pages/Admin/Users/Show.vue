@@ -7,8 +7,6 @@
         </template>
 
         <div class="py-12">
-            <!-- component -->
-            <!-- component -->
             <div class="overflow-x-auto">
                 <form @submit.prevent="submit">
                     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">

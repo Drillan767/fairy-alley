@@ -16,7 +16,7 @@
 
                 <div class="mt-4">
                     <jet-label value="Illustration" />
-                    <jet-file-upload @input="handleUpload" :currentFile="service?.file ?? null" />
+                    <jet-file-upload @input="handleUpload" :currentFile="service?.banner ?? null" />
                     <jet-input-error :message="form.errors.illustration" class="mt-2" />
                 </div>
 

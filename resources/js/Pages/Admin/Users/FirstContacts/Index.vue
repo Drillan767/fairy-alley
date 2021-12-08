@@ -1,5 +1,5 @@
 <template>
-    <admin-layout title="Utilisateurs en cours d'inscription">
+    <admin-layout>
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
                 Premiers contacts
@@ -15,11 +15,6 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
                         <p class="ml-5">{{ flash.success }}</p>
-                    </div>
-                    <div class="flex justify-end mb-5">
-                        <a :href="route('pages.create')" class="btn btn-primary">
-                            Nouvel utilisateur
-                        </a>
                     </div>
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
@@ -49,7 +44,7 @@
                                         </td>
                                         <td class="py-3 px-6 text-center whitespace-nowrap">
                                             <div class="flex justify-center">
-                                                <Link :href="route('premiers-contacts.index', {contact: contact.id})">
+                                                <Link :href="route('premiers-contacts.show', {contact: contact.id})">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />

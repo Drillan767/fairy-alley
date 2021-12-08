@@ -17,7 +17,7 @@ class FirstContactController extends Controller
 
     public function show(FirstContact $contact)
     {
-
+        return Inertia::render('Admin/Users/FirstContacts/Show', compact('contact'));
     }
 
     public function create()
@@ -32,8 +32,10 @@ class FirstContactController extends Controller
     public function store(FirstContactRequest $request)
     {
         $firstContact = new FirstContact();
-        foreach ($request->validated() as $field => $value) {
-            $firstContact->$field = $value;
+        foreach ($request->all() as $field => $value) {
+            if ($field !== '_token') {
+                $firstContact->$field = $value;
+            }
         }
 
         $firstContact->save();
