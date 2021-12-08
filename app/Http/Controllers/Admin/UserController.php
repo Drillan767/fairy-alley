@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionValidationRequest;
 use App\Http\Requests\UserUpdateRequest;
 use Illuminate\Http\Request;
-use App\Models\{Lesson, Subscription, User};
+use App\Models\{Lesson, Service, Subscription, User};
 use App\Services\SubscriptionHandler;
 use Illuminate\Http\RedirectResponse;
 use Inertia\{Inertia, Response};
@@ -26,8 +26,12 @@ class UserController extends Controller
 
     public function show(User $utilisateur)
     {
-        $utilisateur->load('currentYearData.file', 'lesson', 'subscription');
-        return Inertia::render('Admin/Users/Show', ['currentUser' => $utilisateur]);
+        $services = Service::all(['id', 'title']);
+        $utilisateur->load('currentYearData.file', 'lesson', 'subscription', 'suggestions');
+        return Inertia::render('Admin/Users/Show', [
+            'currentUser' => $utilisateur,
+            'services' => $services,
+        ]);
     }
 
     public function edit(User $utilisateur)
@@ -61,6 +65,8 @@ class UserController extends Controller
         }
 
         $utilisateur->save();
+
+        $utilisateur->suggestions()->sync($request->get('suggestions'));
 
         return redirect()->route('utilisateurs.index')->with('success', 'Utilisateur mit à jour avec succès.');
     }

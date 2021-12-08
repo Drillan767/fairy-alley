@@ -93,9 +93,29 @@
                                 </div>
 
                                 <div class="mt-4">
-                                    <jet-label for="address2" value="Autres informations" />
-                                    <jet-textarea id="address2" type="text" class="mt-1 block w-full" v-model="form.other_data" />
+                                    <jet-label for="other_data" value="Autres informations" />
+                                    <jet-textarea id="other_data" type="text" class="mt-1 block w-full" v-model="form.other_data" />
                                     <jet-input-error :message="form.errors.other_data" class="mt-2" />
+                                </div>
+
+                                <div class="mt-4">
+                                    <jet-label for="suggestions" value="Services suggérés" />
+                                    <smart-tagz
+                                        input-placeholder="Sélectionnez un service..."
+                                        autosuggest
+                                        @keypress.enter.prevent
+                                        @click.prevent
+                                        :sources="availableServices"
+                                        :default-tags="defaultServices"
+                                        :on-changed="serviceSelected"
+                                        v-model="form.suggestions"
+                                        :allow-duplicates="false"
+                                        :theme="{
+                                            primary: '#212A39FF',
+                                            background: '#fff',
+                                            tagTextColor: '#fff',
+                                        }"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -134,25 +154,30 @@ import JetTextarea from '@/Jetstream/Textarea.vue';
 import JetLabel from '@/Jetstream/Label.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import { useForm } from "@inertiajs/inertia-vue3";
+import { SmartTagz } from "smart-tagz";
+import "smart-tagz/dist/smart-tagz.css";
+import {computed, toRaw} from "vue";
 
 export default {
     title () {
         return this.currentUser.full_name;
     },
 
-    props: ['currentUser'],
+    props: ['currentUser', 'services'],
     components: {
         AdminLayout,
         JetButton,
         JetInput,
         JetTextarea,
         JetLabel,
-        JetInputError
+        JetInputError,
+        SmartTagz,
     },
 
     setup (props) {
         const form = useForm({
             _method: 'PUT',
+            suggestions: [],
             ...props.currentUser
         })
 
@@ -160,8 +185,33 @@ export default {
             form.post(route('utilisateurs.update', {utilisateur: props.currentUser.id}))
         }
 
+        const serviceSelected = (items) => {
+            let serviceList = [];
+            const services = toRaw(props.services);
+            items.forEach((item) => {
+                const found = services.find((s) => s.title === item)?.id;
+                if (found) serviceList.push(found)
+            })
+            form.suggestions = serviceList;
+        }
+
+        const defaultServices = computed(() => {
+            if (props.currentUser.suggestions) {
+                return props.currentUser.suggestions.map((s) => s.title)
+            } else {
+                return [];
+            }
+        })
+
+        const availableServices = computed(() => {
+            return props.services.map((s) => s.title);
+        })
+
         return {
             form,
+            availableServices,
+            defaultServices,
+            serviceSelected,
             submit,
         }
     }

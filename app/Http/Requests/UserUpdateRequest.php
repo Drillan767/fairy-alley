@@ -31,6 +31,7 @@ class UserUpdateRequest extends UserCoordinatesRequest
             'gender' => ['required', 'in:M,F'],
             'birthday' => ['nullable', 'date_format:Y-m-d'],
             'other_data' => ['nullable', 'string'],
+            'suggestions' => ['nullable', 'array'],
         ];
     }
 }
