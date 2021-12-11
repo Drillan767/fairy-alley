@@ -17,16 +17,25 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->generateUsers();
-
     }
 
     private function generateUsers()
     {
-        foreach(['administrator', 'subscriber'] as $role) {
-            Role::create(['name' => $role]);
-        }
-        $users = User::factory(2)->create();
+        $roleList = [
+            'administrator',
+            'first_contact',
+            'guest',
+            'presubscribed',
+            'subscriber',
+            'substitute',
+            'archived',
+        ];
 
+        foreach($roleList as $role) {
+            Role::findOrCreate($role);
+        }
+
+        $users = User::factory(2)->create();
 
         $users[0]->assignRole('administrator');
         $users[1]->assignRole('subscriber');

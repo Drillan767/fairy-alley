@@ -10,8 +10,15 @@ class LoginResponse implements LoginResponseContract
 
     public function toResponse($request): RedirectResponse
     {
-        $home = auth()->user()->hasRole('administrator') ? '/administration' : '/profil';
-        return redirect()->intended($home);
+        $role = auth()->user()->getRoleNames()->first();
+        switch ($role) {
+            case 'administrator':
+                return redirect()->intended('/administration');
+            case 'first_contact':
+                auth()->logout();
+                return redirect()->route('redirect.home');
+            default:
+                return redirect()->intended('/profil');
+        }
     }
-
 }

@@ -12,12 +12,12 @@ class UserImportHandler
     private array $errors = [];
     private $lesson = null;
 
-    public function handle(UploadedFile $file): array
+    public function handle(UploadedFile $file, int $lid): array
     {
         $file = SimpleXLSX::parseFile($file);
 
         $services = Service::all();
-        $this->lesson = Lesson::first();
+        $this->lesson = Lesson::find($lid);
 
         if ($file) {
             $rows = collect($file->rows())
@@ -41,6 +41,7 @@ class UserImportHandler
                 'Remarques admin' => 'other_data',
                 'Role' => 'role',
             ];
+
             $mapped = [];
             foreach ($labels as $i => $label) {
                 if (array_key_exists($label, $userColumns)) {
@@ -128,6 +129,10 @@ class UserImportHandler
                 if (isset($data[$field])) {
                     $user->$field = $data[$field];
                 }
+            }
+
+            if ($roles[$data['role']] === 'subscriber') {
+                $user->lesson_id = $this->lesson->id;
             }
 
             $user->save();

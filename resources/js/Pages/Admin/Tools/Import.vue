@@ -31,6 +31,10 @@
                         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
                             <form @submit.prevent="submit">
                                 <div class="my-4">
+                                    <jet-label for="lid" value="Sélectionner un cours..."/>
+                                    <jet-select id="lid" v-model="form.lid" :choices="lessons"/>
+                                </div>
+                                <div class="my-4">
                                     <jet-file-upload @input="handleUpload" />
                                     <jet-input-error :message="form.errors.file" class="mt-2" />
                                 </div>
@@ -49,7 +53,9 @@
 </template>
 
 <script>
-import {useForm} from "@inertiajs/inertia-vue3";
+import { useForm } from "@inertiajs/inertia-vue3";
+import JetLabel from '@/Jetstream/Label.vue';
+import JetSelect from '@/Jetstream/Select.vue';
 import JetFileUpload from '@/Jetstream/FileUpload.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import JetButton from '@/Jetstream/Button.vue';
@@ -60,19 +66,23 @@ export default {
         AdminLayout,
         JetFileUpload,
         JetInputError,
-        JetButton
+        JetButton,
+        JetLabel,
+        JetSelect,
     },
 
     props: {
         flash: {
             type: Object,
             required: false,
-        }
+        },
+        lessons: Array,
     },
 
     setup() {
         const form = useForm({
             file: null,
+            lid: null,
         });
 
         const handleUpload = (file) => {

@@ -27,7 +27,8 @@ class ServiceRequest extends FormRequest
         $rules = [
             'title' => ['required', 'string'],
             'description' => ['required', 'string', 'max:255'],
-            'page_id' => ['required', 'integer', 'exists:pages,id']
+            'page_id' => ['required', 'integer', 'exists:pages,id'],
+            'ref' => ['required', 'unique:services,ref']
         ];
 
         if ($this->getMethod() === 'POST') {

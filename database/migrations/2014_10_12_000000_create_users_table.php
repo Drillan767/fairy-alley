@@ -29,6 +29,14 @@ class CreateUsersTable extends Migration
             $table->string('zipcode', 5)->nullable();
             $table->string('city')->nullable();
             $table->text('other_data')->nullable();
+            $table->string('family_situation')->nullable();
+            $table->integer('nb_children')->default(0);
+            $table->text('health_issues')->nullable();
+            $table->text('current_health_issues')->nullable();
+            $table->text('medical_treatment')->nullable();
+            $table->text('sports')->nullable();
+            $table->boolean('gym_history')->default(false);
+            $table->text('objectives')->nullable();
             $table->foreignId('lesson_id')->nullable()->constrained();
             $table->rememberToken();
             $table->timestamps();

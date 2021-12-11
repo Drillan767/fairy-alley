@@ -3,18 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\ServiceRequest;
-use App\Jobs\HandleImage;
 use App\Services\FileHandler;
-use Intervention\Image\Facades\Image;
-use App\Models\{Media, Page, Service};
+use Illuminate\Http\RedirectResponse;
+use App\Models\{Page, Service};
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\{DB, Storage};
 use Inertia\Inertia;
 
 class ServiceController extends Controller
 {
+    public function __construct(public FileHandler $fileHandler)
+    {}
+
     public function index()
     {
         $services = Service::with('page', 'banner', 'thumbnail')
@@ -24,16 +25,6 @@ class ServiceController extends Controller
         return Inertia::render('Admin/Services/Index', compact('services', 'pages'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        abort(404);
-    }
-
     public function store(ServiceRequest $request)
     {
         $this->handleServices($request, new Service());
@@ -41,29 +32,7 @@ class ServiceController extends Controller
         return redirect()->route('services.index')->with('success', 'Service enregistré avec succès.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Service  $service
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Service $service)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Service  $service
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Service $service)
-    {
-        abort(404);
-    }
-
-    public function update(ServiceRequest $request, Service $service)
+    public function update(ServiceRequest $request, Service $service): RedirectResponse
     {
         $this->handleServices($request, $service, true);
         return redirect()->back()->with('success', 'Service mit à jour avec succès.');
@@ -76,7 +45,6 @@ class ServiceController extends Controller
         } else {
             abort(403);
         }
-
     }
 
     private function handleServices(ServiceRequest $request, Service $service, $update = false)
@@ -84,6 +52,7 @@ class ServiceController extends Controller
         $service->title = $request->get('title');
         $service->description = $request->get('description');
         $service->page_id = $request->get('page_id');
+        $service->ref = $request->get('ref');
 
         $service->save();
 
@@ -95,7 +64,7 @@ class ServiceController extends Controller
                     $file,
                     $file->getClientOriginalName()
                 );
-            (new FileHandler())->resizeServiceImage($path, $service);
+            $this->fileHandler->resizeServiceImage($path, $service);
         }
     }
 
