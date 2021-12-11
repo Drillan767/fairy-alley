@@ -28,12 +28,27 @@
                             >
                                 <template #table-row="props">
                                     <div v-if="props.column.field === 'lesson'">
-                                        <template v-if="props.row.lesson_id === null">
-                                            Aucun
+                                        <template v-if="props.row.subscription">
+                                            {{ props.row.subscription.lesson.title }}
                                         </template>
                                         <template v-else>
-                                            {{ props.row.lesson.title }}
+                                            Aucun
                                         </template>
+                                    </div>
+                                    <div v-else-if="props.column.field === 'hour'">
+                                        <template v-if="props.row.subscription">
+                                            {{ props.row.subscription.selected_time }}
+
+                                            <template v-if="props.row.subscription.fallback_time">
+                                                <b>ou</b> {{ props.row.subscription.fallback_time }}
+                                            </template>
+                                        </template>
+                                        <template v-else>
+                                            N/A
+                                        </template>
+                                    </div>
+                                    <div v-else-if="props.column.field === 'role'">
+                                        {{ roles[props.row.role] }}
                                     </div>
                                     <div v-else-if="props.column.field === 'actions'" class="flex justify-end">
                                         <Link :href="route('utilisateurs.show', {utilisateur: props.row.id})">
@@ -79,9 +94,8 @@ export default {
             type: Array,
             required: true,
         },
-
         lessons: Array,
-
+        roles: Array,
         flash: {
             type: Object,
             required: false
@@ -90,6 +104,23 @@ export default {
 
     setup (props) {
         const userList = ref(props.users);
+
+        const roleList = computed(() => {
+            let list = [];
+            let roles = toRaw(props.roles)
+            console.log(roles);
+            for (const property in roles) {
+                list.push({
+                    value: property,
+                    text: props.roles[property],
+                })
+            }
+
+            return list;
+        })
+
+        console.log(toRaw(roleList));
+
         const searchOptions = {
             enabled: true,
             placeholder: 'Rechercher...',
@@ -129,20 +160,12 @@ export default {
                 sortable: true,
             },
             {
-                label: 'Genre',
-                field: 'gender',
-            },
-            {
                 label: 'Adresse e-mail',
                 field: 'email',
             },
             {
                 label: 'Téléphone',
                 field: 'phone',
-            },
-            {
-                label: 'Téléphone pro',
-                field: 'pro',
             },
             {
                 label: 'Cours',
@@ -171,26 +194,17 @@ export default {
                 }
             },
             {
-                label: "Date d'inscription",
-                field: 'created_at',
+                label: 'Heure',
+                field: 'hour',
             },
             {
-                label: "Statut de l'inscription",
-                field: 'subscription_complete',
+                label: "Statut",
+                field: 'role',
                 filterOptions: {
                     enabled: true,
                     placeholder: 'Choisir',
-                    filterDropdownItems: [
-                        { value: 'n', text: 'Certificat manquant' },
-                        { value: 'y', text: 'Paiement manquant / incomplet' },
-                        { value: 'c', text: 'Signature absente' },
-                        { value: 'n', text: 'Complet' }
-                    ],
+                    filterDropdownItems: roleList.value,
                 }
-            },
-            {
-                label: 'Notes',
-                field: 'other_data',
             },
             {
                 label: 'Actions',

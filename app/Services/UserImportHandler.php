@@ -85,7 +85,7 @@ class UserImportHandler
                         $data['hour'] = trim(preg_replace('/\s\s+/', ' ', $value));
                     } elseif ($i > 11) {
                         if ($value !== '') {
-                            $service = $services->firstWhere('title', $servicesFound[($i + 1)]);
+                            $service = $services->firstWhere('ref', $servicesFound[($i + 1)]);
                             if ($service) {
                                 $data['services'][] = $service->id;
                             } else {

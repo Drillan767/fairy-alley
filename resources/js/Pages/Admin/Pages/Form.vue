@@ -7,12 +7,6 @@
         </div>
 
         <div class="mt-4">
-            <jet-label for="title" value="Lien généré" />
-            <jet-input id="slug" type="text" class="mt-1 block w-full" v-model="form.slug" :value="slug" disabled />
-            <jet-input-error :message="form.errors.slug" class="mt-2" />
-        </div>
-
-        <div class="mt-4">
             <!-- Page Illustration File Input -->
             <input type="file" class="hidden" ref="illustration" @change="updateillustrationPreview" />
             <jet-label for="illustration" value="Illustration pour la page" />

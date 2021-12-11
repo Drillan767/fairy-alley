@@ -15,6 +15,12 @@
                 </div>
 
                 <div class="mt-4">
+                    <jet-label for="description" value="Référence" />
+                    <jet-input id="ref" type="text" class="mt-1 block w-full" v-model="form.ref" />
+                    <jet-input-error :message="form.errors.ref" class="mt-2" />
+                </div>
+
+                <div class="mt-4">
                     <jet-label value="Illustration" />
                     <jet-file-upload @input="handleUpload" :currentFile="service?.banner ?? null" />
                     <jet-input-error :message="form.errors.illustration" class="mt-2" />
@@ -83,6 +89,7 @@ export default {
         let form = useForm({
             title: '',
             description: '',
+            ref: '',
             illustration: null,
             page_id: null,
         })

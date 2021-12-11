@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
         $users = User::factory(2)->create();
 
         $users[0]->assignRole('administrator');
-        $users[1]->assignRole('subscriber');
+        $users[1]->assignRole('guest');
 
         Lesson::factory()->create();
     }

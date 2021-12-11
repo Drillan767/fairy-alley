@@ -10,6 +10,7 @@ use App\Models\{Lesson, Service, Subscription, User};
 use App\Services\SubscriptionHandler;
 use Illuminate\Http\RedirectResponse;
 use Inertia\{Inertia, Response};
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -18,10 +19,11 @@ class UserController extends Controller
 
     public function index(): Response
     {
+        $roles = config('roles');
         $lessons = Lesson::all('id', 'title');
-        $users = User::with('lesson')->get();
+        $users = User::with('subscription.lesson')->get();
 
-        return Inertia::render('Admin/Users/List', compact('users', 'lessons'));
+        return Inertia::render('Admin/Users/List', compact('users', 'lessons', 'roles'));
     }
 
     public function show(User $utilisateur)
