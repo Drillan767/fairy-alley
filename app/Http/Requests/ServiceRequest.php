@@ -28,11 +28,12 @@ class ServiceRequest extends FormRequest
             'title' => ['required', 'string'],
             'description' => ['required', 'string', 'max:255'],
             'page_id' => ['required', 'integer', 'exists:pages,id'],
-            'ref' => ['required', 'unique:services,ref']
+            'ref' => ['required', 'string']
         ];
 
         if ($this->getMethod() === 'POST') {
             $rules['illustration'] = ['required', 'file', 'mimes:jpg,jpeg,png,webp'];
+            $rules['ref'] = ['required', 'string', 'unique:services,ref'];
         }
 
         return $rules;

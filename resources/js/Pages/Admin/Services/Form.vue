@@ -98,6 +98,7 @@ export default {
             form.title = fields.title;
             form.description = fields.description;
             form.page_id = fields.page_id;
+            form.ref = fields.ref;
         });
 
         function submit() {
