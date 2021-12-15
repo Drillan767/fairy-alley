@@ -90,7 +90,7 @@ class UserImportHandler
                                 $data['services'][] = $service->id;
                             } else {
                                 if (!array_key_exists($service, $this->errors)) {
-                                    $this->errors[$service] = "Le service \"$service\" n'a pas été trouvé.";
+                                    $this->errors[$service] = "Le service \"{$servicesFound[($i + 1)]}\" n'a pas été trouvé.";
                                 }
                             }
                         }
@@ -115,6 +115,7 @@ class UserImportHandler
     private function createUser($data)
     {
         $roles = [
+            'new' => 'first_contact',
             'Inscrit' => 'subscriber',
             'Invité' => 'guest',
             'Admin' => 'administrator',
@@ -146,7 +147,7 @@ class UserImportHandler
             $subscription->user_id = $user->id;
             $subscription->lesson_id = $this->lesson->id;
             $subscription->status = $user->hasRole('guest') ? Subscription::PENDING : Subscription::VALIDATED;
-            $subscription->selected_time = $data['hour'];
+            $subscription->selected_time = $data['hour'] ?? '';
             $subscription->save();
 
             $this->total++;

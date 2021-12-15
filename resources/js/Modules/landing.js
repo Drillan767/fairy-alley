@@ -6,7 +6,7 @@ function macy() {
         trueOrder: false,
         waitForImages: false,
         margin: 24,
-        columns: 4,
+        columns: 5,
         breakAt: {
             1200: 3,
             520: 2,

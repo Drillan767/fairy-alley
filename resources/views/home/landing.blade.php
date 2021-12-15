@@ -35,20 +35,24 @@
         <div id="macy" class="mt-10">
             @foreach($services as $service)
                 <div>
-                    <div class="bg-gray-100 p-6 rounded-lg">
+                    <div class="rounded-lg">
                         <a href="{{ route('pages.show', ['slug' => $service->page->slug]) }}">
-                            <img class="h-40 rounded w-full object-cover object-center mb-6" src="{{ $service->thumbnail->url }}" alt="content">
+                            <img class="h-40 rounded-t w-full object-cover object-center" src="{{ $service->thumbnail->url }}" alt="content">
                         </a>
 
-                        <h2 class="text-lg text-gray-900 font-medium title-font mb-4">{{ $service->title }}</h2>
-                        <p class="leading-relaxed text-base">
-                            {{ $service->description }}
-                        </p>
-                        <a href="{{ route('pages.show', ['slug' => $service->page->slug]) }}" class="mt-3 text-indigo-500 inline-flex items-center">En savoir plus
-                            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                                <path d="M5 12h14M12 5l7 7-7 7"></path>
-                            </svg>
-                        </a>
+                        <div class="p-6 bg-[#ECFCCB]">
+                            <h2 class="text-lg text-gray-900 font-medium title-font mb-4">{{ $service->title }}</h2>
+                            <p class="leading-relaxed text-base italic">
+                                {{ $service->description }}
+                            </p>
+                            <p class="text-right">
+                                <a href="{{ route('pages.show', ['slug' => $service->page->slug]) }}" class="mt-3 text-indigo-500 inline-flex items-center">En savoir plus
+                                    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
+                                        <path d="M5 12h14M12 5l7 7-7 7"></path>
+                                    </svg>
+                                </a>
+                            </p>
+                        </div>
                     </div>
                 </div>
             @endforeach
