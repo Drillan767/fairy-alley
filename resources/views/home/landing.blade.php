@@ -40,7 +40,7 @@
                             <img class="h-40 rounded-t w-full object-cover object-center" src="{{ $service->thumbnail->url }}" alt="content">
                         </a>
 
-                        <div class="p-6 bg-[#ECFCCB]">
+                        <div class="p-3 bg-[#ECFCCB]">
                             <h2 class="text-lg text-gray-900 font-medium title-font mb-4">{{ $service->title }}</h2>
                             <p class="text-right">
                                 <a href="{{ route('pages.show', ['slug' => $service->page->slug]) }}" class=" text-sm mt-3 text-indigo-500 inline-flex items-center">En savoir plus
