@@ -114,12 +114,7 @@ class UserImportHandler
 
     private function createUser($data)
     {
-        $roles = [
-            'new' => 'first_contact',
-            'Inscrit' => 'subscriber',
-            'Invité' => 'guest',
-            'Admin' => 'administrator',
-        ];
+        $roles = array_flip(config('roles'));
 
         if (User::where('email', $data['email'])->count()) {
             $this->errors[] = "L'email {$data['email']}' est déjà pris.";

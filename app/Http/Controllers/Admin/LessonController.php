@@ -44,7 +44,7 @@ class LessonController extends Controller
     public function update(LessonRequest $request, Lesson $cour): RedirectResponse
     {
         $this->handleLesson($cour, $request, true);
-        return redirect()->route('cours.index')->with('success', 'Cours mit à jour avec succès.');
+        return redirect()->route('cours.index')->with('success', 'Cours mis à jour avec succès.');
     }
 
     public function destroy(Lesson $cour)

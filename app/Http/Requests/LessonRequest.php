@@ -28,7 +28,7 @@ class LessonRequest extends FormRequest
         return [
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
-            'ref' => ['required', 'string', 'unique:lessons,ref'],
+            'ref' => ['required', 'string', 'unique:lessons,ref,' . $this->id],
             'schedule' => ['required', 'array', 'min:1'],
             'schedule.*.day' => ['required', 'string', 'in:Lundi,Mardi,Mercredi,Jeudi,Vendredi'],
             'schedule.*.begin' => ['required', 'regex:/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/'],
