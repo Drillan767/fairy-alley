@@ -41,7 +41,7 @@
                         </a>
 
                         <div class="p-3 bg-[#ECFCCB]">
-                            <h2 class="text-lg text-gray-900 font-medium title-font mb-1">{{ $service->title }}</h2>
+                            <h2 class="text-lg text-gray-900 font-medium title-font text-center mb-1">{{ $service->title }}</h2>
                             <p class="text-right">
                                 <a href="{{ route('pages.show', ['slug' => $service->page->slug]) }}" class=" text-sm mt-3 text-indigo-500 inline-flex items-center">En savoir plus
                                     <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
