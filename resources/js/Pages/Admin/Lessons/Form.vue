@@ -1,5 +1,18 @@
 <template>
     <form @submit.prevent="submit">
+        <div v-for="i in form.occurrence" class="pb-10">
+            <Datepicker
+                v-model="date"
+                locale="fr"
+                cancelText="Annuler"
+                selectText="Confirmer"
+                minutesIncrement="30"
+                inputFormat="dd/MM/yyyy HH:mm"
+            >
+
+            </Datepicker>
+        </div>
+
         <div>
             <jet-label for="title" value="Titre" />
             <jet-input id="title" type="text" class="mt-1 block w-full" v-model="form.title" required autofocus />
@@ -13,14 +26,25 @@
         </div>
 
         <div class="mt-4">
-            <jet-label for="description" value="Réference" />
-            <jet-input id="description" type="text" class="mt-1 block w-full" v-model="form.ref" />
+            <jet-label for="ref" value="Réference" />
+            <jet-input id="ref" type="text" class="mt-1 block w-full" v-model="form.ref" />
             <jet-input-error :message="form.errors.ref" class="mt-2" />
         </div>
 
-        <div class="mt-4">
-            <jet-label for="content" value="Ajouter des horaires" />
-            <div
+        <div class="mt-4 flex">
+            <div class="w-3/4">
+                <jet-label for="content" value="Ajouter des occurrences" />
+                <jet-input id="occurrences" type="number" min="0" class="mt-1 block w-full" v-model="form.occurrence" />
+                <jet-input-error :message="form.errors.occurrence" class="mt-2" />
+            </div>
+            <div class="w-1/4 flex items-end justify-center">
+                <div>
+                    <jet-button type="button" @click="add">Ajouter</jet-button>
+                </div>
+            </div>
+
+
+<!--            <div
                 v-for="(entry, index) in form.schedule"
                 :key="index"
                 class="flex justify-between mt-5"
@@ -48,8 +72,8 @@
                 </div>
             </div>
             <div class="mt-4 flex justify-center">
-                <jet-button type="button" @click="add">Ajouter</jet-button>
-            </div>
+
+            </div>-->
 
         </div>
 
@@ -70,8 +94,10 @@ import JetLabel from '@/Jetstream/Label.vue'
 import Wysiwyg from '@/Jetstream/Wysiwyg.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
+import Datepicker from 'vue3-date-time-picker';
+import 'vue3-date-time-picker/dist/main.css'
 import {useForm} from "@inertiajs/inertia-vue3";
-import {computed} from "vue";
+import {computed, ref} from "vue";
 
 export default {
     title: 'Nouveau cours',
@@ -82,6 +108,7 @@ export default {
         },
         editing: Boolean,
         tiny: String,
+
     },
 
     components: {
@@ -91,10 +118,11 @@ export default {
         JetSecondaryButton,
         JetInputError,
         Wysiwyg,
+        Datepicker,
     },
 
     setup (props) {
-
+        const date = ref(new Date());
         const data = props.editing ? {
             ...props.lesson,
             _method: 'PUT',
@@ -102,6 +130,7 @@ export default {
             title: '',
             description: '',
             ref: '',
+            occurrence: 0,
             schedule: [{ day: '', begin: '', end: ''}],
         }
 
@@ -136,9 +165,10 @@ export default {
             form,
             submit,
             schedule,
+            date,
             add,
             remove,
-            options
+            options,
         }
     },
 }
