@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'administrator' => 'Administreur',
+    'administrator' => 'Administrateur',
     'first_contact' => 'Premier contact',
     'guest' => 'Invité',
     'presubscribed' => 'Inscription en cours',

@@ -16,6 +16,11 @@
                         </svg>
                         <p class="ml-5">{{ flash.success }}</p>
                     </div>
+                    <div class="flex justify-end mb-5">
+                        <a :href="route('utilisateurs.create')" class="btn btn-primary">
+                            Nouvel utilisateur
+                        </a>
+                    </div>
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
                             <vue-good-table

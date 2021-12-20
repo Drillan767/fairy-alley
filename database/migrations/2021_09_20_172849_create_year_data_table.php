@@ -24,6 +24,7 @@ class CreateYearDataTable extends Migration
             $table->date('deposit_paid_at')->nullable();
             $table->text('observations')->nullable();
             $table->date('pre_registration_signature')->nullable();
+            $table->integer('total')->nullable();
 
             // automated
             $table->string('last_year_class')->nullable();

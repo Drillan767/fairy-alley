@@ -96,7 +96,7 @@
                                     <jet-input-error :message="form.errors.other_data" class="mt-2" />
                                 </div>
 
-                                <div class="mt-4">
+                                <div class="mt-4" v-if="currentUser.role !== 'administrator'">
                                     <jet-label for="suggestions" value="Services suggérés" />
                                     <smart-tagz
                                         input-placeholder="Sélectionnez un service..."
