@@ -16,6 +16,7 @@ class CreateServicesTable extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->integer('order')->default(0);
             $table->string('description');
             $table->foreignId('page_id')->constrained();
             $table->string('ref');

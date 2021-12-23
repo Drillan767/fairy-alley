@@ -27,13 +27,19 @@ class FileHandler
         $yearData->file()->save($media);
     }
 
-    public function resizeServiceImage($path, Service $service)
+    public function resizeServiceImage($path, Service $service, $updating = false)
     {
         $file = Storage::disk('local')->get($path);
+        $fileMeta = pathinfo($path);
+        $filename = $fileMeta['filename'] . '.' . $fileMeta['extension'];
+
+        if ($updating) {
+            Storage::disk('s3')->deleteDirectory("service/$service->id");
+        }
 
         foreach (['thumbnail', 'banner'] as $format) {
-            $filename = pathinfo($path, PATHINFO_FILENAME);
-            $basename = basename(str_replace($filename, "{$filename}_$format", $path));
+            $basename = str_replace($fileMeta['filename'], "{$fileMeta['filename']}_$format", $filename);
+            $path = "service/$service->id/$basename";
 
             list ($width, $height) = $this->dimensions[$format];
             $img = Image::make($file)
@@ -44,17 +50,20 @@ class FileHandler
                 ->stream()
                 ->detach();
 
-            $path = "service/$service->id/$basename";
+            if ($updating) {
+                $media = $service->$format;
+                $media->title = $basename;
+                $media->url = $path;
+                $media->save();
+            } else {
+                $media = new Media([
+                    'title' => $basename,
+                    'url' => $path,
+                ]);
+                $service->$format()->save($media);
+            }
 
             Storage::disk('s3')->put($path, $img);
-
-            $media = new Media([
-                'title' => $basename,
-                'url' => $path,
-            ]);
-
-            $service->$format()->save($media);
-
             Storage::disk('local')->delete($path);
         }
     }

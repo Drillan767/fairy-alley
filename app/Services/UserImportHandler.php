@@ -121,7 +121,21 @@ class UserImportHandler
         } else {
             $user = new User();
 
-            foreach(['firstname', 'lastname', 'email', 'password', 'gender', 'other_data'] as $field) {
+            $fields = [
+                'firstname',
+                'lastname',
+                'email',
+                'password',
+                'phone',
+                'pro',
+                'address1',
+                'zipcode',
+                'city',
+                'gender',
+                'other_data'
+            ];
+
+            foreach($fields as $field) {
                 if (isset($data[$field])) {
                     $user->$field = $data[$field];
                 }

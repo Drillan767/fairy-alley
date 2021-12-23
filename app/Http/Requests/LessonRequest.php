@@ -25,30 +25,33 @@ class LessonRequest extends FormRequest
      */
     public function rules()
     {
+        $tomorrow = now()->startOfDay()->addDay();
         return [
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
             'ref' => ['required', 'string', 'unique:lessons,ref,' . $this->id],
             'schedule' => ['required', 'array', 'min:1'],
-            'schedule.*.day' => ['required', 'string', 'in:Lundi,Mardi,Mercredi,Jeudi,Vendredi'],
-            'schedule.*.begin' => ['required', 'regex:/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/'],
-            'schedule.*.end' => ['required', 'regex:/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/'],
+            'schedule.*.date' => ['required', 'date', 'after:' . $tomorrow],
         ];
     }
 
     #[ArrayShape([
-        'schedule.*.day' => "string",
-        'schedule.*.begin' => "string",
-        'schedule.*.end' => "string",
+        'schedule.*.date' => "string",
         'ref' => 'référence',
     ])]
     public function attributes(): array
     {
         return [
             'ref' => 'référence',
-            'schedule.*.day' => 'jour',
-            'schedule.*.begin' => 'début',
-            'schedule.*.end' => 'fin',
+            'schedule.*.date' => 'occurrence',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'schedule.*.date.after' => 'La date doit être supérieure à demain.'
+        ];
+    }
+
 }

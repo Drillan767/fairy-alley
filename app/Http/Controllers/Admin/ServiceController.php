@@ -64,7 +64,7 @@ class ServiceController extends Controller
                     $file,
                     $file->getClientOriginalName()
                 );
-            $this->fileHandler->resizeServiceImage($path, $service);
+            $this->fileHandler->resizeServiceImage($path, $service, $update);
         }
     }
 

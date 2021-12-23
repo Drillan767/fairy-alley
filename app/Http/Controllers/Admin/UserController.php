@@ -3,14 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SubscriptionValidationRequest;
-use App\Http\Requests\UserUpdateRequest;
+use App\Http\Requests\{SubscriptionValidationRequest, UserUpdateRequest};
 use Illuminate\Http\Request;
 use App\Models\{Lesson, Service, Subscription, User};
 use App\Services\SubscriptionHandler;
 use Illuminate\Http\RedirectResponse;
 use Inertia\{Inertia, Response};
-use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -24,6 +22,16 @@ class UserController extends Controller
         $users = User::with('subscription.lesson')->get();
 
         return Inertia::render('Admin/Users/List', compact('users', 'lessons', 'roles'));
+    }
+
+    public function create()
+    {
+
+    }
+
+    public function store()
+    {
+
     }
 
     public function show(User $utilisateur)
@@ -107,7 +115,7 @@ class UserController extends Controller
     {
         return Inertia::render('Admin/Users/Subscribing',
             [
-                'subscriber' => $user->load('subscription.lesson','currentYearData.file')
+                'subscriber' => $user->load('subscription.lesson', 'currentYearData.file')
             ]
         );
     }

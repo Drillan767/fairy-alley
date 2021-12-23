@@ -88,6 +88,11 @@ class User extends Authenticatable
         return $this->hasOne(Subscription::class);
     }
 
+    public function firstContactData(): HasOne
+    {
+        return $this->hasOne(FirstContact::class);
+    }
+
     public function lesson(): BelongsTo
     {
         return $this->belongsTo(Lesson::class);

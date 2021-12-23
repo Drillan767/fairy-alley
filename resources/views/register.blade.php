@@ -41,7 +41,7 @@
 
             <form action="{{ route('fc.store') }}" method="POST">
                 @if(session()->has('success'))
-                    <div class="alert alert-success">
+                    <div class="alert alert-success mb-5">
                         {{ session()->get('success') }}
                     </div>
                 @endif
@@ -124,9 +124,9 @@
                     </div>
 
                     <div class="col-span-6 mt-4">
-                        <label for="address" class="block text-sm font-medium text-gray-700">Adresse</label>
-                        <input type="text" name="address" id="address">
-                        @error('address')
+                        <label for="address1" class="block text-sm font-medium text-gray-700">Adresse</label>
+                        <input type="text" name="address1" id="address1">
+                        @error('address1')
                         <p class="text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -134,7 +134,7 @@
                     <div class="col-span-6">
                         <label for="address2" class="block text-sm font-medium text-gray-700">Complément d'adresse</label>
                         <input type="text" name="address2" id="address2">
-                        @error('address1')
+                        @error('address2')
                         <p class="text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>

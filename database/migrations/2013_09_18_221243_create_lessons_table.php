@@ -18,7 +18,9 @@ class CreateLessonsTable extends Migration
             $table->string('title');
             $table->string('description');
             $table->string('year', 11);
+            $table->integer('occurrence')->default(1);
             $table->text('schedule');
+            $table->string('ref');
             $table->timestamps();
         });
     }

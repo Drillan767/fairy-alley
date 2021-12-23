@@ -26,7 +26,7 @@ class FirstContactRequest extends FormRequest
         return [
             'firstname' => ['required', 'string'],
             'lastname' => ['required', 'string'],
-            'email' => ['required', 'unique:users,email', 'unique:first_contacts,email', 'email:rfc,dns'],
+            'email' => ['required', 'unique:users,email', 'unique:users,email', 'email:rfc,dns'],
             'birthday' => ['nullable', 'date_format:Y-m-d'],
             'phone' => ['nullable', 'required_without:pro', 'string'],
             'pro' => ['nullable', 'required_without:phone', 'string'],

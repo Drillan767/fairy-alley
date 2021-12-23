@@ -33,6 +33,7 @@
                                 <div class="my-4">
                                     <jet-label for="lid" value="Sélectionner un cours..."/>
                                     <jet-select id="lid" v-model="form.lid" :choices="lessons"/>
+                                    <jet-input-error :message="form.errors.lid" class="mt-2" />
                                 </div>
                                 <div class="my-4">
                                     <jet-file-upload @input="handleUpload" />
