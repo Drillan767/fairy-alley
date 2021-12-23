@@ -31,6 +31,7 @@
                                 <thead>
                                 <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                                     <th class="py-3 px-6 text-left">Titre</th>
+                                    <th class="py-3 px-6 text-left">Référence</th>
                                     <th class="py-3 px-6 text-left">Page liée</th>
                                     <th class="py-3 px-6 text-center">Actions</th>
                                 </tr>
@@ -43,6 +44,9 @@
                                                 <a :href="route('pages.show', {slug: element.page.slug})">
                                                     {{ element.page.title }}
                                                 </a>
+                                            </td>
+                                            <td>
+                                                {{ element.ref }}
                                             </td>
                                             <td>
                                                 <div class="flex justify-center">
