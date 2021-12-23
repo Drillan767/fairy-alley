@@ -31,7 +31,7 @@
                                 <thead>
                                 <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                                     <th class="py-3 px-6 text-left">Titre</th>
-                                    <th class="py-3 px-6 text-left">Référence</th>
+<!--                                    <th class="py-3 px-6 text-left">Référence</th>-->
                                     <th class="py-3 px-6 text-left">Page liée</th>
                                     <th class="py-3 px-6 text-center">Actions</th>
                                 </tr>
@@ -45,9 +45,9 @@
                                                     {{ element.page.title }}
                                                 </a>
                                             </td>
-                                            <td>
+<!--                                            <td>
                                                 {{ element.ref }}
-                                            </td>
+                                            </td>-->
                                             <td>
                                                 <div class="flex justify-center">
                                                     <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110" @click="editService(element)">
