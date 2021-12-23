@@ -73,13 +73,13 @@
                 </div>
             </div>
         </div>
-        <Form :show="showModal" :item="item" @close="closeModal" :pages="pages"/>
+        <Form :show="showModal" :service="item" @close="closeModal" :pages="pages"/>
     </admin-layout>
 </template>
 
 <script>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import Form from "@/Pages/Admin/items/Form.vue";
+import Form from "@/Pages/Admin/Services/Form.vue";
 import draggable from "vuedraggable";
 import Swal from "sweetalert2";
 import { Link } from "@inertiajs/inertia-vue3";
