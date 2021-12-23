@@ -22,7 +22,10 @@ class ServiceController extends Controller
             ->orderBy('order')
             ->get();
         $pages = Page::all(['id', 'title']);
-        return Inertia::render('Admin/Services/Index', compact('services', 'pages'));
+        return Inertia::render('Admin/Services/Index', [
+            'pages' => $pages,
+            'items' => $services,
+        ]);
     }
 
     public function store(ServiceRequest $request)

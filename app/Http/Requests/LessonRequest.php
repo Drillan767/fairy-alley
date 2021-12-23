@@ -25,13 +25,12 @@ class LessonRequest extends FormRequest
      */
     public function rules()
     {
-        $tomorrow = now()->startOfDay()->addDay();
         return [
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
             'ref' => ['required', 'string', 'unique:lessons,ref,' . $this->id],
             'schedule' => ['required', 'array', 'min:1'],
-            'schedule.*.date' => ['required', 'date', 'after:' . $tomorrow],
+            'schedule.*.date' => ['required', 'date'],
         ];
     }
 
@@ -46,12 +45,4 @@ class LessonRequest extends FormRequest
             'schedule.*.date' => 'occurrence',
         ];
     }
-
-    public function messages()
-    {
-        return [
-            'schedule.*.date.after' => 'La date doit être supérieure à demain.'
-        ];
-    }
-
 }

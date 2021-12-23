@@ -2,7 +2,7 @@
     <admin-layout title="Utilisateurs en cours d'inscription">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
-                Services
+                items
             </h1>
         </template>
 
@@ -18,14 +18,14 @@
                     </div>
                     <div class="flex justify-end mb-5">
                         <span class="btn btn-primary" @click="showModal = true">
-                            Nouveau service
+                            Nouveau item
                         </span>
                     </div>
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
                             <div v-if="orderChanged" class="flex items-center justify-between bg-blue-800 text-white text-sm font-bold px-4 py-3 mb-5">
-                                <p>Sauvegarder l'ordre des services ?</p>
-                                <button @click="updateServiceOrder">Enregistrer</button>
+                                <p>Sauvegarder l'ordre des items ?</p>
+                                <button @click="updateitemOrder">Enregistrer</button>
                             </div>
                             <table class="table table-striped w-full">
                                 <thead>
@@ -36,7 +36,7 @@
                                     <th class="py-3 px-6 text-center">Actions</th>
                                 </tr>
                                 </thead>
-                                <draggable v-model="servicesList" tag="tbody" item-key="id" @end="log">
+                                <draggable v-model="itemsList" tag="tbody" item-key="id" @end="log">
                                     <template #item="{ element }">
                                         <tr>
                                             <td>{{ element.title }}</td>
@@ -50,14 +50,14 @@
                                             </td>-->
                                             <td>
                                                 <div class="flex justify-center">
-                                                    <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110" @click="editService(element)">
+                                                    <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110" @click="edititem(element)">
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                         </svg>
                                                     </div>
 
-                                                    <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110 cursor-pointer" @click="deleteService(element)">
+                                                    <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110 cursor-pointer" @click="deleteitem(element)">
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                         </svg>
@@ -73,20 +73,20 @@
                 </div>
             </div>
         </div>
-        <Form :show="showModal" :service="service" @close="closeModal" :pages="pages"/>
+        <Form :show="showModal" :item="item" @close="closeModal" :pages="pages"/>
     </admin-layout>
 </template>
 
 <script>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import Form from "@/Pages/Admin/Services/Form.vue";
+import Form from "@/Pages/Admin/items/Form.vue";
 import draggable from "vuedraggable";
 import Swal from "sweetalert2";
 import { Link } from "@inertiajs/inertia-vue3";
 import axios from "axios";
 export default {
     props: {
-        services: Array,
+        items: Array,
         pages: Array,
         flash: {
             type: Object,
@@ -104,20 +104,20 @@ export default {
     data () {
         return {
             orderChanged: false,
-            currentServiceOrder: [],
-            servicesList: [],
+            currentitemOrder: [],
+            itemsList: [],
             showModal: false,
-            service: null,
+            item: null,
             dragging: false
         }
     },
 
     mounted() {
-        this.servicesList = this.services
+        this.itemsList = this.items
     },
 
     methods: {
-        addService () {
+        additem () {
             this.showModal = true;
         },
 
@@ -127,27 +127,27 @@ export default {
 
         log () {
             this.orderChanged = true;
-            this.currentOrder = this.servicesList.map((s) => {
+            this.currentOrder = this.itemsList.map((s) => {
                 return {id: s.id, order: s.order}
             })
         },
 
-        updateServiceOrder() {
-            axios.post(route('services.order'), this.currentOrder)
+        updateitemOrder() {
+            axios.post(route('items.order'), this.currentOrder)
                 .then(() => this.orderChanged = false);
         },
 
-        editService(service) {
-            this.service = service;
-            this.service.file = this.service.banner;
+        edititem(item) {
+            this.item = item;
+            this.item.file = this.item.banner;
             this.showModal = true;
         },
 
-        deleteService(service) {
+        deleteitem(item) {
             Swal.fire({
                 icon: 'warning',
-                title: 'Supprimer le service ?',
-                text: `Le service intitulé "${service.title}" va être supprimé,`,
+                title: 'Supprimer le item ?',
+                text: `Le item intitulé "${item.title}" va être supprimé,`,
                 showCancelButton: true,
                 cancelButtonText: 'Annuler',
                 confirmButtonText: 'Supprimer',
@@ -155,13 +155,13 @@ export default {
             })
             .then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(route('services.destroy', {service: service.id}))
+                    axios.delete(route('items.destroy', {item: item.id}))
                     .then(() => {
-                        this.servicesList = this.servicesList.filter((s) => s.id !== service.id)
+                        this.itemsList = this.itemsList.filter((s) => s.id !== item.id)
                         Swal.fire({
                             icon: 'success',
-                            title: 'Service supprimé.',
-                            text: 'Le service a bien été supprimée'
+                            title: 'item supprimé.',
+                            text: 'Le item a bien été supprimée'
                         })
                     })
                 }
