@@ -35,7 +35,7 @@ class ServiceController extends Controller
     public function update(ServiceRequest $request, Service $service): RedirectResponse
     {
         $this->handleServices($request, $service, true);
-        return redirect()->back()->with('success', 'Service mit à jour avec succès.');
+        return redirect()->back()->with('success', 'Service mis à jour avec succès.');
     }
 
     public function destroy(Service $service)

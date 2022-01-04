@@ -95,7 +95,7 @@ class SubscriptionHandler
             }
 
             $user->notify(new SubscriptionMissingElements($subscription->toArray()));
-            $response = ['utilisateurs.presubscribed', 'success', "Le statut de l'inscription a bien été mit à jour."];
+            $response = ['utilisateurs.presubscribed', 'success', "Le statut de l'inscription a bien été mis à jour."];
         } elseif ($request->get('decision') === 'accepted') {
             $user->lesson_id = $subscription->lesson_id;
             $user->save();
