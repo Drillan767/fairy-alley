@@ -71,13 +71,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
         Route::post('/import-users', [ToolsController::class, 'importUsers'])->name('import.store');
     });
 
+    Route::get('/profil', [SubscriptionController::class, 'index'])->name('profile.index');
+
     Route::middleware(['role:subscriber'])->group(function() {
-        Route::get('/profil', [SubscriptionController::class, 'index'])->name('profile.index');
         Route::get('/inscription-cours/{lesson}', [SubscriptionController::class, 'create'])->name('subscription.create');
         Route::get('/inscription/cours/{lesson}/editer', [SubscriptionController::class, 'edit'])->name('subscription.edit');
         Route::post('/subscription', [SubscriptionController::class, 'store'])->name('subscription.store');
         Route::put('/subscription', [SubscriptionController::class, 'update'])->name('subscription.update');
-
     });
 });
 

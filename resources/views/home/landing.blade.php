@@ -10,15 +10,17 @@
 </head>
 <body class="text-gray-600 body-font">
 <header>
-    <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row justify-between absolute top-0 left-0 right-0">
+    <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center justify-between absolute top-0 left-0 right-0">
         <div class="flex items-center flex-shrink-0 text-white mr-6">
-            <img src="/img/logo.png" class="h-10 w-10" alt="logo" />
-            <span class="font-semibold ml-5 text-gray-900 text-xl tracking-tight">L'Allée des Fées</span>
+            <img src="/img/ADF-Logo.png" alt="logo" />
         </div>
-        <a href="{{ route('login') }}"
-           class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">
-            Accès membres
-        </a>
+        <div>
+            <a href="{{ route('login') }}"
+               class="inline-flex items-center bg-gray-100 border-0 py-2 px-4 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">
+                Accès membres
+            </a>
+        </div>
+
     </div>
     <div class="landing flex flex-col justify-center">
         <div class="container mx-auto text-center xl:text-left">

@@ -37,7 +37,8 @@ class UserController extends Controller
     public function show(User $utilisateur)
     {
         $services = Service::all(['id', 'title']);
-        $utilisateur->load('currentYearData.file', 'lesson', 'subscription', 'suggestions');
+        $utilisateur->load('currentYearData.file', 'lesson', 'subscription', 'suggestions', 'firstContactData');
+
         return Inertia::render('Admin/Users/Show', [
             'currentUser' => $utilisateur,
             'services' => $services,

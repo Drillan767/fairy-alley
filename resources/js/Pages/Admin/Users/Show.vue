@@ -96,7 +96,7 @@
                                     <jet-input-error :message="form.errors.other_data" class="mt-2" />
                                 </div>
 
-                                <div class="mt-4" v-if="currentUser.role !== 'administrator'">
+                                <div class="mt-4" v-if="['subscriber', 'substitute', 'administrator'].includes(currentUser.role)">
                                     <jet-label for="suggestions" value="Services suggérés" />
                                     <smart-tagz
                                         input-placeholder="Sélectionnez un service..."
@@ -133,6 +133,57 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="max-w-7xl mx-auto mt-5 sm:px-6 lg:px-8 mb-5" v-if="currentUser.first_contact_data">
+                        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
+                            <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
+                                <h2 class="font-semibold text-l text-gray-700 leading-tight mb-5">
+                                    Informations personnelles
+                                </h2>
+                                <div class="mb-4">
+                                    <p class="block font-bold text-sm text-gray-700">Situation familiale</p>
+                                <p>{{ currentUser.first_contact_data.family_situation ?? 'N/C' }}</p>
+                                </div>
+                                <div class="mb-4">
+                                    <p class="block font-bold text-sm text-gray-700">Nombre d'enfants</p>
+                                    <p>{{ currentUser.first_contact_data.nb_children ?? 'N/C' }}</p>
+                                </div>
+                                <div class="mb-4">
+                                    <p class="block font-bold text-sm text-gray-700">Profession</p>
+                                    <p>{{ currentUser.first_contact_data.work ?? 'N/C' }}</p>
+                                </div>
+                                <div class="mb-4">
+                                    <p class="block font-bold text-sm text-gray-700">Sports, loisirs, autres activités :</p>
+                                    <p>{{ currentUser.first_contact_data.sports ?? 'N/C' }}</p>
+                                </div>
+                                <div class="mb-4">
+                                    <p class="block font-bold text-sm text-gray-700">Objectifs :</p>
+                                    <p>{{ currentUser.first_contact_data.objectives ?? 'N/C' }}</p>
+                                </div>
+                                <div class="mb-4">
+                                    <p class="block font-bold text-sm text-gray-700">Traitement médical actuel :</p>
+                                    <p>{{ currentUser.first_contact_data.medical_treatment ?? 'N/C' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="max-w-7xl mx-auto mt-5 sm:px-6 lg:px-8 mb-5" v-if="currentUser.current_year_data">
+                        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
+                            <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
+                                <h2 class="font-semibold text-l text-gray-700 leading-tight mb-5">
+                                    Informations de santé annuelle
+                                </h2>
+
+                                <div class="mb-4">
+                                    <p class="block font-bold text-sm text-gray-700">Problème de santé connu : </p>
+                                    <p>{{ currentUser.current_year_data.health_data ?? 'N/C' }}</p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-5 mt-4 flex justify-end">
                         <jet-button type="submit">
                             Enregistrer
