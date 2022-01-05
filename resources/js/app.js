@@ -1,7 +1,7 @@
 import { createApp, h } from 'vue';
 import { App as InertiaApp, plugin as InertiaPlugin } from '@inertiajs/inertia-vue3';
 import { InertiaProgress } from '@inertiajs/progress';
-import { macy, contact } from "./Modules/landing";
+import { contact } from "./Modules/landing";
 import mitt from 'mitt';
 import 'dynamic-import-polyfill';
 import titleMixin from './Modules/titleMixin';
@@ -17,9 +17,6 @@ const app = document.getElementById('app');
 const emitter = mitt();
 const pages = import.meta.glob('./Pages/**/*.vue');
 
-if (document.getElementById('macy')) {
-    macy();
-}
 if (document.getElementById('contact')) {
     contact();
 }

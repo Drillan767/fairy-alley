@@ -1,20 +1,3 @@
-import Macy from 'macy';
-
-function macy() {
-    Macy({
-        container: '#macy',
-        trueOrder: false,
-        waitForImages: false,
-        margin: 24,
-        columns: 5,
-        breakAt: {
-            1200: 3,
-            520: 2,
-            400: 1
-        }
-    });
-}
-
 function contact() {
     const form = document.getElementById('contact');
 
@@ -57,4 +40,4 @@ function contact() {
     })
 }
 
-export { macy, contact };
+export { contact };

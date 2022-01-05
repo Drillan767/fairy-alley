@@ -38,7 +38,7 @@
                                 </thead>
                                 <draggable v-model="servicesList" tag="tbody" item-key="id" @end="log">
                                     <template #item="{ element }">
-                                        <tr>
+                                        <tr class="cursor-move">
                                             <td>{{ element.title }}</td>
                                             <td>
                                                 {{ element.ref }}
@@ -134,7 +134,16 @@ export default {
 
         updateServiceOrder() {
             axios.post(route('services.order'), this.currentOrder)
-                .then(() => this.orderChanged = false);
+                .then(() => {
+                    this.orderChanged = false
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Ordre enregistré',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                });
         },
 
         editService(service) {

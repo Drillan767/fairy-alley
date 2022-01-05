@@ -11,10 +11,10 @@
 </head>
 <body>
     <div class="building flex items-center justify-center flex-col text-gray-100">
-        <h1 class="text-center font-bold break-normal text-3xl md:text-5xl mb-8">
+        <h1 class="text-center font-bold break-normal text-3xl md:text-5xl mb-8 text-shadow">
             L'allée des fées
         </h1>
-        <h2 class="text-center font-bold break-normal text-3xl mb-8">
+        <h2 class="text-center font-bold break-normal text-3xl mb-8 text-shadow">
             Site en construction, revenez bientôt !
         </h2>
     </div>

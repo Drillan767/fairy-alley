@@ -1,8 +1,11 @@
 .register {
     .bg-img {
         background-image: url('/img/landing.jpg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
         background-attachment: fixed;
-        padding: 40px 0;
+        padding: 10rem 0;
     }
 
     input {

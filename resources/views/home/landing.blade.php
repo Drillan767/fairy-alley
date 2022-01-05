@@ -24,7 +24,7 @@
     </div>
     <div class="landing flex flex-col justify-center">
         <div class="container mx-auto text-center xl:text-left">
-            <h2 class="sm:text-2xl text-xl font-medium title-font mb-2 text-white mt-5">
+            <h2 class="sm:text-2xl text-xl font-medium title-font mb-2 text-white mt-5 text-shadow">
                 Sèverine & Thierry vous proposent un accompagnement bien-être. <br />
                 Ouvert à tout le monde dans la bienveillance et l'harmonie
             </h2>
@@ -33,30 +33,26 @@
 </header>
 
 <section>
-    <div class="container px-5 py-10 mx-auto">
-        <div id="macy" class="mt-10">
-            @foreach($services as $service)
-                <div>
-                    <div class="rounded-lg">
-                        <a href="{{ route('pages.show', ['slug' => $service->page->slug]) }}">
-                            <img class="h-40 rounded-t w-full object-cover object-center" src="{{ $service->thumbnail->url }}" alt="content">
-                        </a>
+    <div class="container px-5 py-10 mt-10 mx-auto services">
+        @foreach($services as $service)
+            <div class="rounded-lg">
+                <a href="{{ route('pages.show', ['slug' => $service->page->slug]) }}">
+                    <img class="h-40 rounded-t w-full object-cover object-center" src="{{ $service->thumbnail->url }}" alt="content">
+                </a>
 
-                        <div class="p-3 bg-[#ECFCCB]">
-                            <h2 class="text-lg text-gray-900 font-medium title-font text-center mb-1">{{ $service->title }}</h2>
-                            <p class="text-right">
-                                <a href="{{ route('pages.show', ['slug' => $service->page->slug]) }}" class=" text-sm mt-3 text-indigo-500 inline-flex items-center">En savoir plus
-                                    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                                        <path d="M5 12h14M12 5l7 7-7 7"></path>
-                                    </svg>
-                                </a>
-                            </p>
-                        </div>
-                    </div>
+                <div class="p-3 bg-[#ECFCCB]">
+                    <h2 class="text-lg text-gray-900 font-medium title-font text-center mb-4">{{ $service->title }}</h2>
+                    <p>
+                        <a href="{{ route('pages.show', ['slug' => $service->page->slug]) }}" class="text-sm mt-3 text-indigo-500 inline-flex items-center">En savoir plus
+                            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
+                                <path d="M5 12h14M12 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </p>
                 </div>
-            @endforeach
             </div>
-        </div>
+        @endforeach
+    </div>
 </section>
 <section>
     <div class="container px-5 py-10 mx-auto">

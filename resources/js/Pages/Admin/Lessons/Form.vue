@@ -39,6 +39,7 @@
                     locale="fr"
                     cancelText="Annuler"
                     textInput
+                    :disabled-dates="disabledDates"
                     format="dd/MM/yyyy HH:mm"
                     :textInputOptions="textInputOptions"
                     selectText="Confirmer"
@@ -81,7 +82,7 @@ export default {
         },
         editing: Boolean,
         tiny: String,
-
+        holidays: Array,
     },
 
     components: {
@@ -101,6 +102,12 @@ export default {
                 dateList.value = props.lesson.schedule;
             }
         })
+
+        const disabledDates = computed(() => {
+            const dates = []
+            props.holidays.map((day) => dates.push(dayjs(day).toDate()))
+            return dates;
+        });
 
         const data = props.editing ? {
             ...props.lesson,
@@ -140,6 +147,7 @@ export default {
             form,
             submit,
             dateList,
+            disabledDates,
             textInputOptions,
             add,
             remove,

@@ -17,7 +17,7 @@
                     </div>
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-                            <Form :editing="false" :tiny="tiny" />
+                            <Form :editing="false" :tiny="tiny" :holidays="holidays"/>
                         </div>
                     </div>
                 </div>
@@ -39,6 +39,7 @@ export default {
 
     props: {
         tiny: String,
+        holidays: Array,
     },
 }
 </script>

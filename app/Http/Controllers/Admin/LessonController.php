@@ -7,6 +7,7 @@ use App\Models\Lesson;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use App\Http\Controllers\Controller;
 use Inertia\Response;
@@ -21,7 +22,10 @@ class LessonController extends Controller
 
     public function create()
     {
-        return Inertia::render('Admin/Lessons/Create');
+        return Inertia::render('Admin/Lessons/Create', [
+                'holidays' => $this->handleHolidays(),
+            ]
+        );
     }
 
     public function store(LessonRequest $request)
@@ -38,7 +42,10 @@ class LessonController extends Controller
 
     public function edit(Lesson $cour): Response
     {
-        return Inertia::render('Admin/Lessons/Edit', ['lesson' => $cour]);
+        return Inertia::render('Admin/Lessons/Edit', [
+            'lesson' => $cour,
+            'holidays' => $this->handleHolidays(),
+        ]);
     }
 
     public function update(LessonRequest $request, Lesson $cour): RedirectResponse
@@ -73,5 +80,12 @@ class LessonController extends Controller
          ...$request->validated(),
         'year' => now()->year . '-' . now()->addYear()->year,
         */
+    }
+
+    private function handleHolidays(): array
+    {
+        $file = Storage::disk('s3')->get('system/holidays.json');
+        $holidays = json_decode($file, true);
+        return array_keys($holidays);
     }
 }
