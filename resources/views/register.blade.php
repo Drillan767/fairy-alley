@@ -95,7 +95,7 @@
 
                             <div class="col-span-6 sm:col-span-2">
                                 <label for="nb_children" class="block text-sm font-medium text-gray-700">Nombre d'enfants à charge</label>
-                                <input type="number" name="nb_children" value="{{ old('nb_children') }}" id="nb_children" value="0">
+                                <input type="number" name="nb_children" value="{{ old('nb_children') ?? '0' }}" id="nb_children">
                                 @error('nb_children')
                                 <p class="text-sm text-red-600">{{ $message }}</p>
                                 @enderror
