@@ -17,6 +17,9 @@
         <h2 class="text-center font-bold break-normal text-3xl mb-8 text-shadow">
             Site en construction, revenez bientôt !
         </h2>
+        <h3 class="mt-4 text-center font-bold break-normal text-2xl mb-8 text-shadow">
+            Reprise des cours de gymnastique posturale globale rééducative le Lundi Janvier 2022.
+        </h3>
     </div>
 </body>
 </html>
