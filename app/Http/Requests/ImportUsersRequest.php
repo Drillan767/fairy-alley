@@ -25,9 +25,9 @@ class ImportUsersRequest extends FormRequest
      */
     public function rules()
     {
+        // dd($this);
         return [
-            'file' => ['required', new ExcelRule($this->file('file'))],
-            'lid' => ['required', 'integer', 'exists:lessons,id'],
+            'file' => ['required', new ExcelRule($this->file('file'))]
         ];
     }
 }

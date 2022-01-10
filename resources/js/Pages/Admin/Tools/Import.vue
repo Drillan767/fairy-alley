@@ -31,11 +31,6 @@
                         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
                             <form @submit.prevent="submit">
                                 <div class="my-4">
-                                    <jet-label for="lid" value="Sélectionner un cours..."/>
-                                    <jet-select id="lid" v-model="form.lid" :choices="lessons"/>
-                                    <jet-input-error :message="form.errors.lid" class="mt-2" />
-                                </div>
-                                <div class="my-4">
                                     <jet-file-upload @input="handleUpload" />
                                     <jet-input-error :message="form.errors.file" class="mt-2" />
                                 </div>
@@ -76,14 +71,12 @@ export default {
         flash: {
             type: Object,
             required: false,
-        },
-        lessons: Array,
+        }
     },
 
     setup() {
         const form = useForm({
-            file: null,
-            lid: null,
+            file: null
         });
 
         const handleUpload = (file) => {

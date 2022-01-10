@@ -77,6 +77,23 @@
                                                 <jet-dropdown-link :href="route('import.form')">
                                                     Importer des utilisateurs
                                                 </jet-dropdown-link>
+                                                <div>
+                                                    <a :href="route('export.holidays')" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition">
+                                                        Exporter les jours fériés
+                                                    </a>
+                                                </div>
+                                                <jet-dropdown-link href="#">
+                                                    Importer des témoignages
+                                                </jet-dropdown-link>
+                                                <jet-dropdown-link href="#">
+                                                    Musiques
+                                                </jet-dropdown-link>
+                                                <jet-dropdown-link href="#">
+                                                    Photos
+                                                </jet-dropdown-link>
+                                                <jet-dropdown-link href="#">
+                                                    Vidéos
+                                                </jet-dropdown-link>
                                             </template>
                                         </jet-dropdown>
                                     </div>

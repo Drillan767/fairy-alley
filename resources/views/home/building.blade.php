@@ -18,7 +18,7 @@
             Site en construction, revenez bientôt !
         </h2>
         <h3 class="mt-4 text-center font-bold break-normal text-2xl mb-8 text-shadow">
-            Reprise des cours de gymnastique posturale globale rééducative le Lundi Janvier 2022.
+            Reprise des cours de gymnastique posturale globale rééducative le Lundi 10 Janvier 2022.
         </h3>
     </div>
 </body>

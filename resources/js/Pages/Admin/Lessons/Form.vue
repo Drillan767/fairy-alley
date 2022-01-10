@@ -40,11 +40,11 @@
                     cancelText="Annuler"
                     textInput
                     :disabled-dates="disabledDates"
-                    format="dd/MM/yyyy HH:mm"
+                    format="dd/MM/yyyy"
+                    :enableTimePicker="false"
                     :textInputOptions="textInputOptions"
                     selectText="Confirmer"
-                    minutesIncrement="15"
-                    inputFormat="dd/MM/yyyy HH:mm"
+                    inputFormat="dd/MM/yyyy"
                 />
                 <jet-input-error :message="form.errors[`schedule.${i}.date`]" class="mt-2" />
             </div>

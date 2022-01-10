@@ -69,6 +69,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
 
         Route::get('/importer-utilisateurs', [ToolsController::class, 'importForm'])->name('import.form');
         Route::post('/import-users', [ToolsController::class, 'importUsers'])->name('import.store');
+        Route::get('/export-holidays', [ToolsController::class, 'exportHolidays'])->name('export.holidays');
     });
 
     Route::get('/profil', [SubscriptionController::class, 'index'])->name('profile.index');

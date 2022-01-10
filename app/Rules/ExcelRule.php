@@ -12,7 +12,7 @@ class ExcelRule implements Rule
      *
      * @return void
      */
-    public function __construct(private UploadedFile $file)
+    public function __construct(private ?UploadedFile $file)
     {}
 
     /**
@@ -24,6 +24,7 @@ class ExcelRule implements Rule
      */
     public function passes($attribute, $value)
     {
+        if (!$this->file) return false;
         $extension = strtolower($this->file->getClientOriginalExtension());
         return in_array($extension, ['csv', 'xls', 'xlsx']);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Database\Eloquent\Collection;
 use App\Models\{Lesson, Service, Subscription, User};
 use Illuminate\Http\UploadedFile;
 use SimpleXLSX;
@@ -10,14 +11,12 @@ class UserImportHandler
 {
     private int $total = 0;
     private array $errors = [];
-    private $lesson = null;
 
-    public function handle(UploadedFile $file, int $lid): array
+    public function handle(UploadedFile $file): array
     {
         $file = SimpleXLSX::parseFile($file);
-
+        $lessons = Lesson::all('id', 'ref');
         $services = Service::all();
-        $this->lesson = Lesson::find($lid);
 
         if ($file) {
             $rows = collect($file->rows())
@@ -82,7 +81,14 @@ class UserImportHandler
                             default: $data[$mapped[$i]] = $value;
                         }
                     } elseif ($i === 11) {
-                        $data['hour'] = trim(preg_replace('/\s\s+/', ' ', $value));
+                        $lesson = $lessons->firstWhere('ref', $value);
+                        if (!$lesson) {
+                            $data['lesson_id'] = null;
+                            $this->errors[$value] = "Le cours dont la référence est \"$value\" n'a pas été trouvé.";
+                        } else {
+                            $data['lesson_id'] = $lesson->id;
+                        }
+
                     } elseif ($i > 11) {
                         if ($value !== '') {
                             $service = $services->firstWhere('ref', $servicesFound[($i + 1)]);
@@ -108,7 +114,7 @@ class UserImportHandler
             ];
 
         } else {
-            return [null, ['Impossible de charger le fichier'], null];
+            return [null, ['Impossible de charger le fichier']];
         }
     }
 
@@ -125,6 +131,7 @@ class UserImportHandler
                 'firstname',
                 'lastname',
                 'email',
+                'lesson_id',
                 'password',
                 'phone',
                 'pro',
@@ -141,10 +148,6 @@ class UserImportHandler
                 }
             }
 
-            if ($roles[$data['role']] === 'subscriber') {
-                $user->lesson_id = $this->lesson->id;
-            }
-
             $user->save();
             $user->assignRole($roles[$data['role']]);
 
@@ -152,12 +155,14 @@ class UserImportHandler
                 $user->suggestions()->sync($data['services']);
             }
 
-            $subscription = new Subscription();
-            $subscription->user_id = $user->id;
-            $subscription->lesson_id = $this->lesson->id;
-            $subscription->status = $user->hasRole('guest') ? Subscription::PENDING : Subscription::VALIDATED;
-            $subscription->selected_time = $data['hour'] ?? '';
-            $subscription->save();
+            if (in_array($user->role, ['guest', 'presubscribed', 'subscriber', 'substitute', 'archived']) && isset($data['lesson_id'])) {
+                $subscription = new Subscription();
+                $subscription->user_id = $user->id;
+                $subscription->lesson_id = $user->lesson_id;
+                $subscription->status = $user->hasRole('guest') ? Subscription::PENDING : Subscription::VALIDATED;
+                $subscription->selected_time = $data['hour'] ?? '';
+                $subscription->save();
+            }
 
             $this->total++;
 
