@@ -71,6 +71,7 @@ class User extends Authenticatable
     protected $appends = [
         'full_name',
         'role',
+        'lesson_title',
     ];
 
     public function yearDatas(): HasMany
@@ -116,5 +117,10 @@ class User extends Authenticatable
     public function getRoleAttribute()
     {
         return $this->getRoleNames()->first();
+    }
+
+    public function getLessonTitleAttribute()
+    {
+        return $this->lesson()->count() ? $this->lesson->title : 'Aucun';
     }
 }

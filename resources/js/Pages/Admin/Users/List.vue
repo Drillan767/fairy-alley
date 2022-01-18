@@ -34,7 +34,7 @@
                                 <template #table-row="props">
                                     <div v-if="props.column.field === 'lesson'">
                                         <template v-if="props.row.subscription">
-                                            {{ props.row.subscription.lesson.title }}
+                                            {{ props.row.lesson_title }}
                                         </template>
                                         <template v-else>
                                             Aucun
@@ -100,7 +100,7 @@ export default {
             required: true,
         },
         lessons: Array,
-        roles: Array,
+        roles: Object,
         flash: {
             type: Object,
             required: false
@@ -113,7 +113,6 @@ export default {
         const roleList = computed(() => {
             let list = [];
             let roles = toRaw(props.roles)
-            console.log(roles);
             for (const property in roles) {
                 list.push({
                     value: property,
@@ -123,8 +122,6 @@ export default {
 
             return list;
         })
-
-        console.log(toRaw(roleList));
 
         const searchOptions = {
             enabled: true,
@@ -191,7 +188,7 @@ export default {
                     filterFn: (data, filterString) => {
                         const lessonId = parseInt(filterString);
                         if (lessonId === 0) {
-                            return data === null;
+                            return data === undefined
                         } else {
                             return data && data.id === lessonId;
                         }
@@ -209,6 +206,9 @@ export default {
                     enabled: true,
                     placeholder: 'Choisir',
                     filterDropdownItems: roleList.value,
+                    filterFn: (data, filterString) => {
+                        return data === filterString;
+                    }
                 }
             },
             {
