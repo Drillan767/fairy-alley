@@ -196,10 +196,6 @@ export default {
                 }
             },
             {
-                label: 'Heure',
-                field: 'hour',
-            },
-            {
                 label: "Statut",
                 field: 'role',
                 filterOptions: {
@@ -220,6 +216,7 @@ export default {
         function deleteUser(user) {
             const feminine = {
                 user: user.gender === 'F' ? 'utilisatrice' : 'utilisateur',
+                archived: user.gender === 'F' ? 'archivée' : 'archivé',
                 deleted: user.gender === 'F' ? 'supprimée' : 'supprimé',
                 if: user.gender === 'F' ? 'si elle' : "s'il",
             };
@@ -228,23 +225,34 @@ export default {
                 icon: 'warning',
                 title: "Supprimer l'utilisateur ?",
                 showCancelButton: true,
+                showDenyButton: true,
                 cancelButtonText: 'Annuler',
+                denyButtonText: 'Archiver',
                 confirmButtonText: 'Supprimer',
                 confirmButtonColor: '#DC2626',
                 html: `<p>L'${feminine.user} ${user.full_name} est sur le point d'être ${feminine.deleted}.</p><br />
-                        <p>Cela supprimera également ses informations ainsi que ses documents liés ${feminine.if} en avait.</p><br />
+                        <p>Vous pouvez également archiver l'${feminine.user}, et l'accès à son compte lui sera désormais impossible.</p><br />
+                        <p>Si vous décidez de sa suppression, cela supprimera également ses informations ainsi que ses documents liés ${feminine.if} en avait.</p><br />
                         <p>Cette action est irreversible. Continuer ?</p>`
             })
                 .then((result) => {
                     if (result.isConfirmed) {
                         axios.delete(route('utilisateurs.destroy', {utilisateur: user.id}))
-                        .then(() => {
-                            this.userList = props.users.filter((u) => u.id !== user.id)
-                            Swal.fire({
-                                icon: 'success',
-                                title: `${user.full_name} a été ${feminine.deleted} avec succès.`
+                            .then(() => {
+                                this.userList = props.users.filter((u) => u.id !== user.id)
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: `${user.full_name} a été ${feminine.deleted} avec succès.`
+                                })
                             })
-                        })
+                    } else if (result.isDenied) {
+                        axios.post(route('utilisateurs.archive', {user: user.id}))
+                            .then(() => {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: `${user.full_name} a été ${feminine.archived} avec succès.`
+                                })
+                            })
                     }
                 });
         }

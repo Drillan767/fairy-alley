@@ -10,6 +10,12 @@
             <div class="overflow-x-auto">
                 <form @submit.prevent="submit">
                     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                        <div class="flex items-center bg-green-500 text-white text-sm font-bold px-4 py-3 mb-5" role="alert" v-if="flash.success">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <p class="ml-5">{{ flash.success }}</p>
+                        </div>
                         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                             <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
                                 <h2 class="font-semibold text-l text-gray-700 leading-tight mb-5">
@@ -124,12 +130,20 @@
                                 <h2 class="font-semibold text-l text-gray-700 leading-tight mb-5">
                                     Information sur le cours choisi
                                 </h2>
-                                <a class="btn btn-sm" :href="route('cours.edit', {cour: currentUser.lesson.id})" target="_blank">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                                    </svg>
-                                    {{ currentUser.lesson.title }}
-                                </a>
+
+                                <div class="flex">
+                                    <a class="btn btn-sm" :href="route('cours.edit', {cour: currentUser.lesson.id})" target="_blank">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                        </svg>
+                                        {{ currentUser.lesson.title }}
+                                    </a>
+
+                                    <jet-button-secondary class="ml-5" @click.prevent="changeLesson">
+                                        Changer le cours
+                                    </jet-button-secondary>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -198,6 +212,7 @@
 <script>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import JetButton from '@/Jetstream/Button.vue';
+import JetButtonSecondary from "@/Jetstream/SecondaryButton.vue"
 import JetInput from '@/Jetstream/Input.vue';
 import JetTextarea from '@/Jetstream/Textarea.vue';
 import JetLabel from '@/Jetstream/Label.vue';
@@ -206,13 +221,24 @@ import { useForm } from "@inertiajs/inertia-vue3";
 import { SmartTagz } from "smart-tagz";
 import "smart-tagz/dist/smart-tagz.css";
 import {computed, toRaw} from "vue";
+import Swal from "sweetalert2";
+import {Inertia} from "@inertiajs/inertia";
 
 export default {
     title () {
         return this.currentUser.full_name;
     },
 
-    props: ['currentUser', 'services'],
+    props: {
+        currentUser: Object,
+        services: Array,
+        lessons: Object,
+        flash: {
+            type: Object,
+            required: false
+        },
+    },
+
     components: {
         AdminLayout,
         JetButton,
@@ -221,6 +247,7 @@ export default {
         JetLabel,
         JetInputError,
         SmartTagz,
+        JetButtonSecondary,
     },
 
     setup (props) {
@@ -252,12 +279,38 @@ export default {
             }
         })
 
+        const changeLesson = async () => {
+            const {value: lesson} = await Swal.fire({
+                icon: 'info',
+                title: 'Sélectionnez un nouveau cours',
+                input: 'select',
+                inputOptions: props.lessons,
+                inputPlaceholder: 'Sélectionner...',
+                showCancelButton: true,
+                cancelButtonText: 'Annuler',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Veuillez sélectionner un cours'
+                    }
+                }
+            })
+
+            if (lesson) {
+                Inertia.post(route('utilisateurs.change-lesson'), {
+                    lid: lesson,
+                    user: props.currentUser.id
+                })
+
+            }
+        }
+
         const availableServices = computed(() => {
             return props.services.map((s) => s.title);
         })
 
         return {
             form,
+            changeLesson,
             availableServices,
             defaultServices,
             serviceSelected,

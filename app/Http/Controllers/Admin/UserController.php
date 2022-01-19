@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendLessonChanged;
 use App\Http\Requests\{SubscriptionValidationRequest, UserUpdateRequest};
 use Illuminate\Http\Request;
 use App\Models\{Lesson, Service, Subscription, User};
@@ -36,20 +37,40 @@ class UserController extends Controller
 
     public function show(User $utilisateur)
     {
-        $services = Service::all(['id', 'title']);
         $utilisateur->load('currentYearData.file', 'lesson', 'subscription', 'suggestions', 'firstContactData');
+        $lessons = Lesson::all('id', 'title')->mapWithKeys(fn ($l) => [$l->id => $l->title]);
 
         return Inertia::render('Admin/Users/Show', [
             'currentUser' => $utilisateur,
-            'services' => $services,
+            'services' => Service::all(['id', 'title']),
+            'lessons' => $lessons,
         ]);
+    }
+
+    public function changeLesson(Request $request)
+    {
+        $validated = $request->validate([
+            'user' => ['required', 'exists:users,id'],
+            'lid' => ['required', 'exists:lessons,id'],
+        ]);
+
+        $user = User::with('subscription', 'lesson')->find($validated['user']);
+        if ($validated['lid'] !== $user->lesson_id) {
+            $user->lesson_id = $validated['lid'];
+            $user->save();
+            $user->subscription->update(['lesson_id' => $validated['lid']]);
+
+            SendLessonChanged::dispatchAfterResponse($user, $validated['lid']);
+            return redirect()->back()->with('success', 'Le cours a bien été changé.');
+            // return redirect()->back()
+        }
     }
 
     public function edit(User $utilisateur)
     {
         return Inertia::render('Admin/Users/Edit',
             [
-                'subscriber' => $utilisateur->load('subscription.lesson', 'yearDatas')
+                'subscriber' => $utilisateur->load('subscription.lesson', 'yearDatas'),
             ]
         );
     }
@@ -82,17 +103,20 @@ class UserController extends Controller
         return redirect()->route('utilisateurs.index')->with('success', 'Utilisateur mis à jour avec succès.');
     }
 
-    public function destroy(User $user)
+    public function destroy(User $utilisateur)
     {
-        if (auth()->user()->role === 'administrator') {
-            $user->yearDatas->each->delete();
-            $user->files->each->delete();
-            $user->subscription()->delete();
-            $user->roles()->detach();
-            $user->delete();
-        } else {
-            abort(403);
-        }
+        $utilisateur->delete();
+    }
+
+    public function updateLesson(Request $request)
+    {
+
+    }
+
+    public function archiveUser(User $user)
+    {
+        $user->roles()->detach();
+        $user->assignRole('archived');
     }
 
     public function preSubscribed(): Response

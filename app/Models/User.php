@@ -41,6 +41,20 @@ class User extends Authenticatable
         'other_data',
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting( function ($user) {
+            $user->yearDatas()->delete();
+            $user->files()->delete();
+            $user->subscription()->delete();
+            $user->suggestions()->detach();
+            $user->roles()->detach();
+            $user->firstContactData->delete();
+        });
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *

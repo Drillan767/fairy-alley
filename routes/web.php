@@ -9,9 +9,7 @@ use App\Http\Controllers\Admin\{AdminController,
 };
 use App\Http\Controllers\FirstContactController;
 use App\Http\Controllers\User\SubscriptionController;
-use App\Notifications\TestNotification;
 use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\HomeController;
@@ -45,6 +43,28 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
         Route::get('/administration', [AdminController::class, 'index'])->name('admin.index');
         Route::post('/services/order', [ServiceController::class, 'order'])->name('services.order');
 
+        Route::resource('premiers-contacts', FirstContactController::class)
+            ->except('edit', 'update')
+            ->parameters(['premiers-contacts' => 'contact']);
+
+        Route::controller(UserController::class)->group(function () {
+            Route::get('/utilisateurs', 'index')->name('utilisateurs.index');
+            Route::post('/change-lesson', 'changeLesson')->name('utilisateurs.change-lesson');
+            Route::post('/preinscription', 'subscribe')->name('utilisateurs.subscribe');
+            Route::post('archive/{user}', 'archiveUser')->name('utilisateurs.archive');
+            Route::get('/preinscriptions', 'preSubscribed')->name('utilisateurs.presubscribed');
+            Route::get('/preinscription/{user}/editer', 'subscribing')->name('utilisateurs.subscribing');
+            Route::put('/preinscription/{user}', 'updateSubscription')->name('utilisateurs.updateSubscription');
+        });
+
+        Route::get('/cours/{cours}/utilisateurs', [LessonController::class, 'users'])->name('cours.users');
+
+        Route::controller(ToolsController::class)->group(function () {
+            Route::get('/importer-utilisateurs', 'importForm')->name('import.form');
+            Route::post('/import-users', 'importUsers')->name('import.store');
+            Route::get('/export-holidays', 'exportHolidays')->name('export.holidays');
+        });
+
         Route::resources([
             'pages' => PageController::class,
             'cours' => LessonController::class,
@@ -55,30 +75,17 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
             'services' => ServiceController::class,
         ]);
 
-        Route::resource('premiers-contacts', FirstContactController::class)
-            ->except('edit', 'update')
-            ->parameters(['premiers-contacts' => 'contact']);
-
-
-        Route::get('/cours/{cours}/utilisateurs', [LessonController::class, 'users'])->name('cours.users');
-        Route::get('/utilisateurs', [UserController::class, 'index'])->name('utilisateurs.index');
-        Route::post('/preinscription', [UserController::class, 'subscribe'])->name('utilisateurs.subscribe');
-        Route::get('/preinscriptions', [UserController::class, 'preSubscribed'])->name('utilisateurs.presubscribed');
-        Route::get('/preinscription/{user}/editer', [UserController::class, 'subscribing'])->name('utilisateurs.subscribing');
-        Route::put('/preinscription/{user}', [UserController::class, 'updateSubscription'])->name('utilisateurs.updateSubscription');
-
-        Route::get('/importer-utilisateurs', [ToolsController::class, 'importForm'])->name('import.form');
-        Route::post('/import-users', [ToolsController::class, 'importUsers'])->name('import.store');
-        Route::get('/export-holidays', [ToolsController::class, 'exportHolidays'])->name('export.holidays');
     });
 
     Route::get('/profil', [SubscriptionController::class, 'index'])->name('profile.index');
 
     Route::middleware(['role:subscriber'])->group(function() {
-        Route::get('/inscription-cours/{lesson}', [SubscriptionController::class, 'create'])->name('subscription.create');
-        Route::get('/inscription/cours/{lesson}/editer', [SubscriptionController::class, 'edit'])->name('subscription.edit');
-        Route::post('/subscription', [SubscriptionController::class, 'store'])->name('subscription.store');
-        Route::put('/subscription', [SubscriptionController::class, 'update'])->name('subscription.update');
+        Route::controller(SubscriptionController::class)->group(function () {
+            Route::get('/inscription-cours/{lesson}', 'create')->name('subscription.create');
+            Route::get('/inscription/cours/{lesson}/editer', 'edit')->name('subscription.edit');
+            Route::post('/subscription', 'store')->name('subscription.store');
+            Route::put('/subscription', 'update')->name('subscription.update');
+        });
     });
 });
 
