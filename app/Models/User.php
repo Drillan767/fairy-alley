@@ -51,7 +51,7 @@ class User extends Authenticatable
             $user->subscription()->delete();
             $user->suggestions()->detach();
             $user->roles()->detach();
-            $user->firstContactData->delete();
+            $user->firstContactData()->delete();
         });
     }
 

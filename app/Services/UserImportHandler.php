@@ -81,7 +81,7 @@ class UserImportHandler
                             default: $data[$mapped[$i]] = $value;
                         }
                     } elseif ($i === 11) {
-                        $lesson = $lessons->firstWhere('ref', $value);
+                        $lesson = $lessons->firstWhere('ref', trim(preg_replace('/\s+/', ' ', $value)));
                         if (!$lesson) {
                             $data['lesson_id'] = null;
                             $this->errors[$value] = "Le cours dont la référence est \"$value\" n'a pas été trouvé.";

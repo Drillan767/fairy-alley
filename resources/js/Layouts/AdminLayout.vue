@@ -85,6 +85,7 @@
                                                 <jet-dropdown-link href="#">
                                                     Importer des témoignages
                                                 </jet-dropdown-link>
+                                                <div class="border-t border-gray-100"></div>
                                                 <jet-dropdown-link href="#">
                                                     Musiques
                                                 </jet-dropdown-link>

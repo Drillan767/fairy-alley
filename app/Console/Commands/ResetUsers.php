@@ -39,7 +39,7 @@ class ResetUsers extends Command
     public function handle()
     {
         $admins = User::role('administrator')->pluck('id');
-        User::whereNotIn('id', $admins)->get()->map(function (User $user) {
+        User::whereNotIn('id', $admins)->get()->each(function (User $user) {
             $user->yearDatas()->delete();
             $user->files()->delete();
             $user->subscription()->delete();
@@ -49,6 +49,6 @@ class ResetUsers extends Command
             $user->delete();
         });
 
-        return 0;
+        return self::SUCCESS;
     }
 }

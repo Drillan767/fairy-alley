@@ -2,7 +2,6 @@ import { createApp, h } from 'vue';
 import { App as InertiaApp, plugin as InertiaPlugin } from '@inertiajs/inertia-vue3';
 import { InertiaProgress } from '@inertiajs/progress';
 import { contact } from "./Modules/landing";
-import PrimeVue from 'primevue/config';
 import mitt from 'mitt';
 import 'dynamic-import-polyfill';
 import titleMixin from './Modules/titleMixin';
@@ -37,8 +36,7 @@ const created = createApp({
 })
     .mixin({ methods: { route } })
     .mixin(titleMixin)
-    .use(InertiaPlugin)
-    .use(PrimeVue);
+    .use(InertiaPlugin);
 
 created.config.globalProperties.emitter = emitter
 created.mount(app);
