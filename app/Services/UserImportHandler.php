@@ -120,7 +120,10 @@ class UserImportHandler
 
     private function createUser($data)
     {
-        $roles = array_flip(config('roles'));
+        $roleList = config('roles');
+        $roles = collect($roleList)->mapWithKeys(function ($role, $i) {
+            return [$role['display'] => $i];
+        });
 
         if (User::where('email', $data['email'])->count()) {
             $this->errors[] = "L'email {$data['email']}' est déjà pris.";
