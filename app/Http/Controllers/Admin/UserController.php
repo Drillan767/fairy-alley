@@ -20,7 +20,7 @@ class UserController extends Controller
     public function index(): Response
     {
         $roles = config('roles');
-        $lessons = Lesson::all('id', 'title');
+        $lessons = Lesson::orderBy('title')->get('id', 'title');
         $users = User::with('subscription.lesson')->get();
 
         return Inertia::render('Admin/Users/List', compact('users', 'lessons', 'roles'));
