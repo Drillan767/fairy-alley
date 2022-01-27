@@ -17,7 +17,8 @@ class LessonController extends Controller
 
     public function index()
     {
-        return Inertia::render('Admin/Lessons/Index', ['lessons' => Lesson::all()]);
+        $lessons = Lesson::orderBy('title')->get();
+        return Inertia::render('Admin/Lessons/Index', compact('lessons'));
     }
 
     public function create()

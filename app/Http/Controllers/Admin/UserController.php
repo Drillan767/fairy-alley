@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\UserRoleChanged;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendLessonChanged;
 use App\Http\Requests\{SubscriptionValidationRequest, UserUpdateRequest};
@@ -37,13 +38,16 @@ class UserController extends Controller
 
     public function show(User $utilisateur)
     {
+        // TODO: Limiter les rôles affichés à ce qui peut être sélectionnable, ie: presubscribed => subscriber, guest, substitute.
         $utilisateur->load('currentYearData.file', 'lesson', 'subscription', 'suggestions', 'firstContactData');
         $lessons = Lesson::all('id', 'title')->mapWithKeys(fn ($l) => [$l->id => $l->title]);
+        $roles = config('roles');
 
         return Inertia::render('Admin/Users/Show', [
             'currentUser' => $utilisateur,
             'services' => Service::all(['id', 'title']),
             'lessons' => $lessons,
+            'roles' => $roles,
         ]);
     }
 
@@ -62,8 +66,21 @@ class UserController extends Controller
 
             SendLessonChanged::dispatchAfterResponse($user, $validated['lid']);
             return redirect()->back()->with('success', 'Le cours a bien été changé.');
-            // return redirect()->back()
         }
+    }
+
+    public function changeRole(Request $request)
+    {
+        $validated = $request->validate([
+            'user' => ['required', 'exists:users,id'],
+            'role' => ['required', 'string', 'exists:roles,name'],
+        ]);
+
+        $user = User::select('id')->find($validated['user']);
+        $user->syncRoles([$validated['role']]);
+        event(new UserRoleChanged($user, $validated['role']));
+
+        return redirect()->back()->with('success', 'Le statut de la personne a bien été changé.');
     }
 
     public function edit(User $utilisateur)

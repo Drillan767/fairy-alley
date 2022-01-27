@@ -124,6 +124,30 @@
                             </div>
                         </div>
                     </div>
+                    <div class="max-w-7xl mx-auto mt-5 sm:px-6 lg:px-8 mb-5">
+                        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
+                            <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
+                                <h2 class="font-semibold text-l text-gray-700 leading-tight mb-5">
+                                    Statut de l'utilisateur
+                                </h2>
+
+                                <div class="flex items-center">
+                                    <p><span class="font-bold">
+                                        Statut actuel :
+                                    </span>
+                                    {{ roles[currentUser.role].display }}
+                                    </p>
+
+                                    <template v-if="currentUser.role !== 'administrator'">
+                                        <jet-button-secondary class="ml-5" @click.prevent="changeRole">
+                                            Changer le rôle
+                                        </jet-button-secondary>
+                                    </template>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="max-w-7xl mx-auto mt-5 sm:px-6 lg:px-8 mb-5" v-if="currentUser.lesson">
                         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                             <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
@@ -220,7 +244,7 @@ import JetInputError from '@/Jetstream/InputError.vue';
 import { useForm } from "@inertiajs/inertia-vue3";
 import { SmartTagz } from "smart-tagz";
 import "smart-tagz/dist/smart-tagz.css";
-import {computed, toRaw} from "vue";
+import {computed, toRaw, ref, onMounted} from "vue";
 import Swal from "sweetalert2";
 import {Inertia} from "@inertiajs/inertia";
 
@@ -232,6 +256,7 @@ export default {
     props: {
         currentUser: Object,
         services: Array,
+        roles: Object,
         lessons: Object,
         flash: {
             type: Object,
@@ -257,9 +282,17 @@ export default {
             ...props.currentUser
         })
 
+        const roleList = ref({});
+
         const submit = () => {
             form.post(route('utilisateurs.update', {utilisateur: props.currentUser.id}))
         }
+
+        onMounted(() => {
+            for (const key in props.roles) {
+                roleList.value[key] = props.roles[key].display;
+            }
+        })
 
         const serviceSelected = (items) => {
             let serviceList = [];
@@ -300,7 +333,42 @@ export default {
                     lid: lesson,
                     user: props.currentUser.id
                 })
+            }
+        }
 
+        const changeRole = async () => {
+            console.log('coucou ?');
+            const {value: role} = await Swal.fire({
+                icon: 'info',
+                title: 'Sélectionnez un nouveau rôle',
+                input: 'select',
+                inputOptions: roleList.value,
+                inputPlaceholder: 'Sélectionner...',
+                showCancelButton: true,
+                cancelButtonText: 'Annuler',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Veuillez sélectionner un rôle'
+                    }
+                }
+            })
+
+            if (role) {
+                const choice = await Swal.fire({
+                    icon: 'warning',
+                    title: `Confirmer le rôle "${props.roles[role].display}" ?`,
+                    html: `<p>${props.roles[role].warning}</p><br /><p>Continuer ?</p>`,
+                    confirmButtonText: 'Confirmer',
+                    showCancelButton: true,
+                    cancelButtonText: 'Annuler',
+                })
+
+                if (choice.isConfirmed) {
+                    Inertia.post(route('utilisateurs.change-role'), {
+                        role: role,
+                        user: props.currentUser.id
+                    })
+                }
             }
         }
 
@@ -311,6 +379,7 @@ export default {
         return {
             form,
             changeLesson,
+            changeRole,
             availableServices,
             defaultServices,
             serviceSelected,

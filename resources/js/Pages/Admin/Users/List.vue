@@ -53,7 +53,7 @@
                                         </template>
                                     </div>
                                     <div v-else-if="props.column.field === 'role'">
-                                        {{ roles[props.row.role] }}
+                                        {{ roles[props.row.role].display }}
                                     </div>
                                     <div v-else-if="props.column.field === 'actions'" class="flex justify-end">
                                         <Link :href="route('utilisateurs.show', {utilisateur: props.row.id})">
@@ -116,7 +116,7 @@ export default {
             for (const property in roles) {
                 list.push({
                     value: property,
-                    text: props.roles[property],
+                    text: props.roles[property].display,
                 })
             }
 
@@ -147,7 +147,8 @@ export default {
 
         const onColumnFilter = (params) => {
             const filterValue = toRaw(params.columnFilters);
-            localStorage.setItem('filter', JSON.stringify(filterValue));
+            const filters = Object.keys(filterValue);
+            filters.forEach((f) => localStorage.setItem(f, filterValue[f]))
         };
 
         const columns = [
@@ -174,7 +175,7 @@ export default {
                 field: 'lesson',
                 filterOptions: {
                     enabled: true,
-                    filterValue: JSON.parse(localStorage.getItem('filter'))?.lesson,
+                    filterValue: localStorage.getItem('lesson'),
                     placeholder: 'Sélectionner...',
                     filterDropdownItems: [
                         {
@@ -200,11 +201,9 @@ export default {
                 field: 'role',
                 filterOptions: {
                     enabled: true,
+                    filterValue: localStorage.getItem('role'),
                     placeholder: 'Choisir',
                     filterDropdownItems: roleList.value,
-                    filterFn: (data, filterString) => {
-                        return data === filterString;
-                    }
                 }
             },
             {

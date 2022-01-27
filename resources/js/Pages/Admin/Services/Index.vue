@@ -169,6 +169,7 @@ export default {
                         this.servicesList = this.servicesList.filter((s) => s.id !== service.id)
                         Swal.fire({
                             icon: 'success',
+                            toast: true,
                             title: 'Service supprimé.',
                             text: 'Le service a bien été supprimée'
                         })
