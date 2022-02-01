@@ -1,12 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\{AdminController,
+    FileController,
     PageController,
     LessonController,
     ServiceController,
     UserController,
-    ToolsController,
-};
+    ToolsController};
 use App\Http\Controllers\FirstContactController;
 use App\Http\Controllers\User\SubscriptionController;
 use Illuminate\Foundation\Application;
@@ -50,12 +50,19 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
         Route::controller(UserController::class)->group(function () {
             Route::get('/utilisateurs', 'index')->name('utilisateurs.index');
             Route::post('/change-lesson', 'changeLesson')->name('utilisateurs.change-lesson');
-            Route::post('/change-lesson', 'changeRole')->name('utilisateurs.change-role');
+
+            Route::post('/change-role', 'changeRole')->name('utilisateurs.change-role');
             Route::post('/preinscription', 'subscribe')->name('utilisateurs.subscribe');
             Route::post('archive/{user}', 'archiveUser')->name('utilisateurs.archive');
             Route::get('/preinscriptions', 'preSubscribed')->name('utilisateurs.presubscribed');
             Route::get('/preinscription/{user}/editer', 'subscribing')->name('utilisateurs.subscribing');
             Route::put('/preinscription/{user}', 'updateSubscription')->name('utilisateurs.updateSubscription');
+        });
+
+        Route::controller(FileController::class)->prefix('/media')->group(function() {
+            Route::get('/{media}', 'index')
+                ->where('media', '(musiques|photos|videos)')
+                ->name('files.index');
         });
 
         Route::get('/cours/{cours}/utilisateurs', [LessonController::class, 'users'])->name('cours.users');

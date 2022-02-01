@@ -26,24 +26,22 @@
                             <div class="pb-2.5 flex justify-end">
                                 <button
                                     class="btn btn-sm mr-1"
-                                    :class="{'btn-ghost': filter !== 'asc'}"
-                                    @click="sortPages('asc')"
+                                    :class="{'btn-ghost': sort !== 'desc'}"
+                                    @click="sortPages('desc')"
                                 >
                                     Alphabetique
-                                    &nbsp;
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
                                     </svg>
 
                                 </button>
                                 <button
                                     class="btn btn-sm mr-1"
-                                    :class="{'btn-ghost': filter !== 'desc'}"
-                                    @click="sortPages('desc')"
+                                    :class="{'btn-ghost': sort !== 'asc'}"
+                                    @click="sortPages('asc')"
                                 >
                                     Alphabetique
-                                    &nbsp;
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
                                     </svg>
                                 </button>
@@ -139,19 +137,28 @@ export default {
         return {
             pageList: [],
             filter: '',
+            sort: '',
         }
     },
 
     mounted() {
         this.pageList = this.pages
+        const sort = localStorage.getItem('page_sort');
+        if (sort) {
+            this.sortPages(sort);
+        }
     },
 
     methods: {
         sortPages(method) {
             if (method === 'asc') {
                 this.pageList.sort(((a, b) => a['title'] > b['title'] ? 1 : -1))
+                localStorage.setItem('page_sort', 'asc');
+                this.sort = 'asc';
             } else {
                 this.pageList.sort(((a, b) => a['title'] < b['title'] ? 1 : -1))
+                localStorage.setItem('page_sort', 'desc');
+                this.sort = 'desc';
             }
         },
 

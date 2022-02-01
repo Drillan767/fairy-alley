@@ -20,7 +20,7 @@ class UserController extends Controller
     public function index(): Response
     {
         $roles = config('roles');
-        $lessons = Lesson::orderBy('title')->get('id', 'title');
+        $lessons = Lesson::orderBy('title')->get(['id', 'title']);
         $users = User::with('subscription.lesson')->get();
 
         return Inertia::render('Admin/Users/List', compact('users', 'lessons', 'roles'));
@@ -45,7 +45,7 @@ class UserController extends Controller
 
         return Inertia::render('Admin/Users/Show', [
             'currentUser' => $utilisateur,
-            'services' => Service::all(['id', 'title']),
+            'services' => Service::orderBy('title')->get(['id', 'title']),
             'lessons' => $lessons,
             'roles' => $roles,
         ]);
