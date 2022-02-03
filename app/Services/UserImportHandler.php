@@ -158,7 +158,7 @@ class UserImportHandler
                 $user->suggestions()->sync($data['services']);
             }
 
-            if (in_array($user->role, ['guest', 'presubscribed', 'subscriber', 'substitute', 'archived']) && isset($data['lesson_id'])) {
+            if (in_array($user->role, ['guest', 'presubscribed', 'subscriber', 'substitute', 'archived', 'administrator']) && isset($data['lesson_id'])) {
                 $subscription = new Subscription();
                 $subscription->user_id = $user->id;
                 $subscription->lesson_id = $user->lesson_id;

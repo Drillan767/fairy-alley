@@ -42,7 +42,7 @@
                                 <div class="mt-4">
                                     <jet-label value="Genre" />
                                     <label class="inline-flex items-center">
-                                        <input type="radio" class="form-radio" name="accountType" value="M" v-model="form.gender" :checked="form.gender === 'M'">
+                                        <input type="radio" class="form-radio" name="accountType" value="H" v-model="form.gender" :checked="form.gender === 'M'">
                                         <span class="ml-2">Homme</span>
                                     </label>
                                     <label class="inline-flex items-center ml-6">
