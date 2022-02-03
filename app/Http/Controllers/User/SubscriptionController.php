@@ -36,7 +36,7 @@ class SubscriptionController extends Controller
                     'fillMode' => 'solid',
                 ],
 
-                'dates' => collect($user->lesson->schedule)->map(fn($date) => Carbon::parse($date)->format('Y/m/d'))
+                'dates' => $user->lesson->schedule,
             ]];
         }
 
