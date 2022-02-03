@@ -28,7 +28,7 @@ class UserUpdateRequest extends UserCoordinatesRequest
             'firstname' => ['required', 'string'],
             'lastname' => ['required', 'string'],
             'email' => ['required', 'email:rfc,dns'],
-            'gender' => ['required', 'in:M,F'],
+            'gender' => ['required', 'in:H,F'],
             'birthday' => ['nullable', 'date_format:Y-m-d'],
             'other_data' => ['nullable', 'string'],
             'suggestions' => ['nullable', 'array'],
