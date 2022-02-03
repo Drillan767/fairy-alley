@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionRequest;
 use App\Models\Lesson;
 use App\Services\SubscriptionHandler;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -18,19 +19,28 @@ class SubscriptionController extends Controller
 
     public function index(): Response
     {
-        $user = request()->user();
-        if ($user->lesson === null && !$user->subscription()->exists()) {
-            $subscribed = false;
-            $data = Lesson::all();
-            $headlines = collect(config('lesson.headlines'))->firstWhere('status_id', 0);
-        } else {
-            $subscribed = true;
-            $data = null;
-            $user->load('subscription.lesson');
-            $headlines = collect(config('lesson.headlines'))->firstWhere('status_id', $user->subscription->status);
+        $attributes = [];
+        $user = auth()->user();
+        $headlines = collect(config('lesson.headlines'))->firstWhere('status_id', $user->subscription->status);
+
+        if (in_array($user->role, ['subscriber', 'guest', 'substitute'])) {
+            $user->load('lesson');
+            $lesson = $user->lesson->title;
+
+            $attributes = [[
+                'popover' => [
+                    'label' => "Cours du $lesson",
+                ],
+                'highlight' => [
+                    'color' => 'purple',
+                    'fillMode' => 'solid',
+                ],
+
+                'dates' => collect($user->lesson->schedule)->map(fn($date) => Carbon::parse($date)->format('Y/m/d'))
+            ]];
         }
 
-        return Inertia::render('User/Landing', compact('subscribed', 'data', 'headlines'));
+        return Inertia::render('User/Landing', compact( 'headlines', 'attributes'));
     }
 
     public function create(Lesson $lesson): Response|RedirectResponse

@@ -148,7 +148,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="max-w-7xl mx-auto mt-5 sm:px-6 lg:px-8 mb-5" v-if="currentUser.lesson">
+                    <div class="max-w-7xl mx-auto mt-5 sm:px-6 lg:px-8 mb-5">
                         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                             <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
                                 <h2 class="font-semibold text-l text-gray-700 leading-tight mb-5">
@@ -156,16 +156,26 @@
                                 </h2>
 
                                 <div class="flex">
-                                    <a class="btn btn-sm" :href="route('cours.edit', {cour: currentUser.lesson.id})" target="_blank">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                                        </svg>
-                                        {{ currentUser.lesson.title }}
-                                    </a>
+                                    <template v-if="currentUser.lesson">
+                                        <a class="btn btn-sm" :href="route('cours.edit', {cour: currentUser.lesson.id})" target="_blank">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                            </svg>
+                                            {{ currentUser.lesson.title }}
+                                        </a>
 
-                                    <jet-button-secondary class="ml-5" @click.prevent="changeLesson">
-                                        Changer le cours
-                                    </jet-button-secondary>
+                                        <jet-button-secondary class="ml-5" @click.prevent="changeLesson">
+                                            Changer le cours
+                                        </jet-button-secondary>
+                                    </template>
+                                    <template v-else>
+                                        <span class="btn btn-sm">Aucun</span>
+
+                                        <jet-button-secondary class="ml-5" @click.prevent="changeLesson">
+                                            Choisir un cours
+                                        </jet-button-secondary>
+                                    </template>
+
                                 </div>
 
                             </div>

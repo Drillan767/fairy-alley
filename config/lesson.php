@@ -29,11 +29,6 @@ return [
     'max_users' => 20,
     'headlines' => [
         [
-            'status_id' => 0,
-            'title' => "Vous n'êtes pas encore inscrit(e) à un cours.",
-            'subtitle' => "Vous pouvez dès à présent en sélectionner un en cliquant sur celui qui vous intéresse parmis la liste ci-dessous :",
-        ],
-        [
             'status_id' => 'En attente',
             'title' => 'Votre inscription est en cours de validation.',
             'subtitle' => "Vous recevrez un email lors de la confirmation de celle-ci ou pour toute demande d'informations complémentaires.",

@@ -23,8 +23,8 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <LessonList v-if="!subscribed" :data="data" :headlines="headlines"/>
-                    <CurrentLesson v-else :subscription="user.subscription" :headlines="headlines" />
+<!--                    <LessonList v-if="!subscribed" :data="data" :headlines="headlines"/>-->
+                    <CurrentLesson :lesson="user.lesson" :headlines="headlines" :attributes="attributes" />
                 </div>
             </div>
         </div>
@@ -34,15 +34,14 @@
 <script>
 import UserLayout from '@/Layouts/UserLayout.vue'
 import Welcome from '@/Jetstream/Welcome.vue'
-import LessonList from "@/Pages/User/LessonList.vue";
-import CurrentLesson from "@/Pages/User/CurrentLesson.vue";
+import LessonList from "./LessonList.vue";
+import CurrentLesson from "./CurrentLesson.vue";
 
 export default {
     title: 'Profil',
     props: {
-        subscribed: Boolean,
-        data: Object|Array,
         user: Object,
+        attributes: Object,
         headlines: Object,
         flash: {
             type: Object,

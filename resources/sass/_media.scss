@@ -1,0 +1,20 @@
+.files {
+    display: flex;
+    flex-flow: row wrap;
+
+    .file {
+        background-clip: content-box;
+
+        &:hover {
+            @apply bg-gray-200
+        }
+    }
+
+    .media {
+        @apply w-1/4 mb-3 px-4;
+
+        p {
+            text-align: center;
+        }
+    }
+}
