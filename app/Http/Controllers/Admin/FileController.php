@@ -13,7 +13,7 @@ class FileController extends Controller
     {
         $mediaType = $request->media;
         $media = match ($mediaType) {
-            'videos' => Storage::disk('s3')->allFiles('Video Gym'),
+            'videos' => Storage::disk('s3')->allFiles('Videos Gym'),
             'photos' => Storage::disk('s3')->allFiles('Photos'),
             'musiques' => []
         };
