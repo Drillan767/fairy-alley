@@ -44,7 +44,9 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import CoolLightBox from 'vue-cool-lightbox';
+import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css';
 
 export default {
     title () {
@@ -53,10 +55,15 @@ export default {
     props: ['files', 'type'],
     components: {
         AdminLayout,
+        CoolLightBox,
     },
 
     setup() {
+        const index = null;
 
+        return {
+            index
+        }
     }
 }
 </script>

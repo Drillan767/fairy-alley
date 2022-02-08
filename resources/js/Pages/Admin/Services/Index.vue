@@ -33,6 +33,7 @@
                                     <th class="py-3 px-6 text-left">Titre</th>
                                     <th class="py-3 px-6 text-left">Référence</th>
                                     <th class="py-3 px-6 text-left">Page liée</th>
+                                    <th class="py-3 px-6 text-left">Page d'accueil</th>
                                     <th class="py-3 px-6 text-center">Actions</th>
                                 </tr>
                                 </thead>
@@ -47,6 +48,9 @@
                                                 <a :href="route('pages.show', {slug: element.page.slug})">
                                                     {{ element.page.title }}
                                                 </a>
+                                            </td>
+                                            <td>
+                                                {{ element.homepage ? 'Oui' : 'Non' }}
                                             </td>
                                             <td>
                                                 <div class="flex justify-center">
@@ -85,6 +89,7 @@ import Swal from "sweetalert2";
 import { Link } from "@inertiajs/inertia-vue3";
 import axios from "axios";
 export default {
+    title: 'Services',
     props: {
         services: Array,
         pages: Array,

@@ -22,7 +22,7 @@ class UserUpdateRequest extends UserCoordinatesRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'firstname' => ['required', 'string'],

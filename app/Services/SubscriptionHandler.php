@@ -38,8 +38,6 @@ class SubscriptionHandler
             'status' => Subscription::PENDING,
             'user_id' => $user_id,
             'lesson_id' => $request->get('lesson_id'),
-            'selected_time' => $request->get('schedule_choice1'),
-            'fallback_time' => $request->get('schedule_choice2'),
             'invites' => $request->get('invites') ?? [],
         ]);
     }
@@ -49,8 +47,6 @@ class SubscriptionHandler
         $user = User::with('currentYearData.file', 'subscription')->find($request->get('user_id'));
         $user->subscription->update([
             'status' => Subscription::PENDING,
-            'selected_time' => $request->get('schedule_choice1'),
-            'fallback_time' => $request->get('schedule_choice2'),
             'invites' => $request->get('invites') ?? [],
         ]);
 
@@ -99,8 +95,6 @@ class SubscriptionHandler
         } elseif ($request->get('decision') === 'accepted') {
             $user->lesson_id = $subscription->lesson_id;
             $user->save();
-            $subscription->selected_time = $request->get('selected_time');
-            $subscription->fallback_time = null;
             $subscription->status = Subscription::VALIDATED;
             $user->notify(new SubscriptionAccepted($subscription->load('lesson')->toArray()));
 

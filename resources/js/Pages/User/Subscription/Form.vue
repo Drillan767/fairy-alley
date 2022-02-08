@@ -198,8 +198,6 @@ export default {
             lesson_id: props.lesson.id,
             user_id: props.user.id,
             medical_certificate: null,
-            schedule_choice1: props.editing ? props.user.subscription.selected_time : '',
-            schedule_choice2: props.editing ? props.user.subscription.fallback_time : '',
             invites: props.editing ? props.user.subscription.invites : [],
             health_data: props.editing ? props.user.current_year_data?.health_data : '',
             accepts: props.editing,

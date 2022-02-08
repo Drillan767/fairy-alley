@@ -114,8 +114,7 @@ class UserController extends Controller
         }
 
         $utilisateur->save();
-        $suggestions = $request->get('suggestion');
-        if (!is_array($suggestions)) $suggestions = [$suggestions];
+        $suggestions = $request->get('suggestions');
 
         $utilisateur->suggestions()->sync($suggestions);
 

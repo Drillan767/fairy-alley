@@ -9,6 +9,7 @@ RUN apk update && apk add --no-cache \
     bash \
     caddy \
     npm \
+    ffmpeg \
     git \
     freetype-dev \
     libpng \

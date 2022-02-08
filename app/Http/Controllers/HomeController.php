@@ -13,6 +13,7 @@ class HomeController extends Controller
     {
         $view = auth()->check() ? 'home.landing' : 'home.building';
         $services = Service::with('thumbnail', 'page')
+            ->where('homepage', true)
             ->orderBy('order')
             ->get();
         return view($view, compact('services'));

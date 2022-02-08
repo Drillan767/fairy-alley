@@ -18,13 +18,23 @@ class FileController extends Controller
             'musiques' => []
         };
 
+        // Must return the following structure:
+        /*
+            [
+                [
+                    'title' => 'title',
+                    'src' => 'original src',
+                    'thumb' => 'thumbnail from vid or resized image',
+
+            ]
+         */
+
         $files = collect($media)->map(function ($file) use ($mediaType) {
             if ($mediaType === 'photos') {
                 return env('MEDIAS_URL') . Storage::disk('s3')->path($file);
             } else {
                 return basename($file);
             }
-
         });
 
         return Inertia::render('Admin/Media/Index', [

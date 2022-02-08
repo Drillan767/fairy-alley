@@ -309,6 +309,7 @@ export default {
             const services = toRaw(props.services);
             items.forEach((item) => {
                 const found = services.find((s) => s.title === item)?.id;
+                console.log(found)
                 if (found) serviceList.push(found)
             })
             form.suggestions = serviceList;

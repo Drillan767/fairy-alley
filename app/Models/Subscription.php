@@ -21,7 +21,6 @@ class Subscription extends Model
         'user_id',
         'lesson_id',
         'selected_time',
-        'fallback_time',
         'invites',
         'status',
     ];

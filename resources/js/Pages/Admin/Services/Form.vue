@@ -32,6 +32,13 @@
                     <jet-input-error :message="form.errors.page_id" class="mt-2" />
                 </div>
 
+                <div class="block mt-4">
+                    <label class="flex items-center">
+                        <jet-checkbox v-model="form.homepage" />
+                        <span class="ml-2 text-sm text-gray-600">Afficher sur la page d'accueil</span>
+                    </label>
+                </div>
+
                 <div class="mt-4 flex justify-end">
                     <jet-button type="submit">
                         Enregistrer
@@ -50,6 +57,7 @@ import JetLabel from '@/Jetstream/Label.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import JetFileUpload from '@/Jetstream/FileUpload.vue';
 import JetSelect from '@/Jetstream/Select.vue';
+import JetCheckbox from '@/Jetstream/Checkbox.vue';
 import {useForm} from "@inertiajs/inertia-vue3";
 import {computed, watch} from "vue";
 
@@ -63,6 +71,7 @@ export default {
         JetInputError,
         JetFileUpload,
         JetSelect,
+        JetCheckbox,
     },
 
     props: {
@@ -90,6 +99,7 @@ export default {
             title: '',
             description: '',
             ref: '',
+            homepage: false,
             illustration: null,
             page_id: null,
         })
