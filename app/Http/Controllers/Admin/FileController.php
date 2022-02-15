@@ -30,11 +30,10 @@ class FileController extends Controller
          */
 
         $files = collect($media)->map(function ($file) use ($mediaType) {
-            if ($mediaType === 'photos') {
-                return env('MEDIAS_URL') . Storage::disk('s3')->path($file);
-            } else {
-                return basename($file);
-            }
+            return [
+                'title' => basename($file),
+                'src' => env('MEDIAS_URL') . Storage::disk('s3')->path($file),
+            ];
         });
 
         return Inertia::render('Admin/Media/Index', [

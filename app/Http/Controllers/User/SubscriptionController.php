@@ -38,6 +38,8 @@ class SubscriptionController extends Controller
 
                 'dates' => $user->lesson->schedule,
             ]];
+
+            dd($attributes);
         }
 
         return Inertia::render('User/Landing', compact( 'headlines', 'attributes'));

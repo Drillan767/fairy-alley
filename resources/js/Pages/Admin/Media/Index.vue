@@ -12,8 +12,17 @@
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-                            <div class="files">
-                                <div v-for="(file, i) in files" :key="i" class="media">
+                            <div class="carousel">
+                                <div class="carousel__slide"  :key="i">
+                                    <template v-for="image in files">
+                                        <a :href="image.src" data-fancybox="gallery">
+                                            {{ image.title }}
+                                        </a>
+                                    </template>
+                                </div>
+                            </div>
+                            <div class="images-wrapper">
+<!--                                <div v-for="(file, i) in files" :key="i" class="media" @click="index = i">
                                     <div class="file" v-if="['videos', 'musiques'].includes(type)">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="" fill="none" viewBox="0 0 24 24" stroke="currentColor" v-if="type === 'videos'">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -26,13 +35,15 @@
                                     <img :src="file" alt="img" v-if="type === 'photos'">
                                     <p class="title">
                                         <template v-if="type === 'photos'">
-                                            {{ file.split(/[\\/]/).pop() }}
+&lt;!&ndash;                                            {{ file.split(/[\\/]/).pop() }}&ndash;&gt;
+                                            Eul' fichier
                                         </template>
                                         <template v-else>
-                                            {{ file }}
+                                            Eul' fichier
+&lt;!&ndash;                                            {{ file }}&ndash;&gt;
                                         </template>
                                     </p>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                     </div>
@@ -45,8 +56,10 @@
 
 <script>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import CoolLightBox from 'vue-cool-lightbox';
-import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css';
+import { Fancybox } from "https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0.25/dist/fancybox.esm.js";
+import "@fancyapps/ui/dist/fancybox.css";
+
+import {onMounted, ref} from "vue";
 
 export default {
     title () {
@@ -55,11 +68,16 @@ export default {
     props: ['files', 'type'],
     components: {
         AdminLayout,
-        CoolLightBox,
     },
 
     setup() {
-        const index = null;
+        const index = ref(null);
+
+        onMounted(() => {
+            Fancybox.bind('[data-fancybox="gallery"]', {
+                caption: (fancybox, carousel, slide) => `${slide.index + 1} / ${carousel.slides.length}`
+            })
+        });
 
         return {
             index
