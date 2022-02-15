@@ -36,10 +36,9 @@ class SubscriptionController extends Controller
                     'fillMode' => 'solid',
                 ],
 
-                'dates' => $user->lesson->schedule,
+                'dates' => collect($user->lesson->schedule)->map(fn($s) => $s['date']),
             ]];
 
-            dd($attributes);
         }
 
         return Inertia::render('User/Landing', compact( 'headlines', 'attributes'));
