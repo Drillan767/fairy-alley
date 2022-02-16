@@ -13,21 +13,10 @@ class FileController extends Controller
     {
         $mediaType = $request->media;
         $media = match ($mediaType) {
-            'videos' => Storage::disk('s3')->allFiles('Videos Gym'),
-            'photos' => Storage::disk('s3')->allFiles('Photos'),
-            'musiques' => []
+            'videos' => Storage::disk('s3')->allFiles('videos'),
+            'photos' => Storage::disk('s3')->allFiles('photos'),
+            'musiques' => Storage::disk('s3')->allFiles('musics'),
         };
-
-        // Must return the following structure:
-        /*
-            [
-                [
-                    'title' => 'title',
-                    'src' => 'original src',
-                    'thumb' => 'thumbnail from vid or resized image',
-
-            ]
-         */
 
         $files = collect($media)->map(function ($file) use ($mediaType) {
             return [
