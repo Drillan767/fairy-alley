@@ -28,7 +28,7 @@
                 Sèverine & Thierry vous proposent
             </h2>
             <h2>
-                un accompagnement bien-être <br /> ouvert à tout le monde <br /> dans la bienveillance et l'harmonie
+                un accompagnement bien-être <br /> dans la bienveillance et l'harmonie
             </h2>
         </div>
     </div>
