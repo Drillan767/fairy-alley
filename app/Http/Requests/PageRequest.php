@@ -14,7 +14,7 @@ class PageRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->hasRole('administrator') && Auth::user()->subscription === null;
+        return Auth::user()->hasRole('administrator');
     }
 
     /**

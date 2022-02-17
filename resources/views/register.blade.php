@@ -50,13 +50,38 @@
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
-                                <label for="birthday" class="block text-sm font-medium text-gray-700">Date de naissance</label>
-                                <input type="date" name="birthday" value="{{ old('birthday') }}" id="birthday">
-                                @error('birthday')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
+                                <div class="flex gap-x-3">
+                                    <div class="flex-1">
+                                        <label for="birthday" class="block text-sm font-medium text-gray-700">Date de naissance</label>
+                                        <input type="date" name="birthday" value="{{ old('birthday') }}" id="birthday">
+                                        @error('birthday')
+                                        <p class="text-sm text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    <div class="flex-1">
+                                        <label for="birthday" class="block text-sm font-medium text-gray-700">Genre</label>
+                                        <div class="flex mt-2 justify-around">
+                                            <div class="form-check">
 
+                                                <label class="form-check-label inline-block text-gray-800">
+                                                    <input type="radio" name="gender" value="H" id="flexRadioDefault1">
+                                                    Homme
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <label class="form-check-label inline-block text-gray-800">
+                                                    <input type="radio" name="gender" value="F" id="flexRadioDefault1">
+                                                    Femme
+                                                </label>
+                                            </div>
+                                        </div>
+                                        </div>
+
+                                        @error('birthday')
+                                        <p class="text-sm text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="phone" class="block text-sm font-medium text-gray-700">Téléphone portable</label>
                                 <input type="text" name="phone" value="{{ old('phone') }}" id="phone">

@@ -17,7 +17,7 @@
             </p>
 
             <div class="calendar mt-5">
-                <calendar :attributes="attributes" :columns="2" is-expanded />
+                <calendar :attributes="attributes" :columns="4" is-expanded />
             </div>
         </div>
     </section>

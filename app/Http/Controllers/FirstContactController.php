@@ -6,6 +6,8 @@ use App\Events\FirstContactCreated;
 use App\Events\SendNewContactNotifications;
 use App\Http\Requests\FirstContactRequest;
 use App\Models\FirstContact;
+use App\Models\Lesson;
+use App\Models\Service;
 use App\Models\User;
 use App\Models\YearData;
 
@@ -14,7 +16,9 @@ class FirstContactController extends Controller
     public function create()
     {
         if (env('ENABLE_SUBSCRIPTION')) {
-            return view('register');
+            return view('register', [
+                'lessons' => Lesson::all('id', 'title')
+            ]);
         } else {
             return redirect()->route('redirect.home');
         }
@@ -62,6 +66,7 @@ class FirstContactController extends Controller
                 'lastname',
                 'email',
                 'birthday',
+                'gender',
                 'phone',
                 'pro',
                 'address1',

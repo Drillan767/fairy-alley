@@ -9,7 +9,7 @@
         <div class="py-12">
             <!-- component -->
             <div class="overflow-x-auto">
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="mx-auto sm:px-6 lg:px-8">
                     <div class="flex items-center bg-green-500 text-white text-sm font-bold px-4 py-3 mb-5" role="alert" v-if="flash.success">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -33,7 +33,7 @@
                                     <th class="py-3 px-6 text-left">Titre</th>
                                     <th class="py-3 px-6 text-left">Référence</th>
                                     <th class="py-3 px-6 text-left">Page liée</th>
-                                    <th class="py-3 px-6 text-left">Page d'accueil</th>
+                                    <th class="py-3 px-6 text-center">Page d'accueil</th>
                                     <th class="py-3 px-6 text-center">Actions</th>
                                 </tr>
                                 </thead>
@@ -49,7 +49,7 @@
                                                     {{ element.page.title }}
                                                 </a>
                                             </td>
-                                            <td>
+                                            <td class="text-center">
                                                 {{ element.homepage ? 'Oui' : 'Non' }}
                                             </td>
                                             <td>

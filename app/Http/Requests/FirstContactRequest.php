@@ -31,6 +31,7 @@ class FirstContactRequest extends FormRequest
             'phone' => ['nullable', 'required_without:pro', 'string'],
             'pro' => ['nullable', 'required_without:phone', 'string'],
             'work' => ['nullable', 'string'],
+            'gender' => ['required', 'max:1', 'in:F,H'],
             'nb_children' => ['nullable', 'integer'],
             'family_situation' => ['required', 'string'],
             'address' => ['nullable', 'string'],
