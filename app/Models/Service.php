@@ -38,4 +38,8 @@ class Service extends Model
         'page_id',
         'order',
     ];
+
+    protected $casts = [
+        'homepage' => 'boolean',
+    ];
 }
