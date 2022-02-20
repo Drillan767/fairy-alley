@@ -1,5 +1,5 @@
 <template>
-    <admin-layout title="Pages">
+    <admin-layout>
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
                 Éditer "{{ lesson.title }}"

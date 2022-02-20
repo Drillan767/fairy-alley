@@ -25,12 +25,14 @@ class LessonRequest extends FormRequest
      */
     public function rules()
     {
+        dd($this->all());
         return [
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
             'ref' => ['required', 'string', 'unique:lessons,ref,' . $this->id],
-            'schedule' => ['required', 'array', 'min:1'],
+            'occurrences' => ['required', 'array', 'min:1'],
             'schedule.*.date' => ['required', 'date'],
+            'schedule.*.status' => ['required', 'string'],
         ];
     }
 

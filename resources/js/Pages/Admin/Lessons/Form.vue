@@ -18,24 +18,16 @@
             <jet-input-error :message="form.errors.ref" class="mt-2" />
         </div>
 
-        <div class="mt-4 flex">
-            <div class="w-3/4">
-                <jet-label for="content" value="Occurrences" />
-                <p>Nombre d'occurrences : {{ form.occurrence }}</p>
+        <div class="mt-4 flex gap-x-4">
+            <div class="mt-2">
+                <jet-label for="nbOccurrences" value="Nombre d'occurrences" />
+                <jet-input type="number" v-model="setupOccurrences.nbOccurrences" id="nbOccurrences"/>
             </div>
-            <div class="w-1/4 flex items-end justify-center">
-                <div>
-                    <jet-button type="button" @click="add">Ajouter</jet-button>
-                    <jet-secondary-button @click="remove" class="ml-2">Retirer</jet-secondary-button>
-                </div>
-            </div>
-        </div>
 
-        <div class="mt-4 flex flex-wrap">
-            <div v-for="(date, i) in dateList" :key="i" class="w-1/4 px-4 mb-2">
-                <jet-label :value="`Date pour l'occurence n°${i + 1}`" />
+            <div class="mt-2" v-if="!['', 0].includes(setupOccurrences.nbOccurrences)">
+                <jet-label for="nbOccurrences" value="Date de la première occurrence" />
                 <Datepicker
-                    v-model="date.date"
+                    v-model="setupOccurrences.occurrenceStartDate"
                     locale="fr"
                     cancelText="Annuler"
                     textInput
@@ -46,9 +38,42 @@
                     selectText="Confirmer"
                     inputFormat="dd/MM/yyyy"
                 />
-                <jet-input-error :message="form.errors[`schedule.${i}.date`]" class="mt-2" />
+            </div>
+
+            <div class="mt-8" v-if="setupOccurrences.occurrenceStartDate !== ''">
+                <jet-button @click.prevent="generateOccurrence">Générer</jet-button>
             </div>
         </div>
+
+        <template v-if="occurrences.length">
+            <div class="mt-4">
+                <jet-label>Dates des cours</jet-label>
+                <div class="flex flex-wrap">
+                    <div v-for="(date, i) in validDates" :key="i" class="w-1/5 px-4 gap-x-2 mb-2">
+                        <p class="list-item">{{ date.date }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <jet-label>Cours annulés</jet-label>
+                <div class="flex flex-wrap">
+                    <div v-for="(date, i) in cancelledDates" :key="i" class="w-1/5 px-4 gap-x-2 mb-2">
+                        <p class="list-item">{{ date.date }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <jet-label>Date des jours de récupération</jet-label>
+                <div class="flex flex-wrap">
+                    <div v-for="(date, i) in recoveryDates" :key="i" class="w-1/5 px-4 gap-x-2 mb-2">
+                        <p class="list-item">{{ date.date }}</p>
+                    </div>
+                </div>
+            </div>
+
+        </template>
 
         <div class="mt-8">
             <div class="flex justify-end">
@@ -71,10 +96,9 @@ import Datepicker from 'vue3-date-time-picker';
 import dayjs from "dayjs";
 import 'vue3-date-time-picker/dist/main.css';
 import {useForm} from "@inertiajs/inertia-vue3";
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, ref, toRaw} from "vue";
 
 export default {
-    title: 'Nouveau cours',
     props: {
         lesson: {
             type: Object,
@@ -103,11 +127,18 @@ export default {
             }
         })
 
+        const occurrences = ref([]);
+
         const disabledDates = computed(() => {
             const dates = []
             props.holidays.map((day) => dates.push(dayjs(day).toDate()))
             return dates;
         });
+
+        const setupOccurrences = ref({
+            nbOccurrences: 0,
+            occurrenceStartDate: '',
+        })
 
         const data = props.editing ? {
             ...props.lesson,
@@ -116,8 +147,7 @@ export default {
             title: '',
             description: '',
             ref: '',
-            occurrence: 1,
-            schedule: [],
+            occurrences: occurrences.value,
         }
         const form = useForm(data);
 
@@ -127,18 +157,75 @@ export default {
             format: 'dd.MM.yyyy'
         })
 
-        const add = () => {
-            form.occurrence++;
-            dateList.value.push({date: date});
-        }
+        const validDates = computed(() => {
+            if (occurrences.value.length > 0) {
+                return occurrences.value.filter(o => o.status === 'ok');
+            } else {
+                return []
+            }
+        })
 
-        const remove = () => {
-            form.occurrence--;
-            dateList.value.pop();
-        }
+        const cancelledDates = computed(() => {
+            if (occurrences.value.length > 0) {
+                return occurrences.value.filter(o => o.status === 'cancelled');
+            } else {
+                return []
+            }
+        })
 
-        function submit () {
-            form.schedule = dateList.value;
+        const recoveryDates = computed(() => {
+            if (occurrences.value.length > 0) {
+                return occurrences.value.filter(o => o.status === 'recovery');
+            } else {
+                return []
+            }
+        })
+
+        const generateOccurrence = () => {
+            const result = [];
+            let nbOccurrences = setupOccurrences.value.nbOccurrences;
+            let date = setupOccurrences.value.occurrenceStartDate;
+
+            result.push({
+                date: dayjs(date).format('DD/MM/YYYY'),
+                status: 'ok',
+            })
+
+            for (let i = 1; i < nbOccurrences; i++) {
+                date = dayjs(date).add(1, 'w');
+
+                if (i < setupOccurrences.value.nbOccurrences) {
+                    // All of the following happens if there was no need to add days because of a holiday.
+                    if (toRaw(props.holidays).includes(dayjs(date).format('YYYY-MM-DD'))) {
+                        nbOccurrences++
+                        result.push({
+                            date: dayjs(date).format('DD/MM/YYYY'),
+                            status: 'cancelled',
+                        })
+                    } else {
+                        result.push({
+                            date: dayjs(date).format('DD/MM/YYYY'),
+                            status: 'ok',
+                        })
+                    }
+
+                } else {
+                    // All of the following happens if we're beyond the initial maximim occurrences planned.
+                    // If the day is already exceeding the initial limit, we'll just ignore it and go on.
+                    if (!props.holidays.includes(dayjs(date).format('YYYY-MM-DD'))) {
+                        result.push({
+                            date: dayjs(date).format('DD/MM/YYYY'),
+                            status: 'recovery',
+                        })
+                    }
+                }
+            }
+
+            occurrences.value = result;
+        };
+
+        const submit = () => {
+            form.occurrences = occurrences.value;
             const path = props.editing ? route('cours.update', {cour: props.lesson.id}) : route('cours.store');
             form.post(path);
         }
@@ -146,11 +233,15 @@ export default {
         return {
             form,
             submit,
+            setupOccurrences,
+            generateOccurrence,
             dateList,
+            occurrences,
             disabledDates,
             textInputOptions,
-            add,
-            remove,
+            validDates,
+            cancelledDates,
+            recoveryDates,
         }
     },
 }
