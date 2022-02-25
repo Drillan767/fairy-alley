@@ -41,7 +41,7 @@
             </div>
 
             <div class="mt-8" v-if="setupOccurrences.occurrenceStartDate !== ''">
-                <jet-button @click.prevent="generateOccurrence">Générer</jet-button>
+                <jet-button @click.prevent="generateOccurrences">Générer</jet-button>
             </div>
         </div>
 
@@ -122,8 +122,10 @@ export default {
     setup (props) {
         onMounted(() => {
             if (props.editing) {
-                form.occurrence = props.lesson.schedule.length
-                dateList.value = props.lesson.schedule;
+                setupOccurrences.value.nbOccurrences = props.lesson.schedule.length
+                setupOccurrences.value.occurrenceStartDate = props.lesson.schedule[0].date
+
+                generateOccurrences();
             }
         })
 
@@ -147,7 +149,7 @@ export default {
             title: '',
             description: '',
             ref: '',
-            occurrences: occurrences.value,
+            occurrences: []
         }
         const form = useForm(data);
 
@@ -181,7 +183,7 @@ export default {
             }
         })
 
-        const generateOccurrence = () => {
+        const generateOccurrences = () => {
             const result = [];
             let nbOccurrences = setupOccurrences.value.nbOccurrences;
             let date = setupOccurrences.value.occurrenceStartDate;
@@ -225,7 +227,10 @@ export default {
         };
 
         const submit = () => {
-            form.occurrences = occurrences.value;
+            form.transform((data) => ({
+                ...data,
+                schedule: occurrences.value
+            }))
             const path = props.editing ? route('cours.update', {cour: props.lesson.id}) : route('cours.store');
             form.post(path);
         }
@@ -234,7 +239,7 @@ export default {
             form,
             submit,
             setupOccurrences,
-            generateOccurrence,
+            generateOccurrences,
             dateList,
             occurrences,
             disabledDates,
@@ -246,3 +251,9 @@ export default {
     },
 }
 </script>
+
+<style>
+.calendar .vc-weeks {
+    padding: 12px;
+}
+</style>

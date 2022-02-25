@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\LessonRequest;
 use App\Models\Lesson;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
-use Inertia\Inertia;
 use App\Http\Controllers\Controller;
-use Inertia\Response;
+use Inertia\{Response, Inertia};
 
 class LessonController extends Controller
 {
@@ -68,9 +68,19 @@ class LessonController extends Controller
     private function handleLesson(Lesson $lesson, LessonRequest $request, bool $update = false)
     {
         $function = $update ? 'update' : 'create';
+        $schedule = collect($request->get('schedule'))->map(function ($day) {
+            return [
+                'date' => Carbon::createFromFormat('d/m/Y', $day['date'])->format('Y-m-d'),
+                'status' => $day['status']
+            ];
+        });
+
         $fields = array_merge(
             $request->validated(),
-            ['year' => now()->year . ' - ' . now()->addYear()->year]
+            [
+                'year' => now()->year . ' - ' . now()->addYear()->year,
+                'schedule' => $schedule
+            ]
         );
 
         $lesson->$function($fields);

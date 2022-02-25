@@ -25,21 +25,43 @@ class SubscriptionController extends Controller
 
         if (in_array($user->role, ['subscriber', 'guest', 'substitute'])) {
             $user->load('lesson');
+            $schedule = collect($user->lesson->schedule);
             $lesson = $user->lesson->title;
+            $statuses = $schedule->groupBy('status');
 
-            $attributes = [[
-                'popover' => [
-                    'label' => "Cours du $lesson",
-                ],
-                'highlight' => [
-                    'color' => 'purple',
-                    'fillMode' => 'solid',
-                ],
+            foreach($statuses as $status => $date) {
+                $label = "Cours du $lesson";
+                $color = '';
 
-                'dates' => collect($user->lesson->schedule)->map(fn($s) => $s['date']),
-            ]];
+                switch($status) {
+                    case 'ok':
+                        $color = 'purple';
+                        break;
+                    case 'cancelled':
+                       $color = 'red';
+                       $label .= ' - Annulé';
+                       break;
+                    case 'recovery':
+                        $color = 'blue';
+                        $label .= ' - Rattrapage';
+                        break;
+                }
 
+                $attributes[] = [
+                    'popover' => [
+                        'label' => $label
+                    ],
+                    'highlight' => [
+                        'color' => $color,
+                        'fillMode' => 'solid',
+                    ],
+                    'dates' => $date->map(fn($s) => $s['date']),
+                ];
+
+            }
         }
+
+        // dd($attributes);
 
         return Inertia::render('User/Landing', compact( 'headlines', 'attributes'));
     }
