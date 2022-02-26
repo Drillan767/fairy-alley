@@ -34,6 +34,7 @@ class FirstContactRequest extends FormRequest
             'gender' => ['required', 'max:1', 'in:F,H'],
             'nb_children' => ['nullable', 'integer'],
             'family_situation' => ['required', 'string'],
+            'lesson' => ['required', 'integer'],
             'address' => ['nullable', 'string'],
             'address2' => ['nullable', 'string'],
             'zipcode' => ['nullable', 'string', 'max:5'],

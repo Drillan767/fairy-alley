@@ -8,6 +8,7 @@ use App\Http\Requests\FirstContactRequest;
 use App\Models\FirstContact;
 use App\Models\Lesson;
 use App\Models\Service;
+use App\Models\Subscription;
 use App\Models\User;
 use App\Models\YearData;
 
@@ -15,13 +16,9 @@ class FirstContactController extends Controller
 {
     public function create()
     {
-        if (env('ENABLE_SUBSCRIPTION')) {
-            return view('register', [
-                'lessons' => Lesson::all('id', 'title')
-            ]);
-        } else {
-            return redirect()->route('redirect.home');
-        }
+        return view('register', [
+            'lessons' => Lesson::all('id', 'title')
+        ]);
     }
 
     public function store(FirstContactRequest $request)
@@ -33,6 +30,7 @@ class FirstContactController extends Controller
 
         // User won't be able to login anyway.
         $user->password = '';
+        $user->lesson_id = $request->get('lesson');
 
         $user->save();
         $user->assignRole('first_contact');
@@ -43,6 +41,14 @@ class FirstContactController extends Controller
         }
 
         $user->firstContactData()->save($firstContact);
+
+        $subscription = new Subscription();
+        $subscription->lesson_id = $request->get('lesson');
+        $subscription->status = Subscription::PENDING;
+        $subscription->invites = [];
+        $subscription->feedback = '';
+
+        $user->subscription()->save($subscription);
 
         $yearData = new YearData();
         foreach(['health_issues', 'current_health_issues', 'medical_treatment'] as $hFields) {

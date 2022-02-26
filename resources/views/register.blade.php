@@ -127,6 +127,18 @@
                             </div>
 
                             <div class="col-span-6 mt-4">
+                                <label for="address1" class="block text-sm font-medium text-gray-700">
+                                    Cours désiré
+                                    <select name="lesson" required>
+                                        <option value="">Sélectionner un cours...</option>
+                                        @foreach($lessons as $lesson)
+                                            <option value="{{ $lesson->id }}">{{ $lesson->title }}</option>
+                                        @endforeach
+                                    </select>
+                                </label>
+                            </div>
+
+                            <div class="col-span-6 mt-4">
                                 <label for="address1" class="block text-sm font-medium text-gray-700">Adresse</label>
                                 <input type="text" name="address1" value="{{ old('address1') }}" id="address1">
                                 @error('address1')

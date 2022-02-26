@@ -29,15 +29,6 @@ Route::get('/', [HomeController::class,'landing'])->name('landing');
 
 Route::post('/contact', [HomeController::class, 'contact'])->name('contact');
 
-Route::get('/test', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
-
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::middleware(['role:administrator'])->group(function() {
         Route::get('/administration', [AdminController::class, 'index'])->name('admin.index');
