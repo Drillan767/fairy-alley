@@ -23,8 +23,8 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-<!--                    <LessonList v-if="!subscribed" :data="data" :headlines="headlines"/>-->
                     <CurrentLesson :lesson="user.lesson" :headlines="headlines" :attributes="attributes" />
+                    <ServicesSuggestion :suggestions="user.suggestions" v-if="user.suggestions.length" />
                 </div>
             </div>
         </div>
@@ -34,8 +34,8 @@
 <script>
 import UserLayout from '@/Layouts/UserLayout.vue'
 import Welcome from '@/Jetstream/Welcome.vue'
-import LessonList from "./LessonList.vue";
 import CurrentLesson from "./CurrentLesson.vue";
+import ServicesSuggestion from "./ServicesSuggestion.vue";
 
 export default {
     title: 'Profil',
@@ -50,9 +50,9 @@ export default {
     },
 
     components: {
+        ServicesSuggestion,
         UserLayout,
         Welcome,
-        LessonList,
         CurrentLesson,
     },
 }

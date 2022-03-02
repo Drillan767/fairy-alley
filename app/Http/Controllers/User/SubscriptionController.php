@@ -23,8 +23,9 @@ class SubscriptionController extends Controller
         $user = auth()->user();
         $headlines = collect(config('lesson.headlines'))->firstWhere('status_id', $user->subscription->status);
 
-        if (in_array($user->role, ['subscriber', 'guest', 'substitute'])) {
-            $user->load('lesson');
+        // suggestions
+        if ($user->hasAnyRole('subscriber', 'guest', 'substitute')) {
+            $user->load('lesson', 'suggestions.thumbnail', 'suggestions.page');
             $schedule = collect($user->lesson->schedule);
             $lesson = $user->lesson->title;
             $statuses = $schedule->groupBy('status');

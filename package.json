@@ -34,6 +34,8 @@
     },
     "dependencies": {
         "@fancyapps/ui": "^4.0.25",
+        "@fullcalendar/core": "^5.10.1",
+        "@fullcalendar/vue3": "^5.10.1",
         "@tinymce/tinymce-vue": "^4.0.4",
         "daisyui": "^2.0.8",
         "dayjs": "^1.10.7",
