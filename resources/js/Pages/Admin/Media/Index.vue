@@ -9,6 +9,17 @@
             <!-- component -->
             <div class="overflow-x-auto">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div class="flex items-center bg-green-500 text-white text-sm font-bold px-4 py-3 mb-5" role="alert" v-if="flash.success">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <p class="ml-5">{{ flash.success }}</p>
+                    </div>
+                    <div class="flex justify-end mb-5">
+                        <span @click="showModal = true" class="btn btn-primary">
+                            Uploader des fichiers
+                        </span>
+                    </div>
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
                             <div class="carousel">
@@ -30,39 +41,8 @@
                                                 <video :src="file.src" controls></video>
                                             </div>
                                         </template>
-
-<!--                                        <a :href="file.src" data-fancybox="video-gallery" data-width="640" data-height="360" v-if="type === 'videos'">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                                <path d="M463.1 32h-416C21.49 32-.0001 53.49-.0001 80v352c0 26.51 21.49 48 47.1 48h416c26.51 0 48-21.49 48-48v-352C511.1 53.49 490.5 32 463.1 32zM111.1 408c0 4.418-3.582 8-8 8H55.1c-4.418 0-8-3.582-8-8v-48c0-4.418 3.582-8 8-8h47.1c4.418 0 8 3.582 8 8L111.1 408zM111.1 280c0 4.418-3.582 8-8 8H55.1c-4.418 0-8-3.582-8-8v-48c0-4.418 3.582-8 8-8h47.1c4.418 0 8 3.582 8 8V280zM111.1 152c0 4.418-3.582 8-8 8H55.1c-4.418 0-8-3.582-8-8v-48c0-4.418 3.582-8 8-8h47.1c4.418 0 8 3.582 8 8L111.1 152zM351.1 400c0 8.836-7.164 16-16 16H175.1c-8.836 0-16-7.164-16-16v-96c0-8.838 7.164-16 16-16h160c8.836 0 16 7.162 16 16V400zM351.1 208c0 8.836-7.164 16-16 16H175.1c-8.836 0-16-7.164-16-16v-96c0-8.838 7.164-16 16-16h160c8.836 0 16 7.162 16 16V208zM463.1 408c0 4.418-3.582 8-8 8h-47.1c-4.418 0-7.1-3.582-7.1-8l0-48c0-4.418 3.582-8 8-8h47.1c4.418 0 8 3.582 8 8V408zM463.1 280c0 4.418-3.582 8-8 8h-47.1c-4.418 0-8-3.582-8-8v-48c0-4.418 3.582-8 8-8h47.1c4.418 0 8 3.582 8 8V280zM463.1 152c0 4.418-3.582 8-8 8h-47.1c-4.418 0-8-3.582-8-8l0-48c0-4.418 3.582-8 7.1-8h47.1c4.418 0 8 3.582 8 8V152z"/>
-                                            </svg>
-
-                                        </a>-->
                                     </template>
                                 </div>
-                            </div>
-                            <div class="images-wrapper">
-<!--                                <div v-for="(file, i) in files" :key="i" class="media" @click="index = i">
-                                    <div class="file" v-if="['videos', 'musiques'].includes(type)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="" fill="none" viewBox="0 0 24 24" stroke="currentColor" v-if="type === 'videos'">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="" fill="none" viewBox="0 0 24 24" stroke="currentColor" v-if="type === 'musique'">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                                        </svg>
-                                    </div>
-
-                                    <img :src="file" alt="img" v-if="type === 'photos'">
-                                    <p class="title">
-                                        <template v-if="type === 'photos'">
-&lt;!&ndash;                                            {{ file.split(/[\\/]/).pop() }}&ndash;&gt;
-                                            Eul' fichier
-                                        </template>
-                                        <template v-else>
-                                            Eul' fichier
-&lt;!&ndash;                                            {{ file }}&ndash;&gt;
-                                        </template>
-                                    </p>
-                                </div>-->
                             </div>
                         </div>
                     </div>
@@ -70,11 +50,14 @@
             </div>
         </div>
 
+        <Form :show="showModal" @close="closeModal" />
+
     </admin-layout>
 </template>
 
 <script>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import Form from "./Form.vue";
 import { Fancybox } from "https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0.25/dist/fancybox.esm.js";
 import "@fancyapps/ui/dist/fancybox.css";
 
@@ -84,30 +67,40 @@ export default {
     title () {
         return `Liste des ${this.type}`
     },
-    props: ['files', 'type'],
+
+    props: {
+        files: Array,
+        type: String,
+        flash: {
+            type: Object,
+            required: false,
+        }
+    },
     components: {
         AdminLayout,
+        Form,
     },
 
     setup() {
         const index = ref(null);
+        const showModal = ref(false)
 
         onMounted(() => {
             Fancybox.bind('[data-fancybox="gallery"]', {
                 caption: (fancybox, carousel, slide) => `${slide.index + 1} / ${carousel.slides.length}`
             })
 
-            if (type === 'videos') {
-
-            }
-
             Fancybox.bind('[data-fancybox="video-gallery"]', {
                 caption: (fancybox, carousel, slide) => `${slide.index + 1} / ${carousel.slides.length}`
             })
         });
 
+        const closeModal = () => showModal.value = false;
+
         return {
-            index
+            index,
+            showModal,
+            closeModal
         }
     }
 }

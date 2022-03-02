@@ -36,7 +36,10 @@ export default {
             type: String,
             default: 'drag-and-drop-input'
         },
-        multiple: { type: Boolean, default: false },
+        multiple: {
+            type: Boolean,
+            default: false
+        },
     },
 
     emits: ['input'],

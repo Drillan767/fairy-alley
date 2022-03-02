@@ -54,6 +54,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
             Route::get('/{media}', 'index')
                 ->where('media', '(musiques|photos|videos)')
                 ->name('files.index');
+            Route::post('/media', 'upload')->name('media.upload');
         });
 
         Route::get('/cours/{cours}/utilisateurs', [LessonController::class, 'users'])->name('cours.users');

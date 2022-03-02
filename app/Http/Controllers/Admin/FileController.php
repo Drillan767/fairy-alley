@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FileUploadRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Inertia\Inertia;
+use Inertia\{Inertia, Response};
 
 class FileController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $mediaType = $request->media;
         $media = match ($mediaType) {
@@ -29,5 +30,18 @@ class FileController extends Controller
             'files' => $files,
             'type' => $mediaType,
         ]);
+    }
+
+    public function upload(FileUploadRequest $request)
+    {
+        $path = $request->get('type');
+        foreach($request->file('files') as $file) {
+            Storage::disk('s3')->putFileAs($path, $file, $file->getClientOriginalName());
+        }
+
+        $nbFiles = count($request->file('files'));
+        $msg = $nbFiles > 1 ? "$nbFiles fichiers ont été uploadés." : '1 fichier a été uploadé.';
+
+        return redirect()->back()->with($msg);
     }
 }
