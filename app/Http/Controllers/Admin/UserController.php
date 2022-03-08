@@ -114,8 +114,8 @@ class UserController extends Controller
         }
 
         $utilisateur->save();
-        $suggestions = $request->get('suggestions');
 
+        $suggestions = $request->get('suggestions');
         $utilisateur->suggestions()->sync($suggestions);
 
         return redirect()->route('utilisateurs.index')->with('success', 'Utilisateur mis à jour avec succès.');

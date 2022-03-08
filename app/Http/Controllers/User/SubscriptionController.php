@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionRequest;
 use App\Models\Lesson;
+use App\Services\LessonDateDisplayHandler;
 use App\Services\SubscriptionHandler;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -17,7 +18,7 @@ class SubscriptionController extends Controller
     public function __construct(public SubscriptionHandler $subscriptionHandler)
     {}
 
-    public function index(): Response
+    public function index(LessonDateDisplayHandler $displayHandler): Response
     {
         $attributes = [];
         $user = auth()->user();
@@ -25,44 +26,10 @@ class SubscriptionController extends Controller
 
         // suggestions
         if ($user->hasAnyRole('subscriber', 'guest', 'substitute')) {
-            $user->load('lesson', 'suggestions.thumbnail', 'suggestions.page');
-            $schedule = collect($user->lesson->schedule);
-            $lesson = $user->lesson->title;
-            $statuses = $schedule->groupBy('status');
+            $user->load('suggestions.thumbnail', 'suggestions.page');
 
-            foreach($statuses as $status => $date) {
-                $label = "Cours du $lesson";
-                $color = '';
-
-                switch($status) {
-                    case 'ok':
-                        $color = 'purple';
-                        break;
-                    case 'cancelled':
-                       $color = 'red';
-                       $label .= ' - Annulé';
-                       break;
-                    case 'recovery':
-                        $color = 'blue';
-                        $label .= ' - Rattrapage';
-                        break;
-                }
-
-                $attributes[] = [
-                    'popover' => [
-                        'label' => $label
-                    ],
-                    'highlight' => [
-                        'color' => $color,
-                        'fillMode' => 'solid',
-                    ],
-                    'dates' => $date->map(fn($s) => $s['date']),
-                ];
-
-            }
+            $attributes = $displayHandler->calculate($user);
         }
-
-        // dd($attributes);
 
         return Inertia::render('User/Landing', compact( 'headlines', 'attributes'));
     }
@@ -100,5 +67,10 @@ class SubscriptionController extends Controller
     {
         $this->subscriptionHandler->update($request);
         return redirect()->route('profile.index')->with('success', 'Votre inscription a bien été prise en compte');
+    }
+
+    public function movements()
+    {
+
     }
 }

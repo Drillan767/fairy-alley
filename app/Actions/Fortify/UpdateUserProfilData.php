@@ -11,7 +11,7 @@ class UpdateUserProfilData
 
     public function updateCoordinates(UserCoordinatesRequest $request, User $user)
     {
-        foreach (['address1', 'address2', 'zipcode', 'city', 'phone', 'pro', ] as $field) {
+        foreach (['address1', 'address2', 'zipcode', 'city', 'phone', 'pro'] as $field) {
             $user->$field = $request->get($field);
         }
 

@@ -17,7 +17,7 @@
             </p>
 
             <div class="calendar mt-5">
-                <calendar :attributes="attributes" :columns="4" is-expanded />
+                <calendar :attributes="attributes" :columns="4" is-expanded @dayclick="onDayClick" />
             </div>
         </div>
     </section>
@@ -28,6 +28,7 @@ import UserLayout from '@/Layouts/UserLayout.vue'
 import { Link } from '@inertiajs/inertia-vue3';
 import { Calendar } from 'v-calendar';
 import 'v-calendar/dist/style.css';
+import Swal from "sweetalert2";
 
 import {ref} from "vue";
 
@@ -40,7 +41,16 @@ export default {
     },
 
     setup (props) {
+        const onDayClick = (day) => {
+            Swal.fire({
+                title: day.ariaLabel
+            })
+            console.log(day)
+        }
 
+        return {
+            onDayClick
+        }
     }
 }
 </script>
