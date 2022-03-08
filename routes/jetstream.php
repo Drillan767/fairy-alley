@@ -8,13 +8,13 @@ use Laravel\Jetstream\Http\Controllers\Inertia\TermsOfServiceController;
 use Laravel\Jetstream\Http\Controllers\Inertia\UserProfileController;
 use Laravel\Jetstream\Jetstream;
 
-Route::group(['middleware' => config('jetstream.middleware', ['web'])], function () {
+Route::middleware(config('jetstream.middleware', ['web']))->group(function () {
     if (Jetstream::hasTermsAndPrivacyPolicyFeature()) {
         Route::get('/terms-of-service', [TermsOfServiceController::class, 'show'])->name('terms.show');
         Route::get('/privacy-policy', [PrivacyPolicyController::class, 'show'])->name('policy.show');
     }
 
-    Route::group(['middleware' => ['auth', 'verified']], function () {
+    Route::middleware('auth', 'verified')->group(function () {
         // User & Profile...
         Route::get('/profil/editer', [UserProfileController::class, 'show'])->name('profile.show');
         Route::post('/profile/{user}/coordinates', [UpdateUserProfilData::class, 'updateCoordinates'])->name('user-profile-coordinates.update');
