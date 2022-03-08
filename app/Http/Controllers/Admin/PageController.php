@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\PageRequest;
 use App\Models\Page;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\{Arr, Str};
-use Illuminate\Support\Facades\{Auth, Storage};
-use Inertia\{Inertia, Response};
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class PageController extends Controller
 {
@@ -27,6 +28,7 @@ class PageController extends Controller
     public function store(PageRequest $request)
     {
         $this->handlePage($request, new Page());
+
         return redirect()->route('pages.index')->with('success', 'Page créée avec succès.');
     }
 
@@ -48,14 +50,15 @@ class PageController extends Controller
     public function update(PageRequest $request, Page $page)
     {
         $this->handlePage($request, $page, true);
-        return redirect()->route('pages.index')->with('success', 'Page mise à jour avec succès,');
 
+        return redirect()->route('pages.index')->with('success', 'Page mise à jour avec succès,');
     }
 
     public function destroy(Page $page)
     {
         Storage::disk('s3')->deleteDirectory("pages/{$page->id}");
         $page->delete();
+
         return response()->json('ok');
     }
 
@@ -87,7 +90,7 @@ class PageController extends Controller
 
         $page->content = $content;
         if (($editing && $file) || $editing === false) {
-            $page->illustration = env('MEDIAS_URL') . Storage::disk('s3')->putFileAs("pages/{$page->id}/illustration", $file, $file->getClientOriginalName());;
+            $page->illustration = env('MEDIAS_URL') . Storage::disk('s3')->putFileAs("pages/{$page->id}/illustration", $file, $file->getClientOriginalName());
         }
 
         $page->save();

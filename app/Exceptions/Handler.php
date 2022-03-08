@@ -40,6 +40,7 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (\Spatie\Permission\Exceptions\UnauthorizedException $e, $request) {
             $home = auth()->user()->hasRole('administrator') ? '/administration' : '/profil';
+
             return redirect($home);
         });
     }

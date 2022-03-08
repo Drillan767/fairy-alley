@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Inertia\{Inertia, Response};
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AdminController
 {

@@ -35,7 +35,7 @@ class SubscriptionRequest extends FormRequest
             'invites' => ['array'],
             'invites.*.firstname' => ['required', 'string'],
             'invites.*.lastname' => ['required', 'string'],
-            'invites.*.email' => ['nullable', 'required_without:phone', /*'email:rfc,dns'*/],
+            'invites.*.email' => ['nullable', 'required_without:phone'/*'email:rfc,dns'*/],
             'invites.*.phone' => ['nullable', 'required_without:email', 'string'],
             'invites.*.title' => ['required', 'string', 'exists:lessons,title'],
             'accepts' => ['required', 'accepted'],
@@ -55,11 +55,11 @@ class SubscriptionRequest extends FormRequest
 
     public function messages(): array
     {
-       return [
+        return [
            'schedule_choice1.required' => 'Veuillez sélectionner une date.',
            'schedule_choice2.different' => 'Vous devez selectionner deux dates différentes.',
            'accepts.accepted' => 'Vous devez accepter les conditions pour vous inscrire.',
-           'invites.*.title.required' => 'Vous devez sélectionner un cours.'
+           'invites.*.title.required' => 'Vous devez sélectionner un cours.',
        ];
     }
 }

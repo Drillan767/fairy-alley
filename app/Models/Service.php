@@ -32,7 +32,7 @@ class Service extends Model
         return $this->hasOne(Page::class, 'id', 'page_id');
     }
 
-    protected $fillable =  [
+    protected $fillable = [
         'title',
         'description',
         'page_id',

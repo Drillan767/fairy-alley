@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use Exception;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\HtmlString;
 use Illuminate\Support\ServiceProvider;
 
 class ViteServiceProvider extends ServiceProvider
@@ -26,14 +25,14 @@ class ViteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Blade::directive('vite', function(): string
-        {
+        Blade::directive('vite', function (): string {
             $html = '';
             $devServerRuns = false;
             if (app()->environment('local')) {
                 try {
                     $devServerRuns = file_get_contents(public_path('hot'));
-                } catch (Exception) {}
+                } catch (Exception) {
+                }
 
                 if ($devServerRuns) {
                     $html = '
@@ -41,12 +40,11 @@ class ViteServiceProvider extends ServiceProvider
                         <script type="module" src="' . env('ASSET_URL') . '/resources/js/app.js"></script>
                     ';
                 }
-            }
-            else {
+            } else {
                 $manifest = json_decode(file_get_contents(public_path('dist/manifest.json')), true);
                 $html = '
                     <script type="module" src="/dist/' . $manifest['resources/js/app.js']['file'] . '"></script>
-                    <link rel="stylesheet" href="/dist/' . $manifest['resources/js/app.js']['css'][0] .'">
+                    <link rel="stylesheet" href="/dist/' . $manifest['resources/js/app.js']['css'][0] . '">
                 ';
             }
 

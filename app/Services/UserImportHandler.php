@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
-use Illuminate\Database\Eloquent\Collection;
-use App\Models\{Lesson, Service, Subscription, User};
+use App\Models\Lesson;
+use App\Models\Service;
+use App\Models\Subscription;
+use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use SimpleXLSX;
 
@@ -22,6 +24,7 @@ class UserImportHandler
             $rows = collect($file->rows())
                 ->map(function ($row) {
                     unset($row[0]);
+
                     return array_filter($row);
                 });
 
@@ -50,9 +53,9 @@ class UserImportHandler
 
             $rows->forget(0);
 
-            foreach($rows as $row) {
+            foreach ($rows as $row) {
                 $data = [];
-                foreach($row as $i => $value) {
+                foreach ($row as $i => $value) {
                     if ($i < 11) {
                         switch ($mapped[$i]) {
                             case 'address1':
@@ -88,7 +91,6 @@ class UserImportHandler
                         } else {
                             $data['lesson_id'] = $lesson->id;
                         }
-
                     } elseif ($i > 11) {
                         if ($value !== '') {
                             $service = $services->firstWhere('ref', $servicesFound[($i + 1)]);
@@ -112,7 +114,6 @@ class UserImportHandler
                 "$this->total utilisateurs ont été importés.",
                 $this->errors,
             ];
-
         } else {
             return [null, ['Impossible de charger le fichier']];
         }
@@ -142,10 +143,10 @@ class UserImportHandler
                 'zipcode',
                 'city',
                 'gender',
-                'other_data'
+                'other_data',
             ];
 
-            foreach($fields as $field) {
+            foreach ($fields as $field) {
                 if (isset($data[$field])) {
                     $user->$field = $data[$field];
                 }
@@ -168,7 +169,6 @@ class UserImportHandler
             }
 
             $this->total++;
-
         }
     }
 }

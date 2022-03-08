@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
             'archived',
         ];
 
-        foreach($roleList as $role) {
+        foreach ($roleList as $role) {
             Role::findOrCreate($role);
         }
 

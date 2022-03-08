@@ -2,16 +2,23 @@
 
 namespace App\Services;
 
+use App\Http\Requests\SubscriptionRequest;
+use App\Http\Requests\SubscriptionValidationRequest;
+use App\Models\Invite;
+use App\Models\Media;
+use App\Models\Subscription;
+use App\Models\User;
+use App\Models\YearData;
 use App\Notifications\SubscriptionAccepted;
-use App\Http\Requests\{SubscriptionRequest, SubscriptionValidationRequest};
 use App\Notifications\SubscriptionMissingElements;
-use App\Models\{Invite, Media, Subscription, User, YearData};
 use Illuminate\Support\Facades\Storage;
 
 class SubscriptionHandler
 {
     public function __construct(protected FileHandler $fileHandler)
-    {}
+    {
+    }
+
     public function create(SubscriptionRequest $request)
     {
         $user_id = $request->get('user_id');
@@ -64,7 +71,7 @@ class SubscriptionHandler
     public function validate(SubscriptionValidationRequest $request): array
     {
         $user = User::find($request->get('id'));
-        foreach(['firstname', 'lastname', 'birthday', 'email', 'gender', 'phone', 'pro', 'address1', 'address2', 'zipcode', 'city'] as $field) {
+        foreach (['firstname', 'lastname', 'birthday', 'email', 'gender', 'phone', 'pro', 'address1', 'address2', 'zipcode', 'city'] as $field) {
             $user->$field = $request->get($field);
         }
         $user->save();

@@ -13,32 +13,23 @@ class LessonDateDisplayHandler
         $userLesson = $user->lesson_id;
         $lessons = Lesson::all();
 
-        foreach($lessons as $lesson) {
+        foreach ($lessons as $lesson) {
             $schedule = collect($lesson->schedule);
             $statuses = $schedule->groupBy('status');
 
             foreach ($statuses as $status) {
-                $title = $lesson->title . match($status) {
+                $title = $lesson->title . match ($status) {
                     'ok' => '',
                     'cancelled' => ' - Annulé',
                     'recovery' => ' - Rattrapage'
-
                 };
 
                 // Set colors to distinguish
                 if ($lesson->id === $userLesson) {
-
                 } else {
-
                 }
             }
-
-
         }
-
-
-
-
 
         return [];
     }

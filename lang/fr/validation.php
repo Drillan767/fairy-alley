@@ -163,6 +163,6 @@ return [
         'username'              => 'nom d\'utilisateur',
         'year'                  => 'année',
         'other_data'            => 'aitres informations',
-        'pro'                   => 'Téléphone fixe / professionnel'
+        'pro'                   => 'Téléphone fixe / professionnel',
     ],
 ];

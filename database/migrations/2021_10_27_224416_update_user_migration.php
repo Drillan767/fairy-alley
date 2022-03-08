@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateUserMigration extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -13,11 +12,11 @@ class UpdateUserMigration extends Migration
      */
     public function up()
     {
-        Schema::table('users',  function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->string('type')->nullable();
         });
 
-        Schema::table('year_data',  function (Blueprint $table) {
+        Schema::table('year_data', function (Blueprint $table) {
             $table->dropColumn('deposit_paid_at');
             $table->string('payments')->nullable();
         });
@@ -32,4 +31,4 @@ class UpdateUserMigration extends Migration
     {
         //
     }
-}
+};

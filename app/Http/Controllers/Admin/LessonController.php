@@ -2,26 +2,29 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\LessonRequest;
 use App\Models\Lesson;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Controllers\Controller;
-use Inertia\{Response, Inertia};
+use Inertia\Inertia;
+use Inertia\Response;
 
 class LessonController extends Controller
 {
-
     public function index()
     {
         $lessons = Lesson::orderBy('title')->get();
+
         return Inertia::render('Admin/Lessons/Index', compact('lessons'));
     }
 
     public function create()
     {
-        return Inertia::render('Admin/Lessons/Create', [
+        return Inertia::render(
+            'Admin/Lessons/Create',
+            [
                 'holidays' => $this->handleHolidays(),
             ]
         );
@@ -50,6 +53,7 @@ class LessonController extends Controller
     public function update(LessonRequest $request, Lesson $cour): RedirectResponse
     {
         $this->handleLesson($cour, $request, true);
+
         return redirect()->route('cours.index')->with('success', 'Cours mis à jour avec succès.');
     }
 
@@ -71,7 +75,7 @@ class LessonController extends Controller
         $schedule = collect($request->get('schedule'))->map(function ($day) {
             return [
                 'date' => Carbon::createFromFormat('d/m/Y', $day['date'])->format('Y-m-d'),
-                'status' => $day['status']
+                'status' => $day['status'],
             ];
         });
 
@@ -79,7 +83,7 @@ class LessonController extends Controller
             $request->validated(),
             [
                 'year' => now()->year . ' - ' . now()->addYear()->year,
-                'schedule' => $schedule
+                'schedule' => $schedule,
             ]
         );
 
@@ -95,6 +99,7 @@ class LessonController extends Controller
     {
         $file = Storage::disk('s3')->get('system/holidays.json');
         $holidays = json_decode($file, true);
+
         return array_keys($holidays);
     }
 }

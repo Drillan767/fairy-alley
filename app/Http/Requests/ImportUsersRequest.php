@@ -27,7 +27,7 @@ class ImportUsersRequest extends FormRequest
     {
         // dd($this);
         return [
-            'file' => ['required', new ExcelRule($this->file('file'))]
+            'file' => ['required', new ExcelRule($this->file('file'))],
         ];
     }
 }

@@ -27,7 +27,7 @@ class PageRequest extends FormRequest
         $rules = [
             'summary' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],
-            'published' => ['required', 'boolean']
+            'published' => ['required', 'boolean'],
         ];
 
         if ($this->routeIs('pages.store')) {

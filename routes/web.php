@@ -1,18 +1,17 @@
 <?php
 
-use App\Http\Controllers\Admin\{AdminController,
-    FileController,
-    PageController,
-    LessonController,
-    ServiceController,
-    UserController,
-    ToolsController};
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\FileController;
+use App\Http\Controllers\Admin\LessonController;
+use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\ToolsController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\FirstContactController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\User\SubscriptionController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,12 +24,12 @@ use App\Http\Controllers\HomeController;
 |
 */
 
-Route::get('/', [HomeController::class,'landing'])->name('landing');
+Route::get('/', [HomeController::class, 'landing'])->name('landing');
 
 Route::post('/contact', [HomeController::class, 'contact'])->name('contact');
 
-Route::middleware(['auth:sanctum', 'verified'])->group(function() {
-    Route::middleware(['role:administrator'])->group(function() {
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::middleware(['role:administrator'])->group(function () {
         Route::get('/administration', [AdminController::class, 'index'])->name('admin.index');
         Route::post('/services/order', [ServiceController::class, 'order'])->name('services.order');
 
@@ -50,7 +49,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
             Route::put('/preinscription/{user}', 'updateSubscription')->name('utilisateurs.updateSubscription');
         });
 
-        Route::controller(FileController::class)->prefix('/media')->group(function() {
+        Route::controller(FileController::class)->prefix('/media')->group(function () {
             Route::get('/{media}', 'index')
                 ->where('media', '(musiques|photos|videos)')
                 ->name('files.index');
@@ -74,12 +73,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
         Route::apiResources([
             'services' => ServiceController::class,
         ]);
-
     });
 
     Route::get('/profil', [SubscriptionController::class, 'index'])->name('profile.index');
 
-    Route::middleware(['role:subscriber'])->group(function() {
+    Route::middleware(['role:subscriber'])->group(function () {
         Route::controller(SubscriptionController::class)->group(function () {
             Route::get('/inscription-cours/{lesson}', 'create')->name('subscription.create');
             Route::get('/inscription/cours/{lesson}/editer', 'edit')->name('subscription.edit');

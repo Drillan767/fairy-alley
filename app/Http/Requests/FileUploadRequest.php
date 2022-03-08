@@ -25,7 +25,7 @@ class FileUploadRequest extends FormRequest
     public function rules()
     {
         return [
-            'type' => ['required', 'string', 'in:photos,videos,musics']
+            'type' => ['required', 'string', 'in:photos,videos,musics'],
         ];
     }
 }

@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class UpdateUserProfilData
 {
-
     public function updateCoordinates(UserCoordinatesRequest $request, User $user)
     {
         foreach (['address1', 'address2', 'zipcode', 'city', 'phone', 'pro'] as $field) {

@@ -23,6 +23,7 @@ class RedirectIfAuthenticated
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
                 $home = Auth::user()->hasRole('administrator') ? '/administration' : '/profil';
+
                 return redirect($home);
             }
         }
