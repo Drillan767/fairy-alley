@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceRequest;
+use App\Models\Page;
+use App\Models\Service;
 use App\Services\FileHandler;
 use Illuminate\Http\RedirectResponse;
-use App\Models\{Page, Service};
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\{DB, Storage};
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ServiceController extends Controller
 {
     public function __construct(public FileHandler $fileHandler)
-    {}
+    {
+    }
 
     public function index()
     {
@@ -22,6 +25,7 @@ class ServiceController extends Controller
             ->orderBy('order')
             ->get();
         $pages = Page::all(['id', 'title']);
+
         return Inertia::render('Admin/Services/Index', compact('services', 'pages'));
     }
 
@@ -35,6 +39,7 @@ class ServiceController extends Controller
     public function update(ServiceRequest $request, Service $service): RedirectResponse
     {
         $this->handleServices($request, $service, true);
+
         return redirect()->back()->with('success', 'Service mis à jour avec succès.');
     }
 
@@ -49,7 +54,7 @@ class ServiceController extends Controller
 
     private function handleServices(ServiceRequest $request, Service $service, $update = false)
     {
-        foreach(['title', 'description', 'page_id', 'ref', 'homepage'] as $field) {
+        foreach (['title', 'description', 'page_id', 'ref', 'homepage'] as $field) {
             $service->$field = $request->get($field);
         }
 

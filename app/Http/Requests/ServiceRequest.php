@@ -28,7 +28,7 @@ class ServiceRequest extends FormRequest
             'title' => ['required', 'string'],
             'description' => ['required', 'string', 'max:255'],
             'page_id' => ['required', 'integer', 'exists:pages,id'],
-            'ref' => ['required', 'string']
+            'ref' => ['required', 'string'],
         ];
 
         if ($this->getMethod() === 'POST') {

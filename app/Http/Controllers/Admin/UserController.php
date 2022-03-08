@@ -4,18 +4,24 @@ namespace App\Http\Controllers\Admin;
 
 use App\Events\UserRoleChanged;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SubscriptionValidationRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Jobs\SendLessonChanged;
-use App\Http\Requests\{SubscriptionValidationRequest, UserUpdateRequest};
-use Illuminate\Http\Request;
-use App\Models\{Lesson, Service, Subscription, User};
+use App\Models\Lesson;
+use App\Models\Service;
+use App\Models\Subscription;
+use App\Models\User;
 use App\Services\SubscriptionHandler;
 use Illuminate\Http\RedirectResponse;
-use Inertia\{Inertia, Response};
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class UserController extends Controller
 {
     public function __construct(protected SubscriptionHandler $subscriptionHandler)
-    {}
+    {
+    }
 
     public function index(): Response
     {
@@ -28,12 +34,10 @@ class UserController extends Controller
 
     public function create()
     {
-
     }
 
     public function store()
     {
-
     }
 
     public function show(User $utilisateur)
@@ -65,6 +69,7 @@ class UserController extends Controller
             $user->subscription->update(['lesson_id' => $validated['lid']]);
 
             SendLessonChanged::dispatchAfterResponse($user, $validated['lid']);
+
             return redirect()->back()->with('success', 'Le cours a bien été changé.');
         }
     }
@@ -85,7 +90,8 @@ class UserController extends Controller
 
     public function edit(User $utilisateur)
     {
-        return Inertia::render('Admin/Users/Edit',
+        return Inertia::render(
+            'Admin/Users/Edit',
             [
                 'subscriber' => $utilisateur->load('subscription.lesson', 'yearDatas'),
             ]
@@ -128,7 +134,6 @@ class UserController extends Controller
 
     public function updateLesson(Request $request)
     {
-
     }
 
     public function archiveUser(User $user)
@@ -141,11 +146,11 @@ class UserController extends Controller
     {
         $users = User::role('subscriber')
             ->has('subscription')
-            ->with('subscription', function($query) {
+            ->with('subscription', function ($query) {
                 $query->whereIn('status', [
                     Subscription::PENDING,
                     Subscription::NEEDS_INFOS,
-                    Subscription::AWAITING_PAYMENT
+                    Subscription::AWAITING_PAYMENT,
                 ]);
             })
             ->where('lesson_id', null)
@@ -156,9 +161,10 @@ class UserController extends Controller
 
     public function subscribing(User $user): Response
     {
-        return Inertia::render('Admin/Users/Subscribing',
+        return Inertia::render(
+            'Admin/Users/Subscribing',
             [
-                'subscriber' => $user->load('subscription.lesson', 'currentYearData.file')
+                'subscriber' => $user->load('subscription.lesson', 'currentYearData.file'),
             ]
         );
     }
@@ -166,6 +172,7 @@ class UserController extends Controller
     public function subscribe(SubscriptionValidationRequest $request): RedirectResponse
     {
         list($route, $type, $message) = $this->subscriptionHandler->validate($request);
+
         return redirect()->route($route)->with($type, $message);
     }
 

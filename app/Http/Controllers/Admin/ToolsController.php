@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\ImportUsersRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ImportUsersRequest;
 use App\Services\UserImportHandler;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
-use Inertia\{Inertia, Response};
+use Inertia\Inertia;
+use Inertia\Response;
 use SimpleXLSXGen;
 
 class ToolsController extends Controller
 {
-
     public function __construct(protected UserImportHandler $importHandler)
-    {}
+    {
+    }
 
     public function importForm(): Response
     {
@@ -25,6 +26,7 @@ class ToolsController extends Controller
     public function importUsers(ImportUsersRequest $request): RedirectResponse
     {
         list($success, $errors) = $this->importHandler->handle($request->file('file'));
+
         return redirect()
             ->back()
             ->with('success', $success)
@@ -38,7 +40,7 @@ class ToolsController extends Controller
 
         $result = [];
 
-        foreach($holidays as $day => $event) {
+        foreach ($holidays as $day => $event) {
             $result[$event][] = $day;
         }
 
@@ -48,8 +50,7 @@ class ToolsController extends Controller
         for ($i = 0; $i <= $nbRows; $i++) {
             $line = [];
 
-            foreach($result as $day) {
-
+            foreach ($result as $day) {
                 if (isset($day[$i])) {
                     $line[] = Carbon::parse($day[$i])->format('d/m/Y');
                 } else {

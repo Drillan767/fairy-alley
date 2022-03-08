@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
-use Intervention\Image\Facades\Image;
-use App\Models\{Media, Service, YearData};
+use App\Models\Media;
+use App\Models\Service;
+use App\Models\YearData;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class FileHandler
 {
@@ -41,9 +43,9 @@ class FileHandler
             $basename = str_replace($fileMeta['filename'], "{$fileMeta['filename']}_$format", $filename);
             $path = "service/$service->id/$basename";
 
-            list ($width, $height) = $this->dimensions[$format];
+            list($width, $height) = $this->dimensions[$format];
             $img = Image::make($file)
-                ->resize($width, $height, function($constraint) {
+                ->resize($width, $height, function ($constraint) {
                     $constraint->aspectRatio();
                     $constraint->upsize();
                 })

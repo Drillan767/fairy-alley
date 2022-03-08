@@ -11,7 +11,7 @@ return [
         'display' => 'Premier contact',
         'email' => '',
         'progressions' => [],
-        'warning' => "Vous êtes sur le point de retirer tous les droits à cette personne, et elle sera désormais incapable de se connecter.",
+        'warning' => 'Vous êtes sur le point de retirer tous les droits à cette personne, et elle sera désormais incapable de se connecter.',
     ],
     'guest' => [
         'display' => 'Invité',

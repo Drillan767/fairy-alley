@@ -13,11 +13,11 @@ class UpdateUserMigration extends Migration
      */
     public function up()
     {
-        Schema::table('users',  function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->string('type')->nullable();
         });
 
-        Schema::table('year_data',  function (Blueprint $table) {
+        Schema::table('year_data', function (Blueprint $table) {
             $table->dropColumn('deposit_paid_at');
             $table->string('payments')->nullable();
         });

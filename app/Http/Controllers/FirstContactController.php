@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Events\FirstContactCreated;
-use App\Events\SendNewContactNotifications;
 use App\Http\Requests\FirstContactRequest;
 use App\Models\FirstContact;
 use App\Models\Lesson;
-use App\Models\Service;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Models\YearData;
@@ -17,7 +15,7 @@ class FirstContactController extends Controller
     public function create()
     {
         return view('register', [
-            'lessons' => Lesson::all('id', 'title')->orderBy('title')
+            'lessons' => Lesson::all('id', 'title')->orderBy('title'),
         ]);
     }
 
@@ -51,7 +49,7 @@ class FirstContactController extends Controller
         $user->subscription()->save($subscription);
 
         $yearData = new YearData();
-        foreach(['health_issues', 'current_health_issues', 'medical_treatment'] as $hFields) {
+        foreach (['health_issues', 'current_health_issues', 'medical_treatment'] as $hFields) {
             if ($request->get($hFields) !== null && $request->get($hFields) !== '') {
                 $yearData->health_data = $request->get($hFields) . "\n\n";
             }
@@ -88,7 +86,7 @@ class FirstContactController extends Controller
                 'medical_treatment',
                 'sports',
                 'objectives',
-            ]
+            ],
         ];
     }
 }

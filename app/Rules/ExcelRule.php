@@ -13,7 +13,8 @@ class ExcelRule implements Rule
      * @return void
      */
     public function __construct(private ?UploadedFile $file)
-    {}
+    {
+    }
 
     /**
      * Determine if the validation rule passes.
@@ -24,8 +25,11 @@ class ExcelRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        if (!$this->file) return false;
+        if (!$this->file) {
+            return false;
+        }
         $extension = strtolower($this->file->getClientOriginalExtension());
+
         return in_array($extension, ['csv', 'xls', 'xlsx']);
     }
 

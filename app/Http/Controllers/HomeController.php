@@ -16,6 +16,7 @@ class HomeController extends Controller
             ->where('homepage', true)
             ->orderBy('order')
             ->get();
+
         return view($view, compact('services'));
     }
 
@@ -28,6 +29,5 @@ class HomeController extends Controller
 
     public function displayPage($slug)
     {
-
     }
 }

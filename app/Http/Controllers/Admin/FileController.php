@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\FileUploadRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Inertia\{Inertia, Response};
+use Inertia\Inertia;
+use Inertia\Response;
 
 class FileController extends Controller
 {
@@ -35,7 +36,7 @@ class FileController extends Controller
     public function upload(FileUploadRequest $request)
     {
         $path = $request->get('type');
-        foreach($request->file('files') as $file) {
+        foreach ($request->file('files') as $file) {
             Storage::disk('s3')->putFileAs($path, $file, $file->getClientOriginalName());
         }
 

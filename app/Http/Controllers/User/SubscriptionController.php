@@ -7,16 +7,15 @@ use App\Http\Requests\SubscriptionRequest;
 use App\Models\Lesson;
 use App\Services\LessonDateDisplayHandler;
 use App\Services\SubscriptionHandler;
-use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class SubscriptionController extends Controller
 {
-
     public function __construct(public SubscriptionHandler $subscriptionHandler)
-    {}
+    {
+    }
 
     public function index(LessonDateDisplayHandler $displayHandler): Response
     {
@@ -31,7 +30,7 @@ class SubscriptionController extends Controller
             $attributes = $displayHandler->calculate($user);
         }
 
-        return Inertia::render('User/Landing', compact( 'headlines', 'attributes'));
+        return Inertia::render('User/Landing', compact('headlines', 'attributes'));
     }
 
     public function create(Lesson $lesson): Response|RedirectResponse
@@ -42,7 +41,9 @@ class SubscriptionController extends Controller
 
         $lessons = Lesson::all('title');
         $details = config('lesson.tos');
-        return Inertia::render('User/Subscription/Create',
+
+        return Inertia::render(
+            'User/Subscription/Create',
             compact('lesson', 'lessons', 'details')
         );
     }
@@ -52,7 +53,9 @@ class SubscriptionController extends Controller
         $user = auth()->user()->load('subscription', 'currentYearData.file');
         $lessons = Lesson::all('title');
         $details = config('lesson.tos');
-        return Inertia::render('User/Subscription/Edit',
+
+        return Inertia::render(
+            'User/Subscription/Edit',
             compact('lesson', 'lessons', 'details', 'user')
         );
     }
@@ -60,17 +63,18 @@ class SubscriptionController extends Controller
     public function store(SubscriptionRequest $request): RedirectResponse
     {
         $this->subscriptionHandler->create($request);
+
         return redirect()->route('profile.index')->with('success', 'Votre inscription a bien été prise en compte');
     }
 
     public function update(SubscriptionRequest $request): RedirectResponse
     {
         $this->subscriptionHandler->update($request);
+
         return redirect()->route('profile.index')->with('success', 'Votre inscription a bien été prise en compte');
     }
 
     public function movements()
     {
-
     }
 }

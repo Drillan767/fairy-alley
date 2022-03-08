@@ -28,7 +28,7 @@ class MovementRequest extends FormRequest
             'user_id' => ['required', 'integer', 'exists:users,id'],
             'lesson_id' => ['required', 'integer', 'exists:lessons,id'],
             'action' => ['required', 'string', 'in:joined,cancelled'],
-            'lesson_hour' => ['required', 'string', 'regex:^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$']
+            'lesson_hour' => ['required', 'string', 'regex:^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'],
         ];
     }
 }

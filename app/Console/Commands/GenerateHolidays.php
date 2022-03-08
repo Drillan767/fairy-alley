@@ -42,6 +42,7 @@ class GenerateHolidays extends Command
         $response = Http::get('https://calendrier.api.gouv.fr/jours-feries/metropole.json')->body();
         Storage::disk('s3')->delete('system/holidays.json');
         Storage::disk('s3')->put('system/holidays.json', $response);
+
         return self::SUCCESS;
     }
 }

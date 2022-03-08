@@ -35,7 +35,7 @@ class UserFactory extends Factory
             'gender' => $gender,
             'firstname' => $user->name->first,
             'lastname' => $user->name->last,
-            'address1' => $user->location->street->number . ', '. $user->location->street->name,
+            'address1' => $user->location->street->number . ', ' . $user->location->street->name,
             'zipcode' => $user->location->postcode,
             'city' => $user->location->city,
             'email' => $user->email,

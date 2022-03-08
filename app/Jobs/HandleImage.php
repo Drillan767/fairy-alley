@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Models\Media;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -33,7 +32,7 @@ class HandleImage implements ShouldQueue
      */
     public function handle()
     {
-        /**
+        /*
          * TODO:
          * 1. x Parse path, retrieve service id, load it
          * 2. x Get image, resize it, upload it to s3
@@ -43,7 +42,6 @@ class HandleImage implements ShouldQueue
          * 5. Ensure nothing breaks afterwards after editing / showing / deleting service
          * 6. Cleanup Service model
          */
-
 
         /*
          $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);

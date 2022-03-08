@@ -23,7 +23,7 @@ class EventServiceProvider extends ServiceProvider
 
         FirstContactCreated::class => [
             SendFirstContactEmails::class,
-        ]
+        ],
     ];
 
     /**

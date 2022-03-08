@@ -3,10 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Lesson;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 
 class LessonFactory extends Factory
 {
@@ -37,7 +34,7 @@ class LessonFactory extends Factory
             'year' => '2021 - 2022',
             'ref' => 'Gym',
             'description' => "Tousled 90's truffaut copper mug. Chartreuse tote bag activated charcoal tbh man bun coloring book godard.",
-            'schedule' => $dates
+            'schedule' => $dates,
         ];
     }
 }

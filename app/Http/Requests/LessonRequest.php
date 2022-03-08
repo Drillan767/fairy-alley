@@ -34,7 +34,7 @@ class LessonRequest extends FormRequest
     }
 
     #[ArrayShape([
-        'schedule.*.date' => "string",
+        'schedule.*.date' => 'string',
         'ref' => 'référence',
     ])]
     public function attributes(): array

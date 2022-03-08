@@ -7,16 +7,19 @@ use App\Models\Page;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\{InteractsWithQueue, SerializesModels};
-use Illuminate\Support\{Arr, Facades\Log, Str};
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AsyncUploadJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * When trying to upload everything at once to MinIO, got the following error:
+     * When trying to upload everything at once to MinIO, got the following error:.
      *
      * A sha256 checksum could not be calculated for the provided upload body, because it was not seekable.
      * To prevent this error you can either

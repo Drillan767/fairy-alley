@@ -8,7 +8,6 @@ use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 
 class LoginResponse implements LoginResponseContract
 {
-
     public function toResponse($request): RedirectResponse
     {
         $role = auth()->user()->getRoleNames()->first();
@@ -23,6 +22,7 @@ class LoginResponse implements LoginResponseContract
 
             default:
                 auth()->logout();
+
                 return redirect('/connexion')->withErrors(['email' => 'Votre rôle ne vous permet pas de vous connecter.']);
         }
     }

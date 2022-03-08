@@ -164,8 +164,6 @@ return [
         App\Providers\ViteServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
 
-
-
         /*
          * Package Service Providers...
          */
