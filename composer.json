@@ -17,7 +17,7 @@
         "laravel/jetstream": "^2.3",
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.5",
-        "league/flysystem-aws-s3-v3": "^1.0",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "lorisleiva/laravel-actions": "^2.1",
         "php-ffmpeg/php-ffmpeg": "^0.19.0",
         "shuchkin/simplexlsx": "^0.8.26",
