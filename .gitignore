@@ -21,4 +21,5 @@ yarn-error.log
 .composer
 .npm
 .cache
+.php-cs-fixer.cache
 

@@ -17,21 +17,46 @@ class LessonDateDisplayHandler
             $schedule = collect($lesson->schedule);
             $statuses = $schedule->groupBy('status');
 
-            foreach ($statuses as $status) {
+            foreach ($statuses as $status => $date) {
                 $title = $lesson->title . match ($status) {
-                    'ok' => '',
                     'cancelled' => ' - Annulé',
-                    'recovery' => ' - Rattrapage'
+                    'recovery' => ' - Rattrapage',
+                    default => '',
                 };
 
                 // Set colors to distinguish
                 if ($lesson->id === $userLesson) {
+                    $color = match ($status) {
+                        'cancelled' => 'red',
+                        'ok' => 'blue',
+                        'recovery' => 'green',
+                        default => '',
+                    };
+
                 } else {
+                    $color = 'gray';
                 }
+
+                $attributes[] = [
+                    'popover' => [
+                        'label' => $title
+                    ],
+                    'highlight' => [
+                        'color' => $color,
+                        'fillMode' => 'solid',
+                    ],
+                    'customData' => [
+                        'isSubscribed' => $lesson->id === $userLesson,
+                        'lesson_id' => $lesson->id,
+                        'lesson_title' => $lesson->title,
+                    ],
+                    'dates' => $date->map(fn($s) => $s['date']),
+                    'order' => $lesson->id === $userLesson ? 5 : 0,
+                ];
             }
         }
 
-        return [];
+        return $attributes;
     }
 
     /*
