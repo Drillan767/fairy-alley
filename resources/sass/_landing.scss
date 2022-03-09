@@ -16,10 +16,7 @@
 }
 
 .services {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    grid-auto-rows: 1fr;
-    grid-gap: 25px;
+    @apply grid lg:grid-cols-5 container px-5 py-10 mt-10 mx-auto;
 
     .rounded-lg {
         display: flex;

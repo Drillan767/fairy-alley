@@ -17,8 +17,8 @@ return new class extends Migration {
         });
 
         foreach (['selected_time', 'fallback_time'] as $column) {
-            if (Schema::hasColumn('subscription', $column)) {
-                Schema::table('subscription', function (Blueprint $table) {
+            if (Schema::hasColumn('subscriptions', $column)) {
+                Schema::table('subscriptions', function (Blueprint $table) {
                     $table->dropColumn($table);
                 });
             }

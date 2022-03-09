@@ -26,7 +26,7 @@
                         @csrf
                         <div class="grid grid-cols-6 gap-4">
                             <div class="col-span-6 sm:col-span-3">
-                                <label for="lastname" class="block text-sm font-medium text-gray-700">Nom</label>
+                                <label for="lastname" class="block text-sm font-medium text-gray-700 required">Nom</label>
                                 <input type="text" name="lastname" value="{{ old('lastname') }}" id="lastname">
                                 @error('lastname')
                                 <p class="text-sm text-red-600">{{ $message }}</p>
@@ -34,7 +34,7 @@
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
-                                <label for="firstname" class="block text-sm font-medium text-gray-700">Prénom</label>
+                                <label for="firstname" class="block text-sm font-medium text-gray-700 required">Prénom</label>
                                 <input type="text" name="firstname" value="{{ old('firstname') }}" id="firstname">
                                 @error('firstname')
                                 <p class="text-sm text-red-600">{{ $message }}</p>
@@ -59,7 +59,7 @@
                                         @enderror
                                     </div>
                                     <div class="flex-1">
-                                        <label for="birthday" class="block text-sm font-medium text-gray-700">Genre</label>
+                                        <label for="birthday" class="block text-sm font-medium text-gray-700 required">Genre</label>
                                         <div class="flex mt-2 justify-around">
                                             <div class="form-check">
 
@@ -75,13 +75,13 @@
                                                 </label>
                                             </div>
                                         </div>
-                                        </div>
-
-                                        @error('birthday')
-                                        <p class="text-sm text-red-600">{{ $message }}</p>
-                                        @enderror
                                     </div>
+
+                                    @error('birthday')
+                                    <p class="text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
                                 </div>
+                            </div>
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="phone" class="block text-sm font-medium text-gray-700">Téléphone portable</label>
                                 <input type="text" name="phone" value="{{ old('phone') }}" id="phone">
@@ -127,15 +127,20 @@
                             </div>
 
                             <div class="col-span-6 mt-4">
-                                <label for="address1" class="block text-sm font-medium text-gray-700">
+                                <label for="address1" class="block text-sm font-medium text-gray-700 required
+">
                                     Cours désiré
-                                    <select name="lesson" required>
-                                        <option value="">Sélectionner un cours...</option>
-                                        @foreach($lessons as $lesson)
-                                            <option value="{{ $lesson->id }}">{{ $lesson->title }}</option>
-                                        @endforeach
-                                    </select>
                                 </label>
+                                <select name="lesson" required>
+                                    <option value="">Sélectionner un cours...</option>
+                                    @foreach($lessons as $lesson)
+                                        <option value="{{ $lesson->id }}">{{ $lesson->title }}</option>
+                                    @endforeach
+                                </select>
+                                @error('lesson')
+                                <p class="text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+
                             </div>
 
                             <div class="col-span-6 mt-4">

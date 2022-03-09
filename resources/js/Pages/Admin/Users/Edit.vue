@@ -57,7 +57,6 @@ export default {
             ...props.subscriber,
             // Year data infos.
             decision: '',
-            selected_time: '',
             payment_received_at: '',
             pre_registration_signature: '',
             observations: '',

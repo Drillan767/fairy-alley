@@ -35,7 +35,7 @@
 </header>
 
 <section>
-    <div class="container px-5 py-10 mt-10 mx-auto services">
+    <div class="services">
         @foreach($services as $service)
             <div class="rounded-lg">
                 <a href="{{ route('pages.show', ['slug' => $service->page->slug]) }}">

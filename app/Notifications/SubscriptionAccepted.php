@@ -44,7 +44,6 @@ class SubscriptionAccepted extends Notification
             ->greeting('Bonjour,')
             ->subject('Votre inscription a été accepté')
             ->line("Vous recevez cet email car votre inscription pour le cours de {$this->subscription['lesson']['title']} a été validée.")
-            ->line(new HtmlString("<p>Votre cours hebdomadaire est fixé au <b>{$this->subscription['selected_time']}</b>."))
             ->line('Bien cordialement,');
     }
 

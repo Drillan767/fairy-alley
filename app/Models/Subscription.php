@@ -20,7 +20,6 @@ class Subscription extends Model
     protected $fillable = [
         'user_id',
         'lesson_id',
-        'selected_time',
         'invites',
         'status',
     ];

@@ -23,7 +23,6 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('service_id')->constrained();
-            $table->dateTime('selected_time');
             $table->boolean('accepted')->default(false);
             $table->timestamps();
         });

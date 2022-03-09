@@ -15,7 +15,7 @@ class FirstContactController extends Controller
     public function create()
     {
         return view('register', [
-            'lessons' => Lesson::all('id', 'title')->orderBy('title'),
+            'lessons' => Lesson::orderBy('title')->get(['id', 'title']),
         ]);
     }
 

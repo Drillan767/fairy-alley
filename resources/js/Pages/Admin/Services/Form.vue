@@ -34,7 +34,7 @@
 
                 <div class="block mt-4">
                     <label class="flex items-center">
-                        <jet-checkbox v-model="form.homepage" />
+                        <jet-checkbox v-model="form.homepage" :checked="form.homepage" />
                         <span class="ml-2 text-sm text-gray-600">Afficher sur la page d'accueil</span>
                     </label>
                 </div>
@@ -109,6 +109,7 @@ export default {
             form.description = fields.description;
             form.page_id = fields.page_id;
             form.ref = fields.ref;
+            form.homepage = fields.homepage;
         });
 
         function submit() {

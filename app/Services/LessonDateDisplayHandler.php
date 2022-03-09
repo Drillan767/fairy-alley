@@ -59,36 +59,5 @@ class LessonDateDisplayHandler
         return $attributes;
     }
 
-    /*
-             foreach($statuses as $status => $date) {
-                $label = "Cours du $lesson";
-                $color = '';
-
-                switch($status) {
-                    case 'ok':
-                        $color = 'purple';
-                        break;
-                    case 'cancelled':
-                       $color = 'red';
-                       $label .= ' - Annulé';
-                       break;
-                    case 'recovery':
-                        $color = 'blue';
-                        $label .= ' - Rattrapage';
-                        break;
-                }
-
-                $attributes[] = [
-                    'popover' => [
-                        'label' => $label
-                    ],
-                    'highlight' => [
-                        'color' => $color,
-                        'fillMode' => 'solid',
-                    ],
-                    'dates' => $date->map(fn($s) => $s['date']),
-                ];
-
-            }
-     */
+    // Find a way to retrieve automatically every lesson LEFT for the week
 }

@@ -164,7 +164,6 @@ class UserImportHandler
                 $subscription->user_id = $user->id;
                 $subscription->lesson_id = $user->lesson_id;
                 $subscription->status = $user->hasRole('guest') ? Subscription::PENDING : Subscription::VALIDATED;
-                $subscription->selected_time = $data['hour'] ?? '';
                 $subscription->save();
             }
 
