@@ -16,7 +16,7 @@
 }
 
 .services {
-    @apply grid lg:grid-cols-5 container px-5 py-10 mt-10 mx-auto;
+    @apply grid lg:grid-cols-5 container px-5 py-10 mt-10 mx-auto gap-4;
 
     .rounded-lg {
         display: flex;
