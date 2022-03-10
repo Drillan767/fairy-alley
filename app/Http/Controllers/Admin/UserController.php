@@ -34,6 +34,9 @@ class UserController extends Controller
 
     public function create()
     {
+        $lessons = Lesson::orderBy('title')->get(['id', 'title']);
+
+        return Inertia::render('Admin/Users/Create', compact('lessons'));
     }
 
     public function store()

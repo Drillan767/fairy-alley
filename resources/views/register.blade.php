@@ -59,18 +59,17 @@
                                         @enderror
                                     </div>
                                     <div class="flex-1">
-                                        <label for="birthday" class="block text-sm font-medium text-gray-700 required">Genre</label>
+                                        <label class="block text-sm font-medium text-gray-700 required">Genre</label>
                                         <div class="flex mt-2 justify-around">
                                             <div class="form-check">
-
                                                 <label class="form-check-label inline-block text-gray-800">
-                                                    <input type="radio" name="gender" value="H" id="flexRadioDefault1">
+                                                    <input type="radio" name="gender" value="H">
                                                     Homme
                                                 </label>
                                             </div>
                                             <div class="form-check">
                                                 <label class="form-check-label inline-block text-gray-800">
-                                                    <input type="radio" name="gender" value="F" id="flexRadioDefault1">
+                                                    <input type="radio" name="gender" value="F">
                                                     Femme
                                                 </label>
                                             </div>
@@ -127,8 +126,7 @@
                             </div>
 
                             <div class="col-span-6 mt-4">
-                                <label for="address1" class="block text-sm font-medium text-gray-700 required
-">
+                                <label for="address1" class="block text-sm font-medium text-gray-700 required">
                                     Cours désiré
                                 </label>
                                 <select name="lesson" required>
