@@ -75,7 +75,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         ]);
     });
 
-    Route::get('/profil', [SubscriptionController::class, 'index'])->name('profile.index');
+    Route::controller(SubscriptionController::class)->group(function() {
+        Route::get('/profil', 'index')->name('profile.index');
+        Route::post('lessonDetail')->name('lesson-detail');
+    });
 
     Route::middleware(['role:subscriber'])->group(function () {
         Route::controller(SubscriptionController::class)->group(function () {

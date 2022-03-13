@@ -42,7 +42,7 @@
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
-                                <label for="email" class="block text-sm font-medium text-gray-700">Adresse email</label>
+                                <label for="email" class="block text-sm font-medium text-gray-700 required">Adresse email</label>
                                 <input type="email" name="email" value="{{ old('email') }}" id="email" autocomplete="email">
                                 @error('email')
                                 <p class="text-sm text-red-600">{{ $message }}</p>

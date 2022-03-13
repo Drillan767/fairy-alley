@@ -31,12 +31,12 @@
                     locale="fr"
                     cancelText="Annuler"
                     textInput
+                    minutesIncrement="15"
                     :disabled-dates="disabledDates"
-                    format="dd/MM/yyyy"
-                    :enableTimePicker="false"
+                    format="dd/MM/yyyy HH:mm"
                     :textInputOptions="textInputOptions"
                     selectText="Confirmer"
-                    inputFormat="dd/MM/yyyy"
+                    inputFormat="dd/MM/yyyy HH:mm"
                 />
             </div>
 
@@ -45,35 +45,41 @@
             </div>
         </div>
 
-        <template v-if="occurrences.length">
-            <div class="mt-4">
-                <jet-label>Dates des cours</jet-label>
-                <div class="flex flex-wrap">
-                    <div v-for="(date, i) in validDates" :key="i" class="w-1/5 px-4 gap-x-2 mb-2">
-                        <p class="list-item">{{ date.date }}</p>
-                    </div>
+        <div v-if="occurrences.length" class="mt-4">
+            <jet-label>Dates des cours</jet-label>
+            <div class="flex flex-wrap">
+                <div
+                    v-for="(date, i) in occurrences"
+                    :key="i"
+                    class="w-1/3 px-4 py-2 gap-x-2 flex"
+                    :title="`Le cours est ${lexicon[date.status]}.`"
+                    :class="{
+                        'bg-red-100': date.status === 'cancelled',
+                        'bg-blue-100': date.status === 'recovery',
+                        'bg-green-100': date.status === 'ok'
+
+                    }"
+                >
+                    <Datepicker
+                        v-model="occurrences[i].date"
+                        locale="fr"
+                        cancelText="Annuler"
+                        textInput
+                        minutesIncrement="15"
+                        :disabled-dates="disabledDates"
+                        format="dd/MM/yyyy HH:mm"
+                        :textInputOptions="textInputOptions"
+                        selectText="Confirmer"
+                        inputFormat="dd/MM/yyyy HH:mm"
+                    />
+                    <Button @click.prevent="editSpecificDate(date, i)">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                        </svg>
+                    </Button>
                 </div>
             </div>
-
-            <div class="mt-4">
-                <jet-label>Cours annulés</jet-label>
-                <div class="flex flex-wrap">
-                    <div v-for="(date, i) in cancelledDates" :key="i" class="w-1/5 px-4 gap-x-2 mb-2">
-                        <p class="list-item">{{ date.date }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-4">
-                <jet-label>Date des jours de récupération</jet-label>
-                <div class="flex flex-wrap">
-                    <div v-for="(date, i) in recoveryDates" :key="i" class="w-1/5 px-4 gap-x-2 mb-2">
-                        <p class="list-item">{{ date.date }}</p>
-                    </div>
-                </div>
-            </div>
-
-        </template>
+        </div>
 
         <div class="mt-8">
             <div class="flex justify-end">
@@ -97,6 +103,8 @@ import dayjs from "dayjs";
 import 'vue3-date-time-picker/dist/main.css';
 import {useForm} from "@inertiajs/inertia-vue3";
 import {computed, onMounted, ref, toRaw} from "vue";
+import Button from "@/Jetstream/Button.vue";
+import Swal from 'sweetalert2';
 
 export default {
     props: {
@@ -110,6 +118,7 @@ export default {
     },
 
     components: {
+        Button,
         JetInput,
         JetLabel,
         JetButton,
@@ -120,16 +129,54 @@ export default {
     },
 
     setup (props) {
+        const occurrences = ref([]);
+        const lexicon = ref({
+            'ok': 'assuré',
+            'cancelled': 'annulé',
+            'recovery': 'récupéré',
+        })
+
         onMounted(() => {
             if (props.editing) {
                 setupOccurrences.value.nbOccurrences = props.lesson.schedule.length
                 setupOccurrences.value.occurrenceStartDate = props.lesson.schedule[0].date
 
-                generateOccurrences();
+                occurrences.value = props.lesson.schedule;
             }
         })
 
-        const occurrences = ref([]);
+        const editSpecificDate = (detail, index) => {
+            Swal.fire({
+                title: "Éditer les détails de l'occurrence",
+                text: `Que voulez-vous faire pour l'occurrence du ${dayjs(detail.date).format('DD/MM/YYYY à HH:mm')} ?`,
+                input: 'select',
+                inputValue: detail.status,
+                inputOptions: {
+                    ok: 'Définir comme ayant lieu',
+                    cancelled: 'Définir comme annulée',
+                    recovery: 'Définir comme jour de rattrapage',
+                },
+                preConfirm: (select) => {
+                    console.log(occurrences.value[index])
+                    console.log(detail.date)
+
+                    occurrences.value[index] = {
+                        date: detail.date,
+                        status: select,
+                    }
+
+                    Swal.fire({
+                        toast: true,
+                        icon: 'success',
+                        title: 'Statut du cours mis à jour.',
+                        position: 'top-end',
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                        timer: 2000,
+                    })
+                }
+            })
+        }
 
         const disabledDates = computed(() => {
             const dates = []
@@ -159,37 +206,13 @@ export default {
             format: 'dd.MM.yyyy'
         })
 
-        const validDates = computed(() => {
-            if (occurrences.value.length > 0) {
-                return occurrences.value.filter(o => o.status === 'ok');
-            } else {
-                return []
-            }
-        })
-
-        const cancelledDates = computed(() => {
-            if (occurrences.value.length > 0) {
-                return occurrences.value.filter(o => o.status === 'cancelled');
-            } else {
-                return []
-            }
-        })
-
-        const recoveryDates = computed(() => {
-            if (occurrences.value.length > 0) {
-                return occurrences.value.filter(o => o.status === 'recovery');
-            } else {
-                return []
-            }
-        })
-
         const generateOccurrences = () => {
             const result = [];
             let nbOccurrences = setupOccurrences.value.nbOccurrences;
             let date = setupOccurrences.value.occurrenceStartDate;
 
             result.push({
-                date: dayjs(date).format('DD/MM/YYYY'),
+                date: dayjs(date).format('YYYY-MM-DD HH:mm'),
                 status: 'ok',
             })
 
@@ -201,22 +224,22 @@ export default {
                     if (toRaw(props.holidays).includes(dayjs(date).format('YYYY-MM-DD'))) {
                         nbOccurrences++
                         result.push({
-                            date: dayjs(date).format('DD/MM/YYYY'),
+                            date: dayjs(date).format('YYYY-MM-DD HH:mm'),
                             status: 'cancelled',
                         })
                     } else {
                         result.push({
-                            date: dayjs(date).format('DD/MM/YYYY'),
+                            date: dayjs(date).format('YYYY-MM-DD HH:mm'),
                             status: 'ok',
                         })
                     }
 
                 } else {
-                    // All of the following happens if we're beyond the initial maximim occurrences planned.
+                    // All the following happens if we're beyond the initial maximum occurrences planned.
                     // If the day is already exceeding the initial limit, we'll just ignore it and go on.
                     if (!props.holidays.includes(dayjs(date).format('YYYY-MM-DD'))) {
                         result.push({
-                            date: dayjs(date).format('DD/MM/YYYY'),
+                            date: dayjs(date).format('YYYY-MM-DD HH:mm'),
                             status: 'recovery',
                         })
                     }
@@ -244,9 +267,8 @@ export default {
             occurrences,
             disabledDates,
             textInputOptions,
-            validDates,
-            cancelledDates,
-            recoveryDates,
+            editSpecificDate,
+            lexicon,
         }
     },
 }

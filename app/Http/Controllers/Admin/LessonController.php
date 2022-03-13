@@ -72,27 +72,13 @@ class LessonController extends Controller
     private function handleLesson(Lesson $lesson, LessonRequest $request, bool $update = false)
     {
         $function = $update ? 'update' : 'create';
-        $schedule = collect($request->get('schedule'))->map(function ($day) {
-            return [
-                'date' => Carbon::createFromFormat('d/m/Y', $day['date'])->format('Y-m-d'),
-                'status' => $day['status'],
-            ];
-        });
-
+        // dd($request);
         $fields = array_merge(
             $request->validated(),
-            [
-                'year' => now()->year . ' - ' . now()->addYear()->year,
-                'schedule' => $schedule,
-            ]
+            [ 'year' => now()->year . ' - ' . now()->addYear()->year]
         );
 
         $lesson->$function($fields);
-
-        /* TODO: change code by this for PHP v8.1
-         ...$request->validated(),
-        'year' => now()->year . '-' . now()->addYear()->year,
-        */
     }
 
     private function handleHolidays(): array

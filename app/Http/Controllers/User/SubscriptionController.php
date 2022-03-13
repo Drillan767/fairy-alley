@@ -8,6 +8,7 @@ use App\Models\Lesson;
 use App\Services\LessonDateDisplayHandler;
 use App\Services\SubscriptionHandler;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -74,7 +75,8 @@ class SubscriptionController extends Controller
         return redirect()->route('profile.index')->with('success', 'Votre inscription a bien été prise en compte');
     }
 
-    public function movements()
+    public function lessonDetail(Request $request)
     {
+
     }
 }
