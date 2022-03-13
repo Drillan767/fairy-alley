@@ -7,7 +7,7 @@ use App\Http\Requests\SubscriptionRequest;
 use App\Models\Lesson;
 use App\Services\LessonDateDisplayHandler;
 use App\Services\SubscriptionHandler;
-use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -62,27 +62,24 @@ class SubscriptionController extends Controller
         );
     }
 
-    public function store(SubscriptionRequest $request): RedirectResponse
+    public function store(SubscriptionRequest $request, SubscriptionHandler $subscriptionHandler): RedirectResponse
     {
-        $this->subscriptionHandler->create($request);
+        $subscriptionHandler->create($request);
 
         return redirect()->route('profile.index')->with('success', 'Votre inscription a bien été prise en compte');
     }
 
-    public function update(SubscriptionRequest $request): RedirectResponse
+    public function update(SubscriptionRequest $request, SubscriptionHandler $subscriptionHandler): RedirectResponse
     {
-        $this->subscriptionHandler->update($request);
+        $subscriptionHandler->update($request);
 
         return redirect()->route('profile.index')->with('success', 'Votre inscription a bien été prise en compte');
     }
 
-    public function lessonDetail(Request $request)
+    public function lessonDetail(Request $request): JsonResponse
     {
         $request->validate(['date' => ['required', 'date']]);
-        $date = Carbon::parse($request->get('date'))->format('Y-m-d');
-        $lessons = Lesson::where('schedule', 'like', "%$date%")->get();
-        dd($lessons);
-
+        $lessons = Lesson::where('schedule', 'like', "%{$request->get('date')}%")->get();
 
         return response()->json($lessons);
     }

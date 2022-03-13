@@ -11,12 +11,26 @@
 
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-12 mx-auto">
-            <div class="flex flex-col md:flex-row">
+            <div class="flex flex-col md:flex-row gap-2">
                 <div>
                     <h2 class="text-gray-900 text-lg title-font font-medium mb-3">{{ lesson.title }}</h2>
                     <p class="leading-relaxed text-base">
                         {{ lesson.description }}
                     </p>
+                </div>
+                <div>
+                    <div
+                        v-for="(lesson, i) in thatDaysLessons"
+                        :key="i"
+                        class="border-2 border-gray-300 rounded-xl p-3 mb-2 cursor-pointer"
+                        :class="{'border-[#3182ce]': lesson.id === $page.props.user.lesson_id}"
+                    >
+                        <p class="text-gray-700">
+                            <span class="font-bold">{{ lesson.title }}</span>
+                            <span class="ml-2" v-if="lesson.id === $page.props.user.lesson_id">(votre cours)</span>
+                        </p>
+                        <p class="text-gray-500 mt-2">{{ lesson.description }}</p>
+                    </div>
                 </div>
 
             </div>
@@ -45,6 +59,7 @@ import axios from 'axios'
 import {computed, ref} from "vue";
 
 export default {
+    // multistep: https://sweetalert2.github.io/recipe-gallery/queue-with-back-button.html
     props: ['lesson', 'headlines', 'attributes'],
     components: {
         UserLayout,
@@ -53,9 +68,11 @@ export default {
     },
 
     setup (props) {
+        const thatDaysLessons = ref([]);
         const onDayClick = (day) => {
-            axios.post(route('lesson-detail'), day)
-            .then((response) => console.log(response))
+            axios
+                .post(route('lesson-detail'), {date: day.id})
+                .then((response) => thatDaysLessons.value = response.data)
         };
 
         const breakpoint = computed(() => {
@@ -68,6 +85,7 @@ export default {
         return {
             onDayClick,
             breakpoint,
+            thatDaysLessons,
         }
     }
 }
