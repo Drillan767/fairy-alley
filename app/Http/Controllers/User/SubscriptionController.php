@@ -7,6 +7,7 @@ use App\Http\Requests\SubscriptionRequest;
 use App\Models\Lesson;
 use App\Services\LessonDateDisplayHandler;
 use App\Services\SubscriptionHandler;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -77,6 +78,12 @@ class SubscriptionController extends Controller
 
     public function lessonDetail(Request $request)
     {
+        $request->validate(['date' => ['required', 'date']]);
+        $date = Carbon::parse($request->get('date'))->format('Y-m-d');
+        $lessons = Lesson::where('schedule', 'like', "%$date%")->get();
+        dd($lessons);
 
+
+        return response()->json($lessons);
     }
 }

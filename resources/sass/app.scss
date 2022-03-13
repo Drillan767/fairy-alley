@@ -6,3 +6,9 @@
 @import "register";
 @import "media";
 @import 'sweetalert2/dist/sweetalert2.min.css';
+
+.required::after {
+    content: '*';
+    color: red;
+    margin-left: 3px;
+}

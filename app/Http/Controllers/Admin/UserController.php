@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Events\UserRoleChanged;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FirstContactRequest;
 use App\Http\Requests\SubscriptionValidationRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Jobs\SendLessonChanged;
@@ -11,6 +12,7 @@ use App\Models\Lesson;
 use App\Models\Service;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Services\FirstContactHandler;
 use App\Services\SubscriptionHandler;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -32,18 +34,20 @@ class UserController extends Controller
         return Inertia::render('Admin/Users/List', compact('users', 'lessons', 'roles'));
     }
 
-    public function create()
+    public function create(): Response
     {
         $lessons = Lesson::orderBy('title')->get(['id', 'title']);
 
         return Inertia::render('Admin/Users/Create', compact('lessons'));
     }
 
-    public function store()
+    public function store(FirstContactRequest $request, FirstContactHandler $firstContactHandler): RedirectResponse
     {
+        $firstContactHandler->store($request);
+        return redirect()->route('utilisateurs.index')->with('success', "L'utilisateur a été créé et un mail de création de mot de passe lui a été envoyé");
     }
 
-    public function show(User $utilisateur)
+    public function show(User $utilisateur): Response
     {
         // TODO: Limiter les rôles affichés à ce qui peut être sélectionnable, ie: presubscribed => subscriber, guest, substitute.
         $utilisateur->load('currentYearData.file', 'lesson', 'subscription', 'suggestions', 'firstContactData');
@@ -77,7 +81,7 @@ class UserController extends Controller
         }
     }
 
-    public function changeRole(Request $request)
+    public function changeRole(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'user' => ['required', 'exists:users,id'],

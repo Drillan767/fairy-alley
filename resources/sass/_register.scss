@@ -8,12 +8,6 @@
         padding: 10rem 0;
     }
 
-    .required::after {
-        content: '*';
-        color: red;
-        margin-left: 3px;
-    }
-
     input {
         &[type="text"], &[type="email"], &[type="date"], &[type="number"] {
             @apply mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md;

@@ -24,19 +24,19 @@
 
                                 <div class="grid grid-cols-6 gap-4">
                                     <div class="col-span-6 sm:col-span-3">
-                                        <jet-label for="firstname" value="Prénom" />
+                                        <jet-label for="firstname" value="Prénom" class="required"/>
                                         <jet-input id="firstname" type="text" class="mt-1 block w-full" v-model="form.firstname" />
                                         <jet-input-error :message="form.errors.firstname" class="mt-2" />
                                     </div>
 
                                     <div class="col-span-6 sm:col-span-3">
-                                        <jet-label for="lastname" value="Nom de famille" />
+                                        <jet-label for="lastname" value="Nom de famille" class="required" />
                                         <jet-input id="lastname" type="text" class="mt-1 block w-full" v-model="form.lastname" />
                                         <jet-input-error :message="form.errors.lastname" class="mt-2" />
                                     </div>
 
                                     <div class="col-span-6 sm:col-span-3">
-                                        <jet-label for="email" value="Adresse email" />
+                                        <jet-label for="email" value="Adresse email" class="required" />
                                         <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email" />
                                         <jet-input-error :message="form.errors.email" class="mt-2" />
                                     </div>
@@ -85,7 +85,7 @@
                                     </div>
 
                                     <div class="col-span-6 sm:col-span-4">
-                                        <jet-label for="family_situation" value="Situation familiale" />
+                                        <jet-label for="family_situation" value="Situation familiale" class="required" />
                                         <jet-select id="family_situation" :choices="familySituations" v-model="form.family_situation" />
                                         <jet-input-error :message="form.errors.family_situation" class="mt-2" />
                                     </div>
@@ -97,7 +97,7 @@
                                     </div>
 
                                     <div class="col-span-6 mt-4">
-                                        <jet-label for="lesson" value="Cours" />
+                                        <jet-label for="lesson" value="Cours" class="required" />
                                         <jet-select id="lesson" :choices="lessonList" v-model="form.lesson" />
                                         <jet-input-error :message="form.errors.lesson" class="mt-2" />
                                     </div>
@@ -128,6 +128,12 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-5 mt-4 flex justify-end">
+                        <jet-button type="submit">
+                            Enregistrer
+                        </jet-button>
                     </div>
                 </form>
             </div>
@@ -203,7 +209,7 @@ export default {
         });
 
         const submit = () => {
-
+            form.post(route('utilisateurs.store'))
         }
 
         const familySituations = ref([

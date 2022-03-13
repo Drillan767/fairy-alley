@@ -75,7 +75,7 @@ class LessonController extends Controller
         // dd($request);
         $fields = array_merge(
             $request->validated(),
-            [ 'year' => now()->year . ' - ' . now()->addYear()->year]
+            ['year' => now()->year . ' - ' . now()->addYear()->year]
         );
 
         $lesson->$function($fields);

@@ -40,6 +40,7 @@ import { Link } from '@inertiajs/inertia-vue3';
 import { Calendar } from 'v-calendar';
 import 'v-calendar/dist/style.css';
 import Swal from "sweetalert2";
+import axios from 'axios'
 
 import {computed, ref} from "vue";
 
@@ -53,10 +54,8 @@ export default {
 
     setup (props) {
         const onDayClick = (day) => {
-            Swal.fire({
-                title: day.ariaLabel
-            })
-            console.log(day)
+            axios.post(route('lesson-detail'), day)
+            .then((response) => console.log(response))
         };
 
         const breakpoint = computed(() => {
