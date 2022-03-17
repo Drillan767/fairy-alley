@@ -49,7 +49,7 @@
                                                 <jet-input-error :message="form.errors.birthday" class="mt-2" />
                                             </div>
                                             <div class="flex-1">
-                                                <jet-label value="Genre" />
+                                                <jet-label value="Genre" class="required"/>
                                                 <div class="flex mt-2 justify-around">
                                                     <div class="form-check">
                                                         <label class="form-check-label inline-block text-gray-800">
@@ -69,12 +69,12 @@
                                     </div>
                                     <div class="col-span-6 sm:col-span-3">
                                         <jet-label for="phone" value="Numéro de téléphone" />
-                                        <jet-input id="phone" type="text" class="mt-1 block w-full" v-model="form.phone" />
+                                        <jet-input id="phone" type="text" class="mt-1 block w-full" v-model="form.phone" placeholder="Remplir au moins l'un des deux champs"/>
                                         <jet-input-error :message="form.errors.phone" class="mt-2" />
                                     </div>
                                     <div class="col-span-6 sm:col-span-3">
                                         <jet-label for="pro" value="Téléphone professionnel" />
-                                        <jet-input id="pro" type="text" class="mt-1 block w-full" v-model="form.pro" />
+                                        <jet-input id="pro" type="text" class="mt-1 block w-full" v-model="form.pro" placeholder="Remplir au moins l'un des deux champs"/>
                                         <jet-input-error :message="form.errors.pro" class="mt-2" />
                                     </div>
 
