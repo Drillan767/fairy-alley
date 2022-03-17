@@ -9,12 +9,6 @@
                     <jet-input-error :message="form.errors.illustration" class="mt-2" />
                 </div>
 
-                <div class="mt-4">
-                    <jet-label value="Type de fichier" />
-                    <jet-select :choices="choices" v-model="form.type" />
-                    <jet-input-error :message="form.errors.page_id" class="mt-2" />
-                </div>
-
                 <div class="mt-4 flex justify-end">
                     <jet-button type="submit">
                         Enregistrer
@@ -32,9 +26,7 @@ import JetButton from '@/Jetstream/Button.vue';
 import JetLabel from '@/Jetstream/Label.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import JetFileUpload from '@/Jetstream/FileUpload.vue';
-import JetSelect from '@/Jetstream/Select.vue';
 import {useForm} from "@inertiajs/inertia-vue3";
-import { ref } from "vue";
 
 export default {
     emits: ['close'],
@@ -45,7 +37,6 @@ export default {
         JetLabel,
         JetInputError,
         JetFileUpload,
-        JetSelect,
     },
 
     props: {
@@ -71,22 +62,12 @@ export default {
             });
         }
 
-        const handleUpload = (files) => {
-            console.log(files)
-            form.files = files
-        };
-
-        const choices = ref([
-            {label: 'Vidéos', value: 'video'},
-            {label: 'Photos', value: 'photos'},
-            {label: 'Musiques', value: 'musics'},
-        ]);
+        const handleUpload = (files) => form.files = files
 
         return {
             form,
             submit,
             handleUpload,
-            choices,
         }
     },
 

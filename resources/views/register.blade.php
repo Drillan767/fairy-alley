@@ -83,7 +83,7 @@
                             </div>
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="phone" class="block text-sm font-medium text-gray-700">Téléphone portable</label>
-                                <input type="text" name="phone" value="{{ old('phone') }}" id="phone">
+                                <input type="text" name="phone" value="{{ old('phone') }}" id="phone" placeholder="Remplir au moins l'un des deux champs">
                                 @error('phone')
                                 <p class="text-sm text-red-600">{{ $message }}</p>
                                 @enderror
@@ -91,7 +91,7 @@
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="pro" class="block text-sm font-medium text-gray-700">Téléphone fixe / professionnel</label>
-                                <input type="text" name="pro" value="{{ old('pro') }}" id="pro">
+                                <input type="text" name="pro" value="{{ old('pro') }}" id="pro" placeholder="Remplir au moins l'un des deux champs">
                                 @error('pro')
                                 <p class="text-sm text-red-600">{{ $message }}</p>
                                 @enderror
