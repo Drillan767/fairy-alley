@@ -23,7 +23,7 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <CurrentLesson :lesson="user.lesson" :headlines="headlines" :attributes="attributes" />
+                    <CurrentLesson :lesson="user.lesson" :headlines="headlines" :lesson-days="lessonDays" />
                     <ServicesSuggestion :suggestions="user.suggestions" v-if="user.suggestions.length" />
                 </div>
             </div>
@@ -41,7 +41,7 @@ export default {
     title: 'Profil',
     props: {
         user: Object,
-        attributes: Object,
+        lessonDays: Object,
         headlines: Object,
         flash: {
             type: Object,

@@ -21,18 +21,18 @@ class SubscriptionController extends Controller
 
     public function index(LessonDateDisplayHandler $displayHandler): Response
     {
-        $attributes = [];
+        $lessonDays = [];
         $user = auth()->user();
         $headlines = collect(config('lesson.headlines'))->firstWhere('status_id', $user->subscription->status);
 
         // suggestions
         if ($user->hasAnyRole('subscriber', 'guest', 'substitute')) {
-            $user->load('suggestions.thumbnail', 'suggestions.page');
+            $user->load('suggestions.thumbnail', 'suggestions.page', 'lesson');
 
-            $attributes = $displayHandler->calculate($user);
+            $lessonDays = $displayHandler->calculate($user);
         }
 
-        return Inertia::render('User/Landing', compact('headlines', 'attributes'));
+        return Inertia::render('User/Landing', compact('headlines', 'lessonDays'));
     }
 
     public function create(Lesson $lesson): Response|RedirectResponse
@@ -50,7 +50,7 @@ class SubscriptionController extends Controller
         );
     }
 
-    public function edit(Lesson $lesson): Response|RedirectResponse
+    public function edit(Lesson $lesson): Response
     {
         $user = auth()->user()->load('subscription', 'currentYearData.file');
         $lessons = Lesson::all('title');
@@ -79,7 +79,9 @@ class SubscriptionController extends Controller
     public function lessonDetail(Request $request): JsonResponse
     {
         $request->validate(['date' => ['required', 'date']]);
-        $lessons = Lesson::where('schedule', 'like', "%{$request->get('date')}%")->get();
+        $lessons = Lesson::where('schedule', 'like', "%{$request->get('date')}%")
+            ->limit(4)
+            ->get();
 
         return response()->json($lessons);
     }

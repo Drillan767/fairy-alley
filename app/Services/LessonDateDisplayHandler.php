@@ -28,8 +28,7 @@ class LessonDateDisplayHandler
                 if ($lesson->id === $userLesson) {
                     $color = match ($status) {
                         'cancelled' => 'red',
-                        'ok' => 'blue',
-                        'recovery' => 'green',
+                        'recovery', 'ok' => 'blue',
                         default => '',
                     };
 
@@ -46,6 +45,7 @@ class LessonDateDisplayHandler
                         'fillMode' => 'solid',
                     ],
                     'customData' => [
+                        'color' => $color,
                         'isSubscribed' => $lesson->id === $userLesson,
                         'lesson_id' => $lesson->id,
                         'lesson_title' => $lesson->title,
