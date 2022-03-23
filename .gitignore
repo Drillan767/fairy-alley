@@ -20,6 +20,7 @@ yarn-error.log
 /.ash_history
 .composer
 .npm
+*.sql
 .cache
 .php-cs-fixer.cache
 

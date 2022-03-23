@@ -11,7 +11,7 @@ class LessonDateDisplayHandler
     {
         $attributes = [];
         $userLesson = $user->lesson_id;
-        $lessons = Lesson::all();
+        $lessons = Lesson::with('movements', 'queues')->get();
 
         foreach ($lessons as $lesson) {
             $schedule = collect($lesson->schedule);
@@ -46,9 +46,12 @@ class LessonDateDisplayHandler
                     ],
                     'customData' => [
                         'color' => $color,
+                        'cancelled' => $status === 'cancelled',
                         'isSubscribed' => $lesson->id === $userLesson,
                         'lesson_id' => $lesson->id,
                         'lesson_title' => $lesson->title,
+                        'queues' => $lesson->queues,
+                        'movements' => $lesson->movements,
                     ],
                     'dates' => $date->map(fn($s) => $s['date']),
                     'order' => $lesson->id === $userLesson ? 5 : 0,

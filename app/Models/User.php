@@ -125,6 +125,13 @@ class User extends Authenticatable
         return $this->belongsToMany(Service::class, 'service_user');
     }
 
+    public function movements()
+    {
+        return $this->hasMany(Movement::class);
+    }
+
+    /* ATTRIBUTES */
+
     public function getFullNameAttribute(): string
     {
         return "$this->firstname $this->lastname";

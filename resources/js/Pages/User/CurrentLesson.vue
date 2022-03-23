@@ -36,14 +36,14 @@
                                 v-for="attr in attributes"
                                 :key="attr.key"
                                 :attribute="attr">
-                                <span :class="{'font-bold': attr.customData.isSubscribed}">
+                                <span :class="canSubscribe(attr, day)">
                                     {{ attr.customData.lesson_title }}
                                 </span>
 
                             </popover-row>
-                            <div class="mt-2 font-bold text-green-600 text-center">
-                                Inscription possible
-                            </div>
+<!--                            <p class="mt-2 font-bold text-center" :class="[canSubscribe(attributes, day) ? 'text-green-600' : 'text-red-600']">
+                                {{ canSubscribe(attributes, day) ? 'Inscription possible': 'Inscription impossible' }}
+                            </p>-->
                         </div>
                     </template>
                 </calendar>
@@ -57,9 +57,10 @@ import UserLayout from '@/Layouts/UserLayout.vue'
 import { Link } from '@inertiajs/inertia-vue3';
 import { Calendar, PopoverRow } from 'v-calendar';
 import 'v-calendar/dist/style.css';
-import {computed, ref, onMounted} from "vue";
+import { computed, ref, onMounted, toRaw } from "vue";
 import Swal from "sweetalert2";
 import axios from 'axios'
+import dayjs from "dayjs";
 
 export default {
     // multistep: https://sweetalert2.github.io/recipe-gallery/queue-with-back-button.html
@@ -74,11 +75,62 @@ export default {
     setup (props) {
         const thatDaysLessons = ref([]);
         const attributes = ref([]);
-        const initial = ref(true);
 
         onMounted(() => {
             attributes.value = props.lessonDays
         })
+
+        /**
+         * Will return false IF
+         * - 6 people joined that lesson that day
+         * - 6 people are waiting to be accepted in that lesson that day.
+         *
+         * @param attribute
+         * @param day
+         * @returns {string}
+         */
+        const canSubscribe = (attribute, day) => {
+            const errorClass = 'text-red-600';
+            const pendingClass = 'text-yellow-600';
+            const successClass = 'text-green-600';
+
+            const selectedDay = dayjs(toRaw(day.date));
+            const customData = toRaw(attribute.customData);
+
+            if (customData.isSubscribed) {
+                return `${errorClass} font-bold`;
+            } else if (customData.cancelled) {
+                return errorClass;
+            }
+
+            const movements = customData.movements;
+            if (movements.length) {
+                // We filter by date selected and action being 'joined'
+                const todaysMovements = movements.filter((m) => {
+                    return dayjs(m.lesson_time).isSame(selectedDay, 'day') && m.action === 'joined'
+                })
+
+                if (todaysMovements.length >= 6) return errorClass;
+            }
+
+            const queues = toRaw(attribute.customData.queues);
+            const todaysQueue = queues.find((q) => dayjs(q.datetime).isSame(selectedDay, 'day'))
+            if (todaysQueue) {
+                const { joining, leaving } = todaysQueue;
+
+                if (joining.length === 6) return errorClass;
+                if (joining.length === 0 && leaving.length > 0) return successClass
+            }
+
+            return pendingClass;
+        }
+
+        const groupBy = (xs, key) => {
+            return xs.reduce(function(rv, x) {
+                (rv[x[key]] = rv[x[key]] || []).push(x);
+                return rv;
+            }, {});
+        };
 
         const onDayClick = (day) => {
             /*
@@ -121,8 +173,8 @@ export default {
             onDayClick,
             breakpoint,
             thatDaysLessons,
+            canSubscribe,
             attributes,
-            initial,
         }
     }
 }

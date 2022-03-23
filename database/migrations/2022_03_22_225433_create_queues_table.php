@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -12,13 +13,13 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('movements', function (Blueprint $table) {
+        Schema::create('queues', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
             $table->foreignId('lesson_id')->constrained();
-            // Either 'joined' or 'left'
-            $table->string('action', 10);
-            $table->dateTime('lesson_time');
+            // The next two fields will contain an array of user ids.
+            $table->string('leaving')->default('[]');
+            $table->string('joining')->default('[]');
+            $table->dateTime('datetime');
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('movements');
+        Schema::dropIfExists('queues');
     }
 };
