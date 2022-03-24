@@ -86,6 +86,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::get('/inscription/cours/{lesson}/editer', 'edit')->name('subscription.edit');
             Route::post('/subscription', 'store')->name('subscription.store');
             Route::put('/subscription', 'update')->name('subscription.update');
+            Route::post('/lesson-date', 'retrieveUserLessonDate')->name('user-lesson-date');
+
         });
     });
 });

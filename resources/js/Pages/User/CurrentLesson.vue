@@ -39,11 +39,10 @@
                                 <span :class="canSubscribe(attr, day)">
                                     {{ attr.customData.lesson_title }}
                                 </span>
-
                             </popover-row>
-<!--                            <p class="mt-2 font-bold text-center" :class="[canSubscribe(attributes, day) ? 'text-green-600' : 'text-red-600']">
-                                {{ canSubscribe(attributes, day) ? 'Inscription possible': 'Inscription impossible' }}
-                            </p>-->
+
+                            <div v-html="recapSubscribe(attributes, day)"></div>
+
                         </div>
                     </template>
                 </calendar>
@@ -60,6 +59,7 @@ import 'v-calendar/dist/style.css';
 import { computed, ref, onMounted, toRaw } from "vue";
 import Swal from "sweetalert2";
 import axios from 'axios'
+import registerLesson from "../../Modules/registerLesson.js";
 import dayjs from "dayjs";
 
 export default {
@@ -75,6 +75,9 @@ export default {
     setup (props) {
         const thatDaysLessons = ref([]);
         const attributes = ref([]);
+        const errorClass = 'text-red-600';
+        const pendingClass = 'text-yellow-600';
+        const successClass = 'text-green-600';
 
         onMounted(() => {
             attributes.value = props.lessonDays
@@ -90,9 +93,6 @@ export default {
          * @returns {string}
          */
         const canSubscribe = (attribute, day) => {
-            const errorClass = 'text-red-600';
-            const pendingClass = 'text-yellow-600';
-            const successClass = 'text-green-600';
 
             const selectedDay = dayjs(toRaw(day.date));
             const customData = toRaw(attribute.customData);
@@ -125,6 +125,27 @@ export default {
             return pendingClass;
         }
 
+        const recapSubscribe = (attributes, day) => {
+            const classes = [];
+            attributes.forEach((attr) => {
+                classes.push(canSubscribe(attr, day))
+            })
+
+            const defaultClasses = 'font-bold text-center mt-4 mx-2'
+
+            if (classes.includes(successClass)) {
+                return `<p class="${successClass} ${defaultClasses}">Places disponibles</p>`
+            }
+
+            if (classes.includes(pendingClass)) {
+                return `<p class="${pendingClass} ${defaultClasses}">Mise en liste d'attente disponibles</p>`
+            }
+
+            if (classes.includes(errorClass)) {
+                return `<p class="${errorClass} ${defaultClasses}">Aucune place disponible</p>`
+            }
+        }
+
         const groupBy = (xs, key) => {
             return xs.reduce(function(rv, x) {
                 (rv[x[key]] = rv[x[key]] || []).push(x);
@@ -132,35 +153,40 @@ export default {
             }, {});
         };
 
-        const onDayClick = (day) => {
-            /*
-            attributes.value = attributes.value.filter((attribute) => !attribute.hasOwnProperty('customData'))
+        const onDayClick = async (day) => {
+            console.log(day);
+            const date = dayjs(day.id);
 
-            axios
-                .post(route('lesson-detail'), {date: day.id})
-                .then((response) => {
-                    thatDaysLessons.value = [];
-                    initial.value = false
-                    response.data.forEach((lesson) => {
-                        thatDaysLessons.value.push({
-                            title: lesson.title,
-                            lid: lesson.id,
-                            subtitle: 'Aucune place disponible'
+            if (date.isBefore(dayjs())) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ce cours est déjà passé !',
+                    timer: 3000,
+                })
+            } else {
+                const lessons = [];
+                day.attributes.forEach((attr) => {
+                    if (attr.customData.cancelled === false) {
+                        lessons.push({
+                            id: attr.customData.lesson_id,
+                            title: attr.customData.lesson_title,
+                            subscribed: attr.customData.isSubscribed,
                         })
-                    })
+                    }
                 })
 
-            attributes.value.push({
-                popover: {
-                    label: day.ariaLabel,
-                },
-                customData: {
-                    generated: true,
-                },
-                dates: day.date,
-                highlight: 'orange',
-            })
-        */
+                const result = await registerLesson(lessons, day)
+
+                console.log(result)
+
+                /*
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Votre demande a bien été prise en compte',
+                    text: 'Votre absence a correctement été enregistrée.'
+                })
+                 */
+            }
         };
 
         const breakpoint = computed(() => {
@@ -174,14 +200,9 @@ export default {
             breakpoint,
             thatDaysLessons,
             canSubscribe,
+            recapSubscribe,
             attributes,
         }
     }
 }
 </script>
-
-<style scoped>
-.initial {
-    @apply italic text-gray-400
-}
-</style>

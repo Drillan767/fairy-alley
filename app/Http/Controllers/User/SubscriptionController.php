@@ -7,6 +7,7 @@ use App\Http\Requests\SubscriptionRequest;
 use App\Models\Lesson;
 use App\Services\LessonDateDisplayHandler;
 use App\Services\SubscriptionHandler;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -94,5 +95,20 @@ class SubscriptionController extends Controller
         $holidays = json_decode($file, true);
 
         return array_keys($holidays);
+    }
+
+    public function retrieveUserLessonDate(Request $request): JsonResponse
+    {
+        $schedule = collect($request->user()->lesson->schedule)
+        ->filter(function ($date) {
+            return Carbon::parse($date['date'])->isFuture();
+        })
+        ->mapWithKeys(function($date) {
+            return [
+                $date['date'] => Carbon::parse($date['date'])->format('d/m/Y'),
+            ];
+        });
+
+        return response()->json($schedule);
     }
 }
