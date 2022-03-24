@@ -138,7 +138,7 @@ export default {
             }
 
             if (classes.includes(pendingClass)) {
-                return `<p class="${pendingClass} ${defaultClasses}">Mise en liste d'attente disponibles</p>`
+                return `<p class="${pendingClass} ${defaultClasses}">Mise en liste d'attente disponible</p>`
             }
 
             if (classes.includes(errorClass)) {

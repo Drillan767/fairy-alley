@@ -13,9 +13,9 @@ const SwalWizard = Swal.mixin({
 
 const initialRequest = async () => {
     const { value: choice } = await SwalWizard.fire({
-        icon: 'info',
+        icon: 'question',
         title: 'Que voulez-vous faire ?',
-        input: 'select',
+        input: 'radio',
         inputPlaceholder: 'Faites un choix',
         currentProgressStep: currentStep,
         inputAttributes: {
@@ -80,7 +80,7 @@ const stayOrGo = async () => {
         },
         {
             id: 'keep my place',
-            title: "Je conserve ma place est me positionne en liste d'attente. Je recevrais un email lorsque qu'une place se sera libérée."
+            title: "Je conserve ma place et me positionne en liste d'attente. Je recevrais un email lorsque qu'une place se sera libérée."
         }
     ]
 
