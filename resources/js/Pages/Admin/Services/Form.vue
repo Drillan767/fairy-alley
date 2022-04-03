@@ -21,6 +21,19 @@
                 </div>
 
                 <div class="mt-4">
+                    <jet-label for="type" value="Nature du service :" />
+                    <label class="inline-flex items-center mr-6">
+                        <input type="radio" class="form-radio" name="accountType" value="s" v-model="form.type" :checked="form.type === 's'">
+                        <span class="ml-2">Service</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" class="form-radio" name="accountType" value="p" v-model="form.type" :checked="form.type === 'p'">
+                        <span class="ml-2">Produit</span>
+                    </label>
+                    <jet-input-error :message="form.errors.type" class="mt-2" />
+                </div>
+
+                <div class="mt-4">
                     <jet-label value="Illustration" />
                     <jet-file-upload @input="handleUpload" :currentFile="service?.banner ?? null" />
                     <jet-input-error :message="form.errors.illustration" class="mt-2" />
@@ -99,6 +112,7 @@ export default {
             title: '',
             description: '',
             ref: '',
+            type: '',
             homepage: false,
             illustration: null,
             page_id: null,
@@ -108,6 +122,7 @@ export default {
             form.title = fields.title;
             form.description = fields.description;
             form.page_id = fields.page_id;
+            form.type = fields.type;
             form.ref = fields.ref;
             form.homepage = fields.homepage;
         });

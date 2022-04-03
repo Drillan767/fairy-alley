@@ -18,6 +18,19 @@
             <jet-input-error :message="form.errors.ref" class="mt-2" />
         </div>
 
+        <div class="mt-4">
+            <jet-label for="gender" value="Le cours est pour :" />
+            <label class="inline-flex items-center mr-6">
+                <input type="radio" class="form-radio" name="accountType" value="F" v-model="form.gender" :checked="form.gender === 'F'">
+                <span class="ml-2">Les femmes</span>
+            </label>
+            <label class="inline-flex items-center">
+                <input type="radio" class="form-radio" name="accountType" value="H" v-model="form.gender" :checked="form.gender === 'H'">
+                <span class="ml-2">Les hommes</span>
+            </label>
+            <jet-input-error :message="form.errors.gender" class="mt-2" />
+        </div>
+
         <div class="mt-4 flex gap-x-4">
             <div class="mt-2">
                 <jet-label for="nbOccurrences" value="Nombre d'occurrences" />
@@ -195,6 +208,7 @@ export default {
         } : {
             title: '',
             description: '',
+            gender: '',
             ref: '',
             occurrences: []
         }

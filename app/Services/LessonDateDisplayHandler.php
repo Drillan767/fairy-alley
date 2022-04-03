@@ -13,7 +13,9 @@ class LessonDateDisplayHandler
     {
         $attributes = [];
         $userLesson = $user->lesson_id;
-        $lessons = Lesson::with('movements', 'queues')->get();
+        $lessons = Lesson::with('movements', 'queues')
+            ->where('gender', $user->gender)
+            ->get();
 
         foreach ($lessons as $lesson) {
             $schedule = collect($lesson->schedule);

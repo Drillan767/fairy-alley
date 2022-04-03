@@ -28,6 +28,7 @@ class LessonRequest extends FormRequest
         return [
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
+            'gender' => ['required', 'max:1', 'in:H,F'],
             'ref' => ['required', 'string', 'unique:lessons,ref,' . $this->id],
             'schedule' => ['required', 'array', 'min:1'],
         ];

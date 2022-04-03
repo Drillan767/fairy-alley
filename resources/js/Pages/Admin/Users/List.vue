@@ -25,10 +25,12 @@
                         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
                             <vue-good-table
                                 :columns="columns"
+                                ref="vuegoodtable"
                                 :rows="userList"
                                 :search-options="searchOptions"
                                 :sort-options="sortOption"
                                 @on-sort-change="onSortChange"
+                                @on-search="onSearch"
                                 @on-column-filter="onColumnFilter"
                             >
                                 <template #table-row="props">
@@ -83,7 +85,7 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { Link } from '@inertiajs/inertia-vue3';
 import 'vue-good-table-next/dist/vue-good-table-next.css'
 import { VueGoodTable } from 'vue-good-table-next';
-import {computed, ref, toRaw} from "vue";
+import {computed, onMounted, ref, toRaw} from "vue";
 import Swal from "sweetalert2";
 
 export default {
@@ -109,6 +111,7 @@ export default {
 
     setup (props) {
         const userList = ref(props.users);
+        const vuegoodtable = ref(null)
 
         const roleList = computed(() => {
             let list = [];
@@ -132,6 +135,15 @@ export default {
             enabled: true,
             initialSortBy: JSON.parse(localStorage.getItem('sort')),
         };
+
+        onMounted(() => {
+            let searchTerm = localStorage.getItem('globalSearch');
+
+            if (searchTerm) {
+                vuegoodtable.value.globalSearchTerm = searchTerm;
+            }
+
+        });
 
         const onSortChange = (params) => {
             const sortValue = params ? toRaw(params[0]) : null;
@@ -212,7 +224,11 @@ export default {
             }
         ];
 
-        function deleteUser(user) {
+        const onSearch = (e) => {
+            localStorage.setItem('globalSearch', e.searchTerm)
+        }
+
+        const deleteUser = (user) => {
             const feminine = {
                 user: user.gender === 'F' ? 'utilisatrice' : 'utilisateur',
                 archived: user.gender === 'F' ? 'archivée' : 'archivé',
@@ -274,8 +290,10 @@ export default {
             onColumnFilter,
             deleteUser,
             onSortChange,
+            onSearch,
             lessonList,
             columns,
+            vuegoodtable,
         }
     }
 }

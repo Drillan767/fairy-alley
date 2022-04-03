@@ -27,6 +27,7 @@ class ServiceRequest extends FormRequest
         $rules = [
             'title' => ['required', 'string'],
             'description' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'max:1', 'in:s,p'],
             'page_id' => ['required', 'integer', 'exists:pages,id'],
             'ref' => ['required', 'string'],
         ];

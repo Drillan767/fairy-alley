@@ -54,7 +54,7 @@ class ServiceController extends Controller
 
     private function handleServices(ServiceRequest $request, Service $service, $update = false)
     {
-        foreach (['title', 'description', 'page_id', 'ref', 'homepage'] as $field) {
+        foreach (['title', 'description', 'page_id', 'ref', 'homepage', 'type'] as $field) {
             $service->$field = $request->get($field);
         }
 

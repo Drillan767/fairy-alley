@@ -15,6 +15,7 @@ class Lesson extends Model
         'description',
         'year',
         'ref',
+        'gender',
         'schedule',
     ];
 
