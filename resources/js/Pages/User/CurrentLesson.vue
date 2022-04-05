@@ -104,7 +104,7 @@ export default {
             }
 
             const movements = customData.movements;
-            if (movements.length) {
+            if (movements && movements.length) {
                 // We filter by date selected and action being 'joined'
                 const todaysMovements = movements.filter((m) => {
                     return dayjs(m.lesson_time).isSame(selectedDay, 'day') && m.action === 'joined'
@@ -154,7 +154,7 @@ export default {
         };
 
         const onDayClick = async (day) => {
-            console.log(day);
+            // console.log(day);
             const date = dayjs(day.id);
 
             if (date.isBefore(dayjs())) {

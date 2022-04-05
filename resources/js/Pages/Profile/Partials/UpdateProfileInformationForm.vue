@@ -25,7 +25,7 @@
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="lastname" value="Genre" />
                 <label class="inline-flex items-center">
-                    <input type="radio" class="form-radio" name="accountType" value="H" v-model="form.gender" :checked="form.gender === 'M'">
+                    <input type="radio" class="form-radio" name="accountType" value="H" v-model="form.gender" :checked="form.gender === 'H'">
                     <span class="ml-2">Homme</span>
                 </label>
                 <label class="inline-flex items-center ml-6">
