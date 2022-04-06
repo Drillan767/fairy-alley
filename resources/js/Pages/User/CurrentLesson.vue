@@ -29,14 +29,14 @@
                 >
                     <template #day-popover="{day, format, masks, attributes}">
                         <div>
-                            <div class="text-xs text-gray-300 font-semibold text-center">
+                            <div class="text-xs text-gray-300 text-base font-semibold text-center">
                                 {{ format(day.date, 'WWWW DD MMM YYYY') }}
                             </div>
                             <popover-row
                                 v-for="attr in attributes"
                                 :key="attr.key"
                                 :attribute="attr">
-                                <span :class="canSubscribe(attr, day)">
+                                <span class="text-base" :class="canSubscribe(attr, day)">
                                     {{ attr.customData.lesson_title }}
                                 </span>
                             </popover-row>
@@ -46,6 +46,12 @@
                         </div>
                     </template>
                 </calendar>
+                <div class="mt-4 text-gray-800">
+                    <div v-for="(legend, i) in legends" class="flex gap-x-3 items-center" :key="i">
+                        <div :class="legend.classes"></div>
+                        <p>{{ legend.text }}</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -58,9 +64,9 @@ import { Calendar, PopoverRow } from 'v-calendar';
 import 'v-calendar/dist/style.css';
 import { computed, ref, onMounted, toRaw } from "vue";
 import Swal from "sweetalert2";
-import axios from 'axios'
 import registerLesson from "../../Modules/registerLesson.js";
 import dayjs from "dayjs";
+import {Inertia} from "@inertiajs/inertia";
 
 export default {
     // multistep: https://sweetalert2.github.io/recipe-gallery/queue-with-back-button.html
@@ -78,6 +84,29 @@ export default {
         const errorClass = 'text-red-600';
         const pendingClass = 'text-yellow-600';
         const successClass = 'text-green-600';
+
+        const legends = ref([
+            {
+                classes: 'circle blue',
+                text: 'Jour où vous avez un cours de prévu',
+            },
+            {
+                classes: 'circle green',
+                text: 'Jour où vous avez annulé un cours pour en prendre un autre',
+            },
+            {
+                classes: 'circle gray',
+                text: 'Jour où des cours sont disponibles',
+            },
+            {
+                classes: 'circle red',
+                text: 'Cours annulés car férié ou manuellement par l\'administration',
+            },
+            {
+                classes: 'circle red empty',
+                text: 'Cours que vous avez vous-même annulés',
+            },
+        ])
 
         onMounted(() => {
             attributes.value = props.lessonDays
@@ -131,7 +160,7 @@ export default {
                 classes.push(canSubscribe(attr, day))
             })
 
-            const defaultClasses = 'font-bold text-center mt-4 mx-2'
+            const defaultClasses = 'font-bold text-base text-center mt-4 mx-2'
 
             if (classes.includes(successClass)) {
                 return `<p class="${successClass} ${defaultClasses}">Places disponibles</p>`
@@ -145,13 +174,6 @@ export default {
                 return `<p class="${errorClass} ${defaultClasses}">Aucune place disponible</p>`
             }
         }
-
-        const groupBy = (xs, key) => {
-            return xs.reduce(function(rv, x) {
-                (rv[x[key]] = rv[x[key]] || []).push(x);
-                return rv;
-            }, {});
-        };
 
         const onDayClick = async (day) => {
             // console.log(day);
@@ -176,8 +198,15 @@ export default {
                 })
 
                 const result = await registerLesson(lessons, day)
+                if (result) {
+                    let payload = {};
+                    result.forEach((r) => payload[r.key] = r.value)
 
-                console.log(result)
+                    console.log(payload)
+
+                    Inertia.post(route('lesson-movement', payload));
+                }
+
 
                 /*
                 await Swal.fire({
@@ -202,7 +231,28 @@ export default {
             canSubscribe,
             recapSubscribe,
             attributes,
+            legends,
         }
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.circle {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+
+    &.green { @apply bg-green-600; }
+    &.blue { background-color: #3182ce; }
+    &.gray { background-color: #718096; }
+    &.red {
+        background-color: #e53e3e;
+
+        &.empty {
+            background-color: white;
+            border: solid 2px #e53e3e;
+        }
+    }
+}
+</style>

@@ -111,4 +111,9 @@ class SubscriptionController extends Controller
 
         return response()->json($schedule);
     }
+
+    public function movement(Request $request)
+    {
+        dd($request);
+    }
 }

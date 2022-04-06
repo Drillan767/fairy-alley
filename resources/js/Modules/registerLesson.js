@@ -1,7 +1,8 @@
 import Swal from "sweetalert2";
 import axios from 'axios';
+import dayjs from 'dayjs';
 
-const steps = ['1', '2', '3', '4'];
+const steps = ['1', '2', '3', '4', '5'];
 
 const SwalWizard = Swal.mixin({
     confirmButtonText: 'Suivant',
@@ -10,72 +11,23 @@ const SwalWizard = Swal.mixin({
     reverseButtons: true,
 });
 
-let currentStep = 0;
-/*
-Ideas:
-- Finish cleanup
-- Find a way to retrieve the lesson object that was picked.
- */
-
-const confirmLeave = async (lesson) => {
-    const { isConfirmed } = await SwalWizard.fire({
-        icon: 'warning',
-        title: 'Confirmer votre absence ?',
-        text: `
-            Vous êtes sur le point de laisser votre place pour le cours de "${lesson.title}"
-            Confirmer ?
-            `,
-        confirmButtonText: 'Confirmer',
-        showCancelButton: true,
-        cancelButtonText: 'Annuler'
-    })
-
-    if (isConfirmed) return isConfirmed
-};
-
-const cancelLesson = async () => {
-    const dateList = new Promise((resolve => {
-        axios.post(route('user-lesson-date'))
-            .then((response) => {
-                resolve(response.data)
-            })
-    }))
-
-    const {value: date} = await SwalWizard.fire({
-        icon: 'question',
-        title: 'Quel cours souhaitez-vous annuler ?',
-        input: 'select',
-        inputOptions: dateList,
-        inputValidator: (value) => {
-            if (!value) {
-                return 'Veuillez sélectionner une date';
-            }
-        }
-    });
-
-    if (date) return date;
-}
-
 const registerLesson = async (lessons, date) => {
-    // Cancel next lesson or subscribe to another?
     if (lessons.length) {
-        const values = [];
-
+        const values = [{key: 'date', value: date.id}];
         let currentStep;
 
         for (currentStep = 0; currentStep < steps.length;) {
             let result = null;
             if (parseInt(steps[currentStep]) === 1) {
-                // StayOrGo
                 const options = [
+                    {
+                        id: 'switch lesson',
+                        title: "M'inscrire à un cours"
+                    },
                     {
                         id: 'leave',
                         title: 'Annuler ma présence au cours de cette date',
                     },
-                    {
-                        id: 'switch lesson',
-                        title: "M'inscrire à un cours"
-                    }
                 ]
                 result = await SwalWizard.fire({
                     icon: 'question',
@@ -86,19 +38,19 @@ const registerLesson = async (lessons, date) => {
                     preConfirm: () => {
                         const checked = Swal
                             .getPopup()
-                            .querySelector('[name="stayOrGo"]')
-                            .value
+                            .querySelector('[name="stayOrGo"]:checked');
 
                         if (!checked) {
-                            Swal.showValidationMessage('Veuillez faire un choix.')
+                            Swal.showValidationMessage('Veuillez faire un choix.');
                         }
 
-                        return checked
+                        return checked?.value
                     }
                 })
+                result.key = 'action';
 
                 if (result.value === 'leave') {
-                    values.push((result.value))
+                    values.push((result.value));
                     let initialLesson = lessons.find((l) => l.subscribed === true);
                     if (!initialLesson) {
                         await Swal.fire({
@@ -107,22 +59,35 @@ const registerLesson = async (lessons, date) => {
                             text: "Vous n'êtes inscrites à aucun des cours du jour sélectionné",
                         })
 
-                        return false;
+                        return;
                     } else {
                         result = await SwalWizard.fire({
                             icon: 'warning',
                             showCancelButton: true,
-                            currentProgressStep: steps.length,
+                            currentProgressStep: steps.length - 1,
                             title: 'Confirmer votre annulation ?',
                             text: `
                                 Vous êtes sur le point de laisser votre place pour le cours de "${initialLesson.title}"
                                 Confirmer ?
                                 `,
-
                         })
+
+                        if (result.isConfirmed) {
+                            return [
+                                {
+                                    key: 'action',
+                                    value: 'leave',
+                                },
+                                {
+                                    key: 'date',
+                                    value: date.id,
+                                }
+                            ];
+                        }
                     }
                 }
-            } else if (parseInt(steps[currentStep]) === 2) {
+            }
+            else if (parseInt(steps[currentStep]) === 2) {
                 const options = [
                     {
                         id: 'forfeit my place',
@@ -146,17 +111,19 @@ const registerLesson = async (lessons, date) => {
                     preConfirm: () => {
                         const checked = Swal
                             .getPopup()
-                            .querySelector('[name="decision"]')
-                            .value
+                            .querySelector('[name="decision"]:checked')
 
                         if (!checked) {
                             Swal.showValidationMessage('Veuillez faire un choix.')
                         }
 
-                        return checked
+                        return checked?.value
                     }
                 });
-            } else if (parseInt(steps[currentStep]) === 3) {
+
+                result.key = 'decision';
+            }
+            else if (parseInt(steps[currentStep]) === 3) {
                 result = await SwalWizard.fire({
                     icon: 'question',
                     title: 'Sélectionnez un cours',
@@ -167,28 +134,75 @@ const registerLesson = async (lessons, date) => {
                     preConfirm: () => {
                         const checked = Swal
                             .getPopup()
-                            .querySelector('[name="lesson"]')
-                            .value
+                            .querySelector('[name="lesson"]:checked')
 
                         if (!checked) {
                             Swal.showValidationMessage('Veuillez sélectionner un cours.')
                         }
 
-                        return checked
+                        return checked?.value
                     }
                 })
-            } else if (parseInt(steps[currentStep]) === 4) {
+
+                result.key = 'lesson';
+
+            }
+            else if (parseInt(steps[currentStep]) === 4) {
+
+                const hasLessonThayDay = lessons.find((l) => l.subscribed === true)
+                if (hasLessonThayDay) {
+                    await SwalWizard.fire({
+                        icon: 'info',
+                        title: 'Information',
+                        text: 'Vous allez être désinscrit(e) du cours que vous alliez avoir le ' + dayjs(date.id).format('DD/MM/YYYY'),
+                        showCancelButton: currentStep > 0,
+                        cancelButtonText: 'Annuler',
+                        currentProgressStep: currentStep,
+                    })
+
+                    result = {value: date.id}
+                } else {
+                    const dateList = new Promise((resolve => {
+                        axios.post(route('user-lesson-date'))
+                            .then((response) => {
+                                resolve(response.data)
+                            })
+                    }))
+
+                    result = await SwalWizard.fire({
+                        icon: 'question',
+                        title: 'Quel cours souhaitez-vous annuler ?',
+                        showCancelButton: currentStep > 0,
+                        cancelButtonText: 'Annuler',
+                        input: 'select',
+                        inputOptions: dateList,
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return 'Veuillez sélectionner une date';
+                            }
+                        }
+                    });
+                }
+
+                result.key = 'cancel';
+            }
+            else if (parseInt(steps[currentStep]) === 5) {
+                const lessonObject = values.find((v) => v.key === 'lesson')
+                const selectedLesson = lessons.find((l) => l.id === parseInt(lessonObject.value))
+
                 result = await SwalWizard.fire({
                     icon: 'warning',
                     title: 'Confirmer votre absence ?',
                     text: `
-                    Vous êtes sur le point de laisser votre place pour le cours de "${lesson.title}"
+                    Vous êtes sur le point de laisser votre place pour le cours de "${selectedLesson.title}"
                     Confirmer ?
                     `,
                     confirmButtonText: 'Confirmer',
                     showCancelButton: true,
                     cancelButtonText: 'Annuler'
                 })
+
+                result.key = 'confirm';
             }
 
             else {
@@ -196,75 +210,16 @@ const registerLesson = async (lessons, date) => {
             }
 
             if (result.value) {
-                values[currentStep] = result.value
-                console.log(values)
-                currentStep++
+                values[currentStep] = {key: result.key, value: result.value};
+                currentStep++;
             } else if (result.dismiss === 'cancel') {
                 currentStep--;
             } else {
-                break
+                return;
             }
 
             if (currentStep === steps.length) {
-                await Swal.fire(JSON.stringify(values))
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        const request = await initialRequest()
-
-        if (request.isDismissed || request.isDenied) {
-            return false;
-        }
-
-        console.log(request);
-
-        if (request === 'leave') {
-            currentStep = 3;
-            const userLesson = lessons.find((l) => l.subscribed === true)
-            if (userLesson && await confirmLeave(userLesson)) {
-
-                return {
-                    request: request,
-                    date: date.id,
-                    lesson: userLesson.id,
-                }
-            } else {
-                await Swal.fire({
-                    icon: 'error',
-                    title: 'Opération impossible',
-                    text: "Vous n'êtes inscrites à aucun des cours du jour sélectionné",
-                })
-            }
-        } else {
-            currentStep++;
-            const filtered = lessons.filter((l) => !l.subscribed)
-            console.log(filtered)
-            const lesson = await selectLesson({filtered})
-            currentStep++
-            const lastStand = await stayOrGo()
-            currentStep++
-            const cancelledLesson = await cancelLesson()
-            currentStep = 0;
-
-            return {
-                request: request,
-                targetLesson: lesson,
-                cancelledLesson: cancelledLesson,
-                behavior: lastStand,
+                return values;
             }
         }
     } else {
@@ -272,35 +227,35 @@ const registerLesson = async (lessons, date) => {
             icon: 'error',
             title: 'Aucun cours disponible',
             text: "La date que vous avez sélectionné ne dispose d'aucun cours, veuillez choisir une autre date."
-        })
+        });
     }
 };
 
 const generateRadioButton = (lessons, name) => {
-    let form = document.createElement('form')
+    let form = document.createElement('form');
 
     for (let key in lessons) {
-        let div = document.createElement('div')
-        div.classList.add('inputGroup')
+        let div = document.createElement('div');
+        div.classList.add('inputGroup');
 
-        let input = document.createElement('input')
-        input.setAttribute('id', `radio-${lessons[key].id}`)
-        input.setAttribute('name', name)
-        input.setAttribute('type', 'radio')
-        input.setAttribute('value', lessons[key].id)
+        let input = document.createElement('input');
+        input.setAttribute('id', `radio-${lessons[key].id}`);
+        input.setAttribute('name', name);
+        input.setAttribute('type', 'radio');
+        input.setAttribute('value', lessons[key].id);
 
-        let label = document.createElement('label')
-        label.setAttribute('for', `radio-${lessons[key].id}`)
-        const text = document.createTextNode(lessons[key].title)
-        label.appendChild(text)
+        let label = document.createElement('label');
+        label.setAttribute('for', `radio-${lessons[key].id}`);
+        const text = document.createTextNode(lessons[key].title);
+        label.appendChild(text);
 
-        div.appendChild(input)
-        div.appendChild(label)
+        div.appendChild(input);
+        div.appendChild(label);
 
-        form.appendChild(div)
+        form.appendChild(div);
     }
 
-    return form
+    return form;
 }
 
 export default registerLesson
