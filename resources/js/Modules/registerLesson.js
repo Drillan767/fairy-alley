@@ -13,7 +13,7 @@ const SwalWizard = Swal.mixin({
 
 const registerLesson = async (lessons, date) => {
     if (lessons.length) {
-        const values = [{key: 'date', value: date.id}];
+        const values = [];
         let currentStep;
 
         for (currentStep = 0; currentStep < steps.length;) {
@@ -219,6 +219,7 @@ const registerLesson = async (lessons, date) => {
             }
 
             if (currentStep === steps.length) {
+                values.push({key: 'picked', value: date.id});
                 return values;
             }
         }

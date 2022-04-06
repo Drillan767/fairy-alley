@@ -5,6 +5,8 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionRequest;
 use App\Models\Lesson;
+use App\Models\Movement;
+use App\Models\Queue;
 use App\Services\LessonDateDisplayHandler;
 use App\Services\SubscriptionHandler;
 use Carbon\Carbon;
@@ -114,6 +116,58 @@ class SubscriptionController extends Controller
 
     public function movement(Request $request)
     {
-        dd($request);
+        // Run job to check the waiting list...
+
+        $action = $request->get('action');
+        $user = $request->user();
+
+        if ($action === 'leave') {
+            $movement = new Movement();
+            $movement->user_id = auth()->id();
+            $movement->action = $action;
+            $movement->lesson_id = $user->lesson_id;
+            $cancelledDate = Carbon::parse($request->get('date'));
+            $movement->lesson_time = $this->retrieveTimestamp($user->lesson_id, $cancelledDate);
+            $movement->save();
+
+            $message = "Votre présence au cours du {$cancelledDate->format('d/m/Y')} a bien été annulée.";
+
+
+        } else {
+
+            // TODO: check if user can subscribe to a lesson without needing to be on queue list.
+
+            $lesson_id = $request->get('lesson');
+
+            $joining = Queue::firstOrNew(['lesson_id' => $lesson_id]);
+            $joining->datetime = $this->retrieveTimestamp($lesson_id, Carbon::parse($request->get('picked')));
+            $joining->lesson_id = $request->get('lesson');
+
+            $joining->joining = $joining->exists ? array_merge($joining->joining, [$user->id]) : [$user->id];
+
+            $joining->save();
+
+            if ($request->get('decision') === 'keep my place') {
+                $leaving = Queue::firstOrNew(['lesson_id' => $user->lesson_id]);
+                $leaving->datetime = $request->get('cancel');
+                $leaving->leaving = $leaving->exists ? array_merge($leaving->leaving, [$user->id]) : [$user->id];
+                $leaving->save();
+            }
+
+            $message = "Mise en liste d'attente effectuée avec succès.";
+        }
+
+        return redirect()->route('profile.index')->with('success', $message);
+    }
+
+    private function retrieveTimestamp($lesson_id, Carbon $date): string
+    {
+        $lesson = Lesson::select(['schedule'])->find($lesson_id);
+        $schedule = collect($lesson->schedule)->filter(function($schedule) use ($date) {
+            $scheduleDate = Carbon::parse($schedule['date']);
+            return $scheduleDate->isSameDay($date);
+        });
+
+        return $schedule->first()['date'];
     }
 }

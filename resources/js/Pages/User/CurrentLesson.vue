@@ -176,7 +176,6 @@ export default {
         }
 
         const onDayClick = async (day) => {
-            // console.log(day);
             const date = dayjs(day.id);
 
             if (date.isBefore(dayjs())) {
@@ -201,8 +200,6 @@ export default {
                 if (result) {
                     let payload = {};
                     result.forEach((r) => payload[r.key] = r.value)
-
-                    console.log(payload)
 
                     Inertia.post(route('lesson-movement', payload));
                 }

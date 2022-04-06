@@ -15,6 +15,10 @@ class Queue extends Model
         'joining' => 'array',
     ];
 
+    protected $fillable = [
+        'lesson_id',
+    ];
+
     public function lesson(): BelongsTo
     {
         return $this->belongsTo(Lesson::class);
