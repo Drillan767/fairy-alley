@@ -4,18 +4,13 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionRequest;
-use App\Models\Lesson;
-use App\Models\Movement;
-use App\Models\Queue;
-use App\Services\LessonDateDisplayHandler;
-use App\Services\SubscriptionHandler;
+use Illuminate\Support\Collection;
+use App\Models\{Lesson, Movement, Queue, User};
+use App\Services\{LessonDateDisplayHandler, SubscriptionHandler};
 use Carbon\Carbon;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
 use Illuminate\Support\Facades\Storage;
-use Inertia\Inertia;
-use Inertia\Response;
+use Inertia\{Inertia, Response};
 
 class SubscriptionController extends Controller
 {
@@ -26,18 +21,27 @@ class SubscriptionController extends Controller
     public function index(LessonDateDisplayHandler $displayHandler): Response
     {
         $lessonDays = [];
+        $nextLessons = [];
+        /** @var User $user */
         $user = auth()->user();
         $headlines = collect(config('lesson.headlines'))->firstWhere('status_id', $user->subscription->status);
-        // $holidays = $this->handleHolidays();
 
-        // suggestions
+
         if ($user->hasAnyRole('subscriber', 'guest', 'substitute')) {
             $user->load('suggestions.thumbnail', 'suggestions.page', 'lesson');
 
-            $lessonDays = $displayHandler->calculate($user);
+            $nextLessons = $this->defineNextLessons($user);
+
+            $movements = $user
+                ->movements()
+                ->with('lesson')
+                ->where('lesson_time', '>', now())
+                ->get();
+
+            $lessonDays = $displayHandler->calculate($user, $movements);
         }
 
-        return Inertia::render('User/Landing', compact('headlines', 'lessonDays'));
+        return Inertia::render('User/Landing', compact('headlines', 'lessonDays', 'nextLessons'));
     }
 
     public function create(Lesson $lesson): Response|RedirectResponse
@@ -132,7 +136,6 @@ class SubscriptionController extends Controller
 
             $message = "Votre présence au cours du {$cancelledDate->format('d/m/Y')} a bien été annulée.";
 
-
         } else {
 
             // TODO: check if user can subscribe to a lesson without needing to be on queue list.
@@ -169,5 +172,50 @@ class SubscriptionController extends Controller
         });
 
         return $schedule->first()['date'];
+    }
+
+    private function defineNextLessons(User $user): Collection
+    {
+        $result = collect([]);
+        $defaultLessons = collect($user->lesson->schedule)->filter(function ($schedule) {
+            return $schedule['status'] !== 'cancelled' && Carbon::parse($schedule['date'])->isFuture();
+        })
+            ->values();
+
+        for ($i = 0; $i < 4; $i++) {
+            $result = $result->push([
+                'title' => $user->lesson->title,
+                'description' => $user->lesson->description,
+                'time' => Carbon::parse($defaultLessons[$i]['date']),
+            ]);
+        }
+
+        $user
+            ->getFutureLessons()
+            ->each(function ($lesson) use (&$result) {
+                if ($lesson->action === 'join') {
+                    $result->push([
+                        'title' => $lesson->lesson->title,
+                        'description' => $lesson->lesson->description,
+                        'time' => Carbon::parse($lesson->lesson_time),
+                    ]);
+                }
+
+                if ($lesson->action === 'leave') {
+                    $result = $result->reject(function ($r) use($lesson) {
+                        $lessonTime = Carbon::parse($lesson->lesson_time);
+                        return $lessonTime->isSameDay($r['time']);
+                    });
+                }
+            });
+
+        return $result
+            ->sortBy(fn ($obj) => $obj['time']->getTimeStamp())
+            ->take(4)
+            ->map(function ($r) {
+                $r['time'] = $r['time']->format('d/m/Y à H:i');
+                return $r;
+            })
+            ->values();
     }
 }

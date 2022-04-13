@@ -23,7 +23,7 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <CurrentLesson :lesson="user.lesson" :headlines="headlines" :lesson-days="lessonDays" />
+                    <CurrentLesson :lesson="user.lesson" :headlines="headlines" :lesson-days="lessonDays" :next-lessons="nextLessons" />
                     <ServicesSuggestion :suggestions="user.suggestions" v-if="user.suggestions.length" />
                 </div>
             </div>
@@ -43,6 +43,7 @@ export default {
         user: Object,
         lessonDays: Object,
         headlines: Object,
+        nextLessons: Array,
         flash: {
             type: Object,
             required: false,

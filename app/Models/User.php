@@ -88,6 +88,7 @@ class User extends Authenticatable
         'full_name',
         'role',
         'lesson_title',
+        'available_replacements',
     ];
 
     public function yearDatas(): HasMany
@@ -130,6 +131,16 @@ class User extends Authenticatable
         return $this->hasMany(Movement::class);
     }
 
+    public function getFutureLessons()
+    {
+        return $this
+            ->movements()
+            ->with('lesson:id,title,description')
+            ->where('lesson_time', '>', now())
+            ->orderBy('lesson_time')
+            ->get();
+    }
+
     /* ATTRIBUTES */
 
     public function getFullNameAttribute(): string
@@ -142,8 +153,21 @@ class User extends Authenticatable
         return $this->getRoleNames()->first();
     }
 
-    public function getLessonTitleAttribute()
+    public function getLessonTitleAttribute(): string
     {
         return $this->lesson()->count() ? $this->lesson->title : 'Aucun';
+    }
+
+    public function getAvailableReplacementsAttribute(): int
+    {
+        return $this
+                ->movements()
+                ->where('action', 'leave')
+                ->count()
+            -
+            $this
+                ->movements()
+                ->where('action', 'join')
+                ->count();
     }
 }

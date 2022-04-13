@@ -8,8 +8,8 @@
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <welcome />
+                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
+                    <FullCalendar :options="calendarOptions" />
                 </div>
             </div>
         </div>
@@ -17,13 +17,36 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import Welcome from '@/Jetstream/Welcome.vue'
+import '@fullcalendar/core/vdom';
+import FullCalendar from '@fullcalendar/vue3';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
+import interactionPlugin from '@fullcalendar/interaction';
+import frLocale from '@fullcalendar/core/locales/fr';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 export default {
+    title: 'Administration',
     components: {
         AdminLayout,
-        Welcome,
+        FullCalendar,
     },
+
+    data () {
+        return {
+            calendarOptions: {
+                plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
+                initialView: 'timeGridWeek',
+                locale: frLocale,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+                },
+                events: route('admin.lesson.list')
+            }
+        }
+    }
 }
 </script>

@@ -7,11 +7,12 @@ const steps = ['1', '2', '3', '4', '5'];
 const SwalWizard = Swal.mixin({
     confirmButtonText: 'Suivant',
     cancelButtonText: 'Précédent',
+    showCloseButton: true,
     progressSteps: steps,
     reverseButtons: true,
 });
 
-const registerLesson = async (lessons, date) => {
+const registerLesson = async (lessons, date, nbReplacements) => {
     if (lessons.length) {
         const values = [];
         let currentStep;
@@ -47,6 +48,17 @@ const registerLesson = async (lessons, date) => {
                         return checked?.value
                     }
                 })
+
+                if (result.value === 'switch lesson' && nbReplacements.value === 0) {
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Opération impossible',
+                        text: "Vous devez libérer un cours avant de pouvoir vous inscrire à un autre.",
+                    })
+
+                    return;
+                }
+
                 result.key = 'action';
 
                 if (result.value === 'leave') {

@@ -175,7 +175,7 @@
 
                             <div class="col-span-6 sm:col-span-6">
                                 <label for="health_issues" class="block text-sm font-medium text-gray-700">
-                                    Avez-vous eu des problèmes de santé ?
+                                    Avez-vous (ou avez-vous eu) des pb de santé / des pb de dos ou des membres etc. ?
                                 </label>
                                 <textarea name="health_issues" value="{{ old('health_issues') }}" id="health_issues"></textarea>
                                 @error('health_issues')
@@ -185,7 +185,7 @@
 
                             <div class="col-span-6 sm:col-span-6">
                                 <label for="current_health_issues" class="block text-sm font-medium text-gray-700">
-                                    Avez-vous des problèmes de santé actuellement ? (certificat médical d’aptitude pour la gymnastique)
+                                    Date du dernier certificat médical d’aptitude pour la gymnastique
                                 </label>
                                 <textarea name="current_health_issues" value="{{ old('current_health_issues') }}" id="current_health_issues"></textarea>
                                 @error('current_health_issues')

@@ -32,7 +32,7 @@
                                         <template v-if="type === 'videos'">
                                             <div data-fancybox="dialog" data-src="#video-content" class="cursor-pointer w-1/5">
                                                 <svg
-                                                    class="m-5"
+                                                    class="m-16"
                                                     viewBox="0 0 24 24"
                                                     fill="none"
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +56,7 @@
                                         <template v-if="type === 'musiques'">
                                             <div data-fancybox="dialog" data-src="#music-content" class="cursor-pointer w-1/5">
                                                 <svg
-                                                    class="m-5"
+                                                    class="m-16"
                                                     viewBox="0 0 24 24"
                                                     fill="none"
                                                     xmlns="http://www.w3.org/2000/svg"

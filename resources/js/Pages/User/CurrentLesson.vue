@@ -9,57 +9,81 @@
         </div>
     </div>
 
-    <section class="text-gray-600 body-font">
-        <div class="container p-6 sm:px-20 mx-auto">
-            <div class="flex flex-col md:flex-row gap-2">
-                <div class="flex-1">
-                    <h2 class="text-gray-900 text-lg title-font font-medium mb-3">{{ lesson.title }}</h2>
-                    <p class="leading-relaxed text-base">
-                        {{ lesson.description }}
-                    </p>
+    <div class="flex flex-col md:flex-row">
+        <section class="text-gray-600 body-font w-full md:w-1/2">
+            <div class="container p-6 sm:px-20 mx-auto">
+                <div class="flex flex-col md:flex-row gap-2">
+                    <div class="flex-1">
+                        <h2 class="text-gray-900 text-lg title-font font-medium mb-3">{{ lesson.title }}</h2>
+                        <p class="leading-relaxed text-base">
+                            {{ lesson.description }}
+                        </p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="calendar mt-5">
-                <!-- "text-xs text-gray-300 font-semibold text-center" -->
-                <calendar
-                    :attributes="attributes"
-                    :columns="breakpoint"
-                    @dayclick="onDayClick"
-                >
-                    <template #day-popover="{day, format, masks, attributes}">
-                        <div>
-                            <div class="text-xs text-gray-300 text-base font-semibold text-center">
-                                {{ format(day.date, 'WWWW DD MMM YYYY') }}
-                            </div>
-                            <popover-row
-                                v-for="attr in attributes"
-                                :key="attr.key"
-                                :attribute="attr">
+                <div class="calendar mt-5">
+                    <!-- "text-xs text-gray-300 font-semibold text-center" -->
+                    <calendar
+                        :attributes="attributes"
+                        :columns="breakpoint"
+                        @dayclick="onDayClick"
+                    >
+                        <template #day-popover="{day, format, masks, attributes}">
+                            <div>
+                                <div class="text-xs text-gray-300 text-base font-semibold text-center">
+                                    {{ format(day.date, 'WWWW DD MMM YYYY') }}
+                                </div>
+                                <popover-row
+                                    v-for="attr in attributes"
+                                    :key="attr.key"
+                                    :attribute="attr">
                                 <span class="text-base" :class="canSubscribe(attr, day)">
                                     {{ attr.customData.lesson_title }}
                                 </span>
-                            </popover-row>
+                                </popover-row>
 
-                            <div v-html="recapSubscribe(attributes, day)"></div>
+                                <div v-html="recapSubscribe(attributes, day)"></div>
 
+                            </div>
+                        </template>
+                    </calendar>
+                    <div class="mt-4 text-gray-800">
+                        <div v-for="(legend, i) in legends" class="flex gap-x-3 items-center" :key="i">
+                            <div :class="legend.classes"></div>
+                            <p>{{ legend.text }}</p>
                         </div>
-                    </template>
-                </calendar>
-                <div class="mt-4 text-gray-800">
-                    <div v-for="(legend, i) in legends" class="flex gap-x-3 items-center" :key="i">
-                        <div :class="legend.classes"></div>
-                        <p>{{ legend.text }}</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+        <section class="w-full md:w-1/2">
+            <div class="container p-6 sm:px-20 mx-auto">
+                <div class="flex-1">
+                    <h2 class="text-gray-900 text-lg title-font font-medium mb-3">Vos prochains cours</h2>
+                    <p class="leading-relaxed text-base">
+                        Vous pouvez vous inscrire à <span class="font-bold" :class="[availableReplacements > 0 ? 'text-green-600 ': 'text-red-600 ']">
+                        {{ availableReplacements }}
+                    </span> cours.
+                    </p>
+                </div>
+
+                <div class="mt-5">
+                    <div v-for="(lesson, i) in nextLessons" class="bg-white p-6 rounded-lg shadow-md mb-3" :key="i">
+                        <h2 class="text-xl font-bold mb-2 text-gray-800">{{ lesson.title }}</h2>
+                        <p class="text-gray-700">{{ lesson.description }}</p>
+                        <p class="leading-relaxed text-base">Le {{ lesson.time }}</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
 </template>
 
 <script>
 import UserLayout from '@/Layouts/UserLayout.vue'
-import { Link } from '@inertiajs/inertia-vue3';
+import {Link, usePage} from '@inertiajs/inertia-vue3';
 import { Calendar, PopoverRow } from 'v-calendar';
 import 'v-calendar/dist/style.css';
 import { computed, ref, onMounted, toRaw } from "vue";
@@ -69,8 +93,7 @@ import dayjs from "dayjs";
 import {Inertia} from "@inertiajs/inertia";
 
 export default {
-    // multistep: https://sweetalert2.github.io/recipe-gallery/queue-with-back-button.html
-    props: ['lesson', 'headlines', 'lessonDays'],
+    props: ['lesson', 'headlines', 'lessonDays', 'nextLessons'],
     components: {
         UserLayout,
         Link,
@@ -84,6 +107,7 @@ export default {
         const errorClass = 'text-red-600';
         const pendingClass = 'text-yellow-600';
         const successClass = 'text-green-600';
+        const page = usePage()
 
         const legends = ref([
             {
@@ -110,6 +134,10 @@ export default {
 
         onMounted(() => {
             attributes.value = props.lessonDays
+        })
+
+        const availableReplacements = computed(() => {
+            return page.props.value.user.available_replacements;
         })
 
         /**
@@ -196,22 +224,13 @@ export default {
                     }
                 })
 
-                const result = await registerLesson(lessons, day)
+                const result = await registerLesson(lessons, day, toRaw(availableReplacements))
                 if (result) {
                     let payload = {};
                     result.forEach((r) => payload[r.key] = r.value)
 
                     Inertia.post(route('lesson-movement', payload));
                 }
-
-
-                /*
-                await Swal.fire({
-                    icon: 'success',
-                    title: 'Votre demande a bien été prise en compte',
-                    text: 'Votre absence a correctement été enregistrée.'
-                })
-                 */
             }
         };
 
@@ -229,6 +248,7 @@ export default {
             recapSubscribe,
             attributes,
             legends,
+            availableReplacements,
         }
     }
 }

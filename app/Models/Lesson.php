@@ -23,6 +23,20 @@ class Lesson extends Model
         'schedule' => 'array',
     ];
 
+    public function trackMovement(int $user_id, string $action)
+    {
+//        dd($this->movements);
+        return $this
+            ->movements()
+            ->where([
+                ['lesson_id', $this->id],
+                ['user_id', $user_id],
+                ['action', $action]
+            ])
+            ->get()
+            ;
+    }
+
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
