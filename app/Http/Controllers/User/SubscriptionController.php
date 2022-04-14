@@ -183,11 +183,11 @@ class SubscriptionController extends Controller
         })
             ->values();
 
-        for ($i = 0; $i < 16; $i++) {
+        foreach($defaultLessons as $lesson) {
             $result = $result->push([
                 'title' => $user->lesson->title,
                 'description' => $user->lesson->description,
-                'time' => Carbon::parse($defaultLessons[$i]['date']),
+                'time' => Carbon::parse($lesson['date']),
             ]);
         }
 
