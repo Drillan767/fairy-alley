@@ -41,6 +41,8 @@ export default {
                 locale: frLocale,
                 headerToolbar: {
                     left: 'prev,next today',
+                    slotMaxTime: '23:00:00',
+                    slotMinTime: '08:00:00',
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
                 },

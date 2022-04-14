@@ -61,7 +61,7 @@
                 <div class="flex-1">
                     <h2 class="text-gray-900 text-lg title-font font-medium mb-3">Vos prochains cours</h2>
                     <p class="leading-relaxed text-base">
-                        Vous pouvez vous inscrire à <span class="font-bold" :class="[availableReplacements > 0 ? 'text-green-600 ': 'text-red-600 ']">
+                        Vous pouvez remplacer <span class="font-bold" :class="[availableReplacements > 0 ? 'text-green-600 ': 'text-red-600 ']">
                         {{ availableReplacements }}
                     </span> cours.
                     </p>
@@ -70,7 +70,6 @@
                 <div class="mt-5">
                     <div v-for="(lesson, i) in nextLessons" class="bg-white p-6 rounded-lg shadow-md mb-3" :key="i">
                         <h2 class="text-xl font-bold mb-2 text-gray-800">{{ lesson.title }}</h2>
-                        <p class="text-gray-700">{{ lesson.description }}</p>
                         <p class="leading-relaxed text-base">Le {{ lesson.time }}</p>
                     </div>
                 </div>

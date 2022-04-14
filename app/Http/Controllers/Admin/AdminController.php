@@ -22,12 +22,12 @@ class AdminController
 
         foreach ($lessons as $lesson) {
             foreach($lesson->schedule as $schedule) {
-                if ($schedule['status'] !== 'cancelled') {
+                if (isset($schedule['status']) && $schedule['status'] !== 'cancelled') {
                     $time = Carbon::parse($schedule['date']);
                     $events[] = [
                         'title' => $lesson->title,
                         'start' => $time->format('Y-m-d H:i:s'),
-                        'end' => $time->addHour()->format('Y-m-d H:i:s'),
+                        'end' => $time->addHour()->addMinutes(30)->format('Y-m-d H:i:s'),
                     ];
                 }
             }

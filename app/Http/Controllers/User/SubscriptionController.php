@@ -176,13 +176,14 @@ class SubscriptionController extends Controller
 
     private function defineNextLessons(User $user): Collection
     {
+        // replaced = d/m/Y
         $result = collect([]);
         $defaultLessons = collect($user->lesson->schedule)->filter(function ($schedule) {
             return $schedule['status'] !== 'cancelled' && Carbon::parse($schedule['date'])->isFuture();
         })
             ->values();
 
-        for ($i = 0; $i < 4; $i++) {
+        for ($i = 0; $i < 16; $i++) {
             $result = $result->push([
                 'title' => $user->lesson->title,
                 'description' => $user->lesson->description,
@@ -211,9 +212,9 @@ class SubscriptionController extends Controller
 
         return $result
             ->sortBy(fn ($obj) => $obj['time']->getTimeStamp())
-            ->take(4)
+            ->take(8)
             ->map(function ($r) {
-                $r['time'] = $r['time']->format('d/m/Y à H:i');
+                $r['time'] = $r['time']->format('d/m/Y');
                 return $r;
             })
             ->values();
