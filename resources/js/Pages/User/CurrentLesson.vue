@@ -48,7 +48,7 @@
                         </template>
                     </calendar>
                     <div class="mt-4 text-gray-800">
-                        <div v-for="(legend, i) in legends" class="flex gap-x-3 items-center" :key="i">
+                        <div v-for="(legend, i) in legends" class="legend" :key="i">
                             <div :class="legend.classes"></div>
                             <p>{{ legend.text }}</p>
                         </div>
@@ -68,9 +68,21 @@
                 </div>
 
                 <div class="mt-5">
-                    <div v-for="(lesson, i) in nextLessons" class="bg-white p-6 rounded-lg shadow-md mb-3" :key="i">
-                        <h2 class="text-xl font-bold mb-2 text-gray-800">{{ lesson.title }}</h2>
-                        <p class="leading-relaxed text-base">Le {{ lesson.time }}</p>
+                    <div
+                        v-for="(lesson, i) in nextLessons"
+                        class="bg-white p-3 rounded-lg border mb-4"
+                        :class="{
+                            'border-green-400': lesson.action === 'join',
+                            'border-red-400': lesson.action === 'leave'
+                        }"
+                        :key="i"
+                    >
+                        <div class="leading-relaxed text-base">
+                            <span class="text-lg font-bold text-gray-800">{{ lesson.title }}</span>&nbsp;
+                            <span class="inline-block md:inline leading-relaxed text-base">Le {{ lesson.time }}</span>
+                            <div class="tag error" v-if="lesson.action === 'leave'">Annulé</div>
+                            <div class="tag success" v-if="lesson.action === 'join'">Rejoint</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -104,7 +116,6 @@ export default {
         const thatDaysLessons = ref([]);
         const attributes = ref([]);
         const errorClass = 'text-red-600';
-        const pendingClass = 'text-yellow-600';
         const successClass = 'text-green-600';
         const page = usePage()
 
@@ -152,33 +163,26 @@ export default {
 
             const selectedDay = dayjs(toRaw(day.date));
             const customData = toRaw(attribute.customData);
+            const { movements } = customData
 
-            if (customData.isSubscribed) {
-                return `${errorClass} font-bold`;
-            } else if (customData.cancelled) {
-                return errorClass;
+            let availableSlots = 0
+            movements.map((m) => {
+                if (dayjs(m.lesson_time).isSame(selectedDay, 'day')) {
+                    if (m.action === 'leave') availableSlots++;
+                    if (m.action === 'join') availableSlots--;
+                }
+            })
+
+            if (availableSlots > 0) {
+                return successClass
+            } else {
+                let classes = errorClass
+                if (customData.isSubscribed) {
+                    classes += 'font-bold'
+                }
+                return classes
             }
 
-            const movements = customData.movements;
-            if (movements && movements.length) {
-                // We filter by date selected and action being 'joined'
-                const todaysMovements = movements.filter((m) => {
-                    return dayjs(m.lesson_time).isSame(selectedDay, 'day') && m.action === 'joined'
-                })
-
-                if (todaysMovements.length >= 6) return errorClass;
-            }
-
-            const queues = toRaw(attribute.customData.queues);
-            const todaysQueue = queues.find((q) => dayjs(q.datetime).isSame(selectedDay, 'day'))
-            if (todaysQueue) {
-                const { joining, leaving } = todaysQueue;
-
-                if (joining.length === 6) return errorClass;
-                if (joining.length === 0 && leaving.length > 0) return successClass
-            }
-
-            return pendingClass;
         }
 
         const recapSubscribe = (attributes, day) => {
@@ -193,12 +197,8 @@ export default {
                 return `<p class="${successClass} ${defaultClasses}">Places disponibles</p>`
             }
 
-            if (classes.includes(pendingClass)) {
-                return `<p class="${pendingClass} ${defaultClasses}">Mise en liste d'attente disponible</p>`
-            }
-
             if (classes.includes(errorClass)) {
-                return `<p class="${errorClass} ${defaultClasses}">Aucune place disponible</p>`
+                return `<p class="${errorClass} ${defaultClasses}">Aucune place disponible pour le moment</p>`
             }
         }
 
@@ -254,21 +254,39 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.circle {
-    height: 20px;
-    width: 20px;
-    border-radius: 50%;
+.tag {
+    @apply inline-block text-white px-1 py-0.5 rounded ml-1;
 
-    &.green { @apply bg-green-600; }
-    &.blue { background-color: #3182ce; }
-    &.gray { background-color: #718096; }
-    &.red {
-        background-color: #e53e3e;
+    &.success {
+        @apply bg-green-400;
+    }
 
-        &.empty {
-            background-color: white;
-            border: solid 2px #e53e3e;
+    &.error {
+        @apply bg-red-400;
+    }
+}
+.legend {
+    display: grid;
+    grid-template-columns: 20px auto;
+    gap: 5px;
+
+    .circle {
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+
+        &.green { @apply bg-green-600; }
+        &.blue { background-color: #3182ce; }
+        &.gray { background-color: #718096; }
+        &.red {
+            background-color: #e53e3e;
+
+            &.empty {
+                background-color: white;
+                border: solid 2px #e53e3e;
+            }
         }
     }
 }
+
 </style>

@@ -21,11 +21,11 @@
         <div class="mt-4">
             <jet-label for="gender" value="Le cours est pour :" />
             <label class="inline-flex items-center mr-6">
-                <input type="radio" class="form-radio" name="accountType" value="F" v-model="form.gender" :checked="form.gender === 'F'">
+                <input type="checkbox" id="femmes" class="form-radio" value="F" v-model="form.gender">
                 <span class="ml-2">Les femmes</span>
             </label>
             <label class="inline-flex items-center">
-                <input type="radio" class="form-radio" name="accountType" value="H" v-model="form.gender" :checked="form.gender === 'H'">
+                <input type="checkbox" id="hommes" class="form-radio" value="H" v-model="form.gender" >
                 <span class="ml-2">Les hommes</span>
             </label>
             <jet-input-error :message="form.errors.gender" class="mt-2" />
@@ -70,7 +70,6 @@
                         'bg-red-100': date.status === 'cancelled',
                         'bg-blue-100': date.status === 'recovery',
                         'bg-green-100': date.status === 'ok'
-
                     }"
                 >
                     <Datepicker
@@ -95,6 +94,12 @@
         </div>
 
         <div class="mt-8">
+            <jet-label value="Type de cours" />
+            <jet-select :choices="choices" v-model="form.type" />
+            <jet-input-error :message="form.errors.type" class="mt-2" />
+        </div>
+
+        <div class="mt-8">
             <div class="flex justify-end">
                 <jet-button type="submit" class="ml-2" :disabled="form.processing">
                     Enregistrer
@@ -111,9 +116,10 @@ import JetLabel from '@/Jetstream/Label.vue';
 import Wysiwyg from '@/Jetstream/Wysiwyg.vue';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
-import Datepicker from 'vue3-date-time-picker';
+import JetSelect from '@/Jetstream/Select.vue';
+import Datepicker from '@vuepic/vue-datepicker';
 import dayjs from "dayjs";
-import 'vue3-date-time-picker/dist/main.css';
+import '@vuepic/vue-datepicker/dist/main.css';
 import {useForm} from "@inertiajs/inertia-vue3";
 import {computed, onMounted, ref, toRaw} from "vue";
 import Button from "@/Jetstream/Button.vue";
@@ -138,6 +144,7 @@ export default {
         JetSecondaryButton,
         JetInputError,
         Wysiwyg,
+        JetSelect,
         Datepicker,
     },
 
@@ -158,6 +165,13 @@ export default {
             }
         })
 
+        const choices = ref([
+            {label: 'Cours classique', value: 'lesson'},
+            {label: 'Conference', value: 'conference'},
+            {label: 'Atelier', value: 'workshop'},
+            {label: 'Cours privé', value: 'private lesson'},
+        ]);
+
         const editSpecificDate = (detail, index) => {
             Swal.fire({
                 title: "Éditer les détails de l'occurrence",
@@ -170,9 +184,6 @@ export default {
                     recovery: 'Définir comme jour de rattrapage',
                 },
                 preConfirm: (select) => {
-                    console.log(occurrences.value[index])
-                    console.log(detail.date)
-
                     occurrences.value[index] = {
                         date: detail.date,
                         status: select,
@@ -199,7 +210,7 @@ export default {
 
         const setupOccurrences = ref({
             nbOccurrences: 0,
-            occurrenceStartDate: '',
+            occurrenceStartDate: ''//dayjs().format(''),
         })
 
         const data = props.editing ? {
@@ -208,7 +219,8 @@ export default {
         } : {
             title: '',
             description: '',
-            gender: '',
+            type: '',
+            gender: [],
             ref: '',
             occurrences: []
         }
@@ -282,6 +294,7 @@ export default {
             disabledDates,
             textInputOptions,
             editSpecificDate,
+            choices,
             lexicon,
         }
     },

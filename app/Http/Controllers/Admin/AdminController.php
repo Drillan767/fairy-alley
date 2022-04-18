@@ -19,7 +19,7 @@ class AdminController
     {
         $lessons = Lesson::all();
         $events = [];
-
+        // https://jsfiddle.net/3E8nk/506/
         foreach ($lessons as $lesson) {
             foreach($lesson->schedule as $schedule) {
                 if (isset($schedule['status']) && $schedule['status'] !== 'cancelled') {

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionRequest;
 use Illuminate\Support\Collection;
-use App\Models\{Lesson, Movement, Queue, User};
+use App\Models\{Lesson, Movement, User};
 use App\Services\{LessonDateDisplayHandler, SubscriptionHandler};
 use Carbon\Carbon;
 use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
@@ -18,12 +18,14 @@ class SubscriptionController extends Controller
     {
     }
 
-    public function index(LessonDateDisplayHandler $displayHandler): Response
+    public function index(LessonDateDisplayHandler $displayHandler): Response|RedirectResponse
     {
-        $lessonDays = [];
-        $nextLessons = [];
         /** @var User $user */
         $user = auth()->user();
+
+        $lessonDays = [];
+        $nextLessons = [];
+
         $headlines = collect(config('lesson.headlines'))->firstWhere('status_id', $user->subscription->status);
 
 
@@ -118,60 +120,54 @@ class SubscriptionController extends Controller
         return response()->json($schedule);
     }
 
-    public function movement(Request $request)
+    public function movement(Request $request): RedirectResponse
     {
-        // Run job to check the waiting list...
-
         $action = $request->get('action');
+        /** @var User $user */
         $user = $request->user();
+        $actionDate = Carbon::parse($request->get('picked'));
+        $lesson = Lesson::query()
+            ->select('id', 'title', 'schedule')
+            ->find($request->get('lesson'));
+        $timestamp = $this->retrieveTimestamp($lesson->schedule, $actionDate);
 
-        if ($action === 'leave') {
-            $movement = new Movement();
-            $movement->user_id = auth()->id();
-            $movement->action = $action;
-            $movement->lesson_id = $user->lesson_id;
-            $cancelledDate = Carbon::parse($request->get('date'));
-            $movement->lesson_time = $this->retrieveTimestamp($user->lesson_id, $cancelledDate);
-            $movement->save();
+        // Check if movement doesn't already exist.
+        $movementExists = Movement::query()
+            ->where([
+                ['user_id', $user->id],
+                ['action', $action],
+                ['lesson_id', $lesson->id],
+                ['lesson_time', $timestamp]
+            ])
+            ->count();
 
-            $message = "Votre présence au cours du {$cancelledDate->format('d/m/Y')} a bien été annulée.";
-
-        } else {
-
-            // TODO: check if user can subscribe to a lesson without needing to be on queue list.
-
-            $lesson_id = $request->get('lesson');
-
-            $joining = Queue::firstOrNew(['lesson_id' => $lesson_id]);
-            $joining->datetime = $this->retrieveTimestamp($lesson_id, Carbon::parse($request->get('picked')));
-            $joining->lesson_id = $request->get('lesson');
-
-            $joining->joining = $joining->exists ? array_merge($joining->joining, [$user->id]) : [$user->id];
-
-            $joining->save();
-
-            if ($request->get('decision') === 'keep my place') {
-                $leaving = Queue::firstOrNew(['lesson_id' => $user->lesson_id]);
-                $leaving->datetime = $request->get('cancel');
-                $leaving->leaving = $leaving->exists ? array_merge($leaving->leaving, [$user->id]) : [$user->id];
-                $leaving->save();
-            }
-
-            $message = "Mise en liste d'attente effectuée avec succès.";
+        if ($movementExists) {
+            $userAction = $action === 'subscribe' ? 'présence' : 'absence';
+            return redirect()->back()->with('error', "Vous avez déjà indiqué votre $userAction à ce cours.");
         }
+
+        $movement = new Movement();
+        $movement->user_id = auth()->id();
+        $movement->action = $action;
+        $movement->lesson_id = $lesson->id;
+        $movement->lesson_time = $timestamp;
+        $movement->save();
+
+        $message = $action === 'subscribe'
+            ? "Vous avez été inscrit au cours de \"$lesson->title\" avec succès."
+            : "Votre présence au cours du {$actionDate->format('d/m/Y')} a bien été annulée.";
 
         return redirect()->route('profile.index')->with('success', $message);
     }
 
-    private function retrieveTimestamp($lesson_id, Carbon $date): string
+    private function retrieveTimestamp(array $schedule, Carbon $date): string
     {
-        $lesson = Lesson::select(['schedule'])->find($lesson_id);
-        $schedule = collect($lesson->schedule)->filter(function($schedule) use ($date) {
+        $dates = collect($schedule)->filter(function($schedule) use ($date) {
             $scheduleDate = Carbon::parse($schedule['date']);
             return $scheduleDate->isSameDay($date);
         });
 
-        return $schedule->first()['date'];
+        return $dates->first()['date'];
     }
 
     private function defineNextLessons(User $user): Collection
@@ -179,7 +175,7 @@ class SubscriptionController extends Controller
         // replaced = d/m/Y
         $result = collect([]);
         $defaultLessons = collect($user->lesson->schedule)->filter(function ($schedule) {
-            return $schedule['status'] !== 'cancelled' && Carbon::parse($schedule['date'])->isFuture();
+            return Carbon::parse($schedule['date'])->isFuture();
         })
             ->values();
 
@@ -193,28 +189,34 @@ class SubscriptionController extends Controller
 
         $user
             ->getFutureLessons()
-            ->each(function ($lesson) use (&$result) {
-                if ($lesson->action === 'join') {
-                    $result->push([
-                        'title' => $lesson->lesson->title,
-                        'description' => $lesson->lesson->description,
-                        'time' => Carbon::parse($lesson->lesson_time),
-                    ]);
-                }
+            ->each(function ($movement) use (&$result) {
 
-                if ($lesson->action === 'leave') {
-                    $result = $result->reject(function ($r) use($lesson) {
-                        $lessonTime = Carbon::parse($lesson->lesson_time);
+                if ($movement->action === 'leave') {
+                    $result = $result->reject(function ($r) use($movement) {
+                        $lessonTime = Carbon::parse($movement->lesson_time);
                         return $lessonTime->isSameDay($r['time']);
                     });
                 }
+
+                $result->push([
+                    'title' => $movement->lesson->title,
+                    'description' => $movement->lesson->description,
+                    'action' => $movement->action,
+                    'time' => Carbon::parse($movement->lesson_time),
+                ]);
             });
 
         return $result
             ->sortBy(fn ($obj) => $obj['time']->getTimeStamp())
             ->take(8)
             ->map(function ($r) {
-                $r['time'] = $r['time']->format('d/m/Y');
+                $format = 'd/m/Y';
+
+                if (isset($r['action']) && $r['action'] === 'join') {
+                    $format = 'd/m/Y à H:i';
+                }
+
+                $r['time'] = $r['time']->format($format);
                 return $r;
             })
             ->values();

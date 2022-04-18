@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -17,15 +18,16 @@ class Lesson extends Model
         'ref',
         'gender',
         'schedule',
+        'type',
     ];
 
     protected $casts = [
         'schedule' => 'array',
+        'gender' => 'array',
     ];
 
-    public function trackMovement(int $user_id, string $action)
+    public function trackMovement(int $user_id, string $action): Collection
     {
-//        dd($this->movements);
         return $this
             ->movements()
             ->where([
@@ -33,18 +35,12 @@ class Lesson extends Model
                 ['user_id', $user_id],
                 ['action', $action]
             ])
-            ->get()
-            ;
+            ->get();
     }
 
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
-    }
-
-    public function queues(): HasMany
-    {
-        return $this->hasMany(Queue::class);
     }
 
     public function movements(): HasMany

@@ -18,8 +18,9 @@ class LessonDateDisplayHandler
     {
         $attributes = [];
         $userLesson = $user->lesson_id;
-        $lessons = Lesson::with('movements', 'queues')
-            ->where('gender', $user->gender)
+        $lessons = Lesson::with('movements')
+            ->whereJsonContains('gender', $user->gender)
+            ->where('type', 'lesson')
             ->get();
 
         foreach ($lessons as $lesson) {
@@ -27,7 +28,6 @@ class LessonDateDisplayHandler
             $statuses = $schedule->groupBy('status');
 
             foreach ($statuses as $status => $date) {
-
                 $title = $lesson->title . match ($status) {
                     'cancelled' => ' - Annulé',
                     'recovery' => ' - Rattrapage',
@@ -75,10 +75,12 @@ class LessonDateDisplayHandler
                         'isSubscribed' => $lesson->id === $userLesson,
                         'lesson_id' => $lesson->id,
                         'lesson_title' => $title,
-                        'queues' => $lesson->queues,
                         'movements' => $lesson->movements,
                     ],
-                    'dates' => $date->map(fn($s) => $s['date']),
+                    'dates' => $date
+                        ->filter(fn($s) => Carbon::parse($s['date']) > now())
+                        ->map(fn($s) => $s['date'])
+                        ->values(),
                     'order' => $order,
                 ];
             }

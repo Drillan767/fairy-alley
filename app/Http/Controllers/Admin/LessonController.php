@@ -71,7 +71,6 @@ class LessonController extends Controller
     private function handleLesson(Lesson $lesson, LessonRequest $request, bool $update = false)
     {
         $function = $update ? 'update' : 'create';
-        // dd($request);
         $fields = array_merge(
             $request->validated(),
             ['year' => now()->year . ' - ' . now()->addYear()->year]

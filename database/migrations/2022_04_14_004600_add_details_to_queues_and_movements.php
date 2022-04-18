@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Lesson;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,16 +12,20 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('movements', function (Blueprint $table) {
-            $table->string('gender', 5)->change();
             $table->boolean('by_admin')->default(false);
         });
 
-        Schema::table('queues', function (Blueprint $table) {
-            $table->boolean('locked')->default(false);
+        Schema::table('lessons', function (Blueprint $table) {
+            $table->string('gender', 10);
+            $table->string('type', 60);
         });
+
+        Lesson::query()->update(['gender' => '[]']);
+
+        Schema::drop('queues');
     }
 
     /**
@@ -30,8 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('queues_and_movements', function (Blueprint $table) {
-            //
-        });
+
     }
 };
