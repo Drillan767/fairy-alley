@@ -29,8 +29,8 @@ class UserCoordinatesRequest extends FormRequest
             'address2' => ['nullable', 'string'],
             'zipcode' => ['required', 'max:5'],
             'city' => ['required', 'string'],
-            'phone' => ['required', 'regex:/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/'],
-            'pro' => ['required', 'regex:/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/'],
+            'phone' => ['required', 'string'],
+            'pro' => ['required', 'string'],
         ];
     }
 }

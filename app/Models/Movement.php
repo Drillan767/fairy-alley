@@ -14,4 +14,11 @@ class Movement extends Model
     {
         return $this->hasOne(Lesson::class, 'id', 'lesson_id');
     }
+
+    public function user(): HasOne
+    {
+        return $this
+            ->hasOne(User::class, 'id', 'user_id')
+            ->select('id', 'firstname', 'lastname', 'email', 'phone', 'pro');
+    }
 }

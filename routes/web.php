@@ -30,8 +30,13 @@ Route::post('/contact', [HomeController::class, 'contact'])->name('contact');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::middleware(['role:administrator'])->group(function () {
-        Route::get('/administration', [AdminController::class, 'index'])->name('admin.index');
-        Route::get('/admin/lesson-list', [AdminController::class, 'lessonList'])->name('admin.lesson.list');
+
+        Route::controller(AdminController::class)->group(function() {
+            Route::get('/administration', 'index')->name('admin.index');
+            Route::get('/admin/lesson-list', 'lessonList')->name('admin.lesson.list');
+            Route::post('/admin/lesson-detail', 'details')->name('lesson.details');
+        });
+
         Route::post('/services/order', [ServiceController::class, 'order'])->name('services.order');
 
         Route::resource('premiers-contacts', FirstContactController::class)
