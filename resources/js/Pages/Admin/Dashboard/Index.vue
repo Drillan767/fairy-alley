@@ -26,7 +26,7 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import frLocale from '@fullcalendar/core/locales/fr';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import Detail from "./LessonDetail.vue";
+import Detail from "@/Pages/Admin/Dashboard/LessonDetail.vue";
 import { ref } from "vue";
 import axios from 'axios'
 

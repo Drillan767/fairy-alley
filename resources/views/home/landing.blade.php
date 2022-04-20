@@ -133,7 +133,7 @@
 <section class="relative">
     <div class="container px-5 py-12 mx-auto flex sm:flex-nowrap flex-wrap">
         <div class="lg:w-2/3 md:w-1/2 flex justify-end bg-gray-300 rounded-lg overflow-hidden sm:mr-10 p-10 flex items-end justify-start relative">
-            <img src="/img/maps.jpg" alt="map" class="absolute inset-0 w-full h-full object-cover" />
+            <img src="/img/map.png" alt="map" class="absolute inset-0 w-full h-full object-cover" />
             <div class="bg-white bg-opacity-80 relative flex flex-wrap py-6 rounded shadow-md">
                 <div class="lg:w-1/2 px-6">
                     <h2 class="title-font font-semibold text-gray-900 tracking-widest text-xs">ADRESSE</h2>

@@ -83,7 +83,7 @@
 
 <script>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import Form from "@/Pages/Admin/Services/LessonDetail.vue";
+import Form from "./Form.vue";
 import draggable from "vuedraggable";
 import Swal from "sweetalert2";
 import { Link } from "@inertiajs/inertia-vue3";

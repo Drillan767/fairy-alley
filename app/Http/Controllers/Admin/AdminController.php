@@ -6,6 +6,7 @@ use App\Models\Lesson;
 use App\Models\Movement;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -15,7 +16,7 @@ class AdminController
 {
     public function index(): Response
     {
-        return Inertia::render('Admin/Index/Admin');
+        return Inertia::render('Admin/Dashboard/Index');
     }
 
     public function lessonList(): JsonResponse
@@ -27,7 +28,7 @@ class AdminController
                 if (isset($schedule['status']) && $schedule['status'] !== 'cancelled') {
                     $time = Carbon::parse($schedule['date']);
                     $events[] = [
-                        'title' => $lesson->title,
+                        'title' => $lesson->title . ' (' . $this->listUsers($lesson->id, $time->format('Y-m-d H:i:s')) . ' personnes)',
                         'start' => $time->format('Y-m-d H:i:s'),
                         'end' => $time->addHour()->addMinutes(30)->format('Y-m-d H:i:s'),
                         'extendedProps' => [
@@ -44,24 +45,9 @@ class AdminController
 
     public function details(Request $request): JsonResponse
     {
-        $userList = User::query()
-            ->select('id', 'firstname', 'lastname', 'phone', 'pro')
-            ->where('lesson_id', $request->get('lesson_id'))
-            ->get();
-
         $lesson = Lesson::select('id', 'title') ->find($request->get('lesson_id'));
 
-        Movement::with('user')
-            ->where('lesson_id', $lesson->id)
-            ->where('lesson_time', $request->get('hour'))
-            ->get()
-            ->each(function ($movement) use (&$userList) {
-                if ($movement->action === 'join') {
-                    $userList->push($movement->user);
-                } else {
-                    $userList = $userList->reject(fn($user) => $user->id === $movement->user->id);
-                }
-            });
+        $userList = $this->listUsers($lesson->id, $request->get('hour'), true);
 
         return response()->json([
             'userList' => $userList,
@@ -80,5 +66,39 @@ class AdminController
         $movement->save();
 
         return response()->json('ok');
+    }
+
+    private function listUsers(int $lesson_id, string $hour, $loadInfos = false): Collection|int
+    {
+        if ($loadInfos) {
+            $userList = User::query()
+                ->select('id', 'firstname', 'lastname', 'phone', 'pro')
+                ->where('lesson_id', $lesson_id)
+                ->get();
+        } else {
+            $userList = User::where('lesson_id', $lesson_id)->count();
+        }
+
+        Movement::with('user')
+            ->where('lesson_id', $lesson_id)
+            ->where('lesson_time', $hour)
+            ->get()
+            ->each(function ($movement) use (&$userList, $loadInfos) {
+                if ($movement->action === 'join') {
+                    if($loadInfos) {
+                        $userList->push($movement->user);
+                    } else {
+                        $userList++;
+                    }
+                } else {
+                    if ($loadInfos) {
+                        $userList = $userList->reject(fn($user) => $user->id === $movement->user->id);
+                    } else {
+                        $userList--;
+                    }
+                }
+            });
+
+        return $userList;
     }
 }
