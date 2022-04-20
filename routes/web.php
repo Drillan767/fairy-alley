@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ToolsController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\FirstContactController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MovementController;
 use App\Http\Controllers\User\SubscriptionController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -29,12 +30,19 @@ Route::get('/', [HomeController::class, 'landing'])->name('landing');
 Route::post('/contact', [HomeController::class, 'contact'])->name('contact');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+
+    Route::post('/flow', [MovementController::class, 'flow'])->name('movement.flow');
+
     Route::middleware(['role:administrator'])->group(function () {
 
         Route::controller(AdminController::class)->group(function() {
             Route::get('/administration', 'index')->name('admin.index');
-            Route::get('/admin/lesson-list', 'lessonList')->name('admin.lesson.list');
-            Route::post('/admin/lesson-detail', 'details')->name('lesson.details');
+            Route::get('/admin/lesson/list', 'lessonList')->name('admin.lesson.list');
+            Route::post('/admin/lesson/detail', 'details')->name('lesson.details');
+        });
+
+        Route::controller(MovementController::class)->group(function() {
+            Route::post('/movement/lock', 'lock')->name('movement.lock');
         });
 
         Route::post('/services/order', [ServiceController::class, 'order'])->name('services.order');

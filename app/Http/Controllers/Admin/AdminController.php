@@ -24,6 +24,7 @@ class AdminController
         $lessons = Lesson::all();
         $events = [];
         foreach ($lessons as $lesson) {
+
             foreach($lesson->schedule as $schedule) {
                 if (isset($schedule['status']) && $schedule['status'] !== 'cancelled') {
                     $time = Carbon::parse($schedule['date']);
@@ -71,8 +72,7 @@ class AdminController
     private function listUsers(int $lesson_id, string $hour, $loadInfos = false): Collection|int
     {
         if ($loadInfos) {
-            $userList = User::query()
-                ->select('id', 'firstname', 'lastname', 'phone', 'pro')
+            $userList = User::select('id', 'firstname', 'lastname', 'phone', 'pro')
                 ->where('lesson_id', $lesson_id)
                 ->get();
         } else {

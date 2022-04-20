@@ -14,21 +14,20 @@ class MovementRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->hasAnyRole('subscriber', 'guest', 'substitute');
+        return Auth::check();
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
         return [
             'user_id' => ['required', 'integer', 'exists:users,id'],
             'lesson_id' => ['required', 'integer', 'exists:lessons,id'],
-            'action' => ['required', 'string', 'in:joined,cancelled'],
-            'lesson_hour' => ['required', 'string', 'regex:^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'],
+            'action' => ['required', 'string', 'in:join,leave,lock'],
+            'lesson_time' => ['required', 'string']
         ];
     }
+
+    // After hook :
+    // check for "by_admin", return error if user is not admin
+    // check for "action", return error if 'locked', and user is not admin
 }

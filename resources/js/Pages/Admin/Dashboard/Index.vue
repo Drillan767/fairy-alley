@@ -26,9 +26,10 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import frLocale from '@fullcalendar/core/locales/fr';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import Detail from "@/Pages/Admin/Dashboard/LessonDetail.vue";
+import Detail from "./LessonDetail.vue";
 import { ref } from "vue";
 import axios from 'axios'
+import dayjs from "dayjs";
 
 export default {
     title: 'Administration',
@@ -41,6 +42,7 @@ export default {
     setup() {
         const showModal = ref(false)
         const details = ref(null)
+
         const calendarOptions = {
             plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
             initialView: 'timeGridWeek',
@@ -53,10 +55,15 @@ export default {
                 right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
             },
             eventClick: (info) => {
+                const hour = dayjs(info.event.start)
                 const lessonProps = info.event.extendedProps;
+
                 axios.post(route('lesson.details', lessonProps))
                     .then((response) => {
                         details.value = response.data
+                        details.value.hour = hour.format('DD/MM/YYYY')
+                        details.value.lesson_time = hour.toISOString()
+                        details.value.lesson_id = lessonProps.lesson_id
                         showModal.value = true
                     })
             },
