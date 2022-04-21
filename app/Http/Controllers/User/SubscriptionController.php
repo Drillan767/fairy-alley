@@ -145,7 +145,7 @@ class SubscriptionController extends Controller
             ->count();
 
         if ($movementExists) {
-            $userAction = $action === 'subscribe' ? 'présence' : 'absence';
+            $userAction = $action === 'join' ? 'présence' : 'absence';
             return redirect()->back()->with('error', "Vous avez déjà indiqué votre $userAction à ce cours.");
         }
 
@@ -156,7 +156,7 @@ class SubscriptionController extends Controller
         $movement->lesson_time = $timestamp;
         $movement->save();
 
-        $message = $action === 'subscribe'
+        $message = $action === 'join'
             ? "Vous avez été inscrit au cours de \"$lesson->title\" avec succès."
             : "Votre présence au cours du {$actionDate->format('d/m/Y')} a bien été annulée.";
 

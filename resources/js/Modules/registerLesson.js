@@ -22,7 +22,7 @@ const registerLesson = async (lessons, date, nbReplacements) => {
             if (parseInt(steps[currentStep]) === 1) {
                 const options = [
                     {
-                        id: 'subscribe',
+                        id: 'join',
                         title: "M'inscrire à un cours"
                     },
                     {
