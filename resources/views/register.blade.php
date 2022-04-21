@@ -76,8 +76,8 @@
                                         </div>
                                     </div>
 
-                                    @error('birthday')
-                                    <p class="text-sm text-red-600">{{ $message }}</p>
+                                    @error('gender')
+                                        <p class="text-sm text-red-600">{{ $message }}</p>
                                     @enderror
                                 </div>
                             </div>
@@ -93,7 +93,7 @@
                                 <label for="pro" class="block text-sm font-medium text-gray-700">Téléphone fixe / professionnel</label>
                                 <input type="text" name="pro" value="{{ old('pro') }}" id="pro" placeholder="Remplir au moins l'un des deux champs">
                                 @error('pro')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
+                                    <p class="text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -113,7 +113,7 @@
                                     <option value="Veuf / Veuve">Veuf / Veuve</option>
                                 </select>
                                 @error('family_situation')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
+                                    <p class="text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -129,14 +129,14 @@
                                 <label for="address1" class="block text-sm font-medium text-gray-700 required">
                                     Cours désiré
                                 </label>
-                                <select name="lesson" required>
+                                <select name="lesson" name="" required>
                                     <option value="">Sélectionner un cours...</option>
                                     @foreach($lessons as $lesson)
-                                        <option value="{{ $lesson->id }}">{{ $lesson->title }}</option>
+                                        <option {{ old('lesson') === $lesson->id ? "selected" : "" }} value="{{ $lesson->id }}">{{ $lesson->title }}</option>
                                     @endforeach
                                 </select>
                                 @error('lesson')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
+                                    <p class="text-sm text-red-600">{{ $message }}</p>
                                 @enderror
 
                             </div>

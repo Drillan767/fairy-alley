@@ -108,14 +108,14 @@ class SubscriptionController extends Controller
     public function retrieveUserLessonDate(Request $request): JsonResponse
     {
         $schedule = collect($request->user()->lesson->schedule)
-        ->filter(function ($date) {
-            return Carbon::parse($date['date'])->isFuture();
-        })
-        ->mapWithKeys(function($date) {
-            return [
-                $date['date'] => Carbon::parse($date['date'])->format('d/m/Y'),
-            ];
-        });
+            ->filter(function ($date) {
+                return Carbon::parse($date['date'])->isFuture();
+            })
+            ->mapWithKeys(function($date) {
+                return [
+                    $date['date'] => Carbon::parse($date['date'])->format('d/m/Y'),
+                ];
+            });
 
         return response()->json($schedule);
     }
@@ -125,10 +125,13 @@ class SubscriptionController extends Controller
         $action = $request->get('action');
         /** @var User $user */
         $user = $request->user();
-        $actionDate = Carbon::parse($request->get('picked'));
-        $lesson = Lesson::query()
+        $actionDate = Carbon::parse($request->get('date'));
+        $lesson = $action === 'leave'
+            ? $user->lesson
+            : Lesson::query()
             ->select('id', 'title', 'schedule')
             ->find($request->get('lesson'));
+
         $timestamp = $this->retrieveTimestamp($lesson->schedule, $actionDate);
 
         // Check if movement doesn't already exist.
@@ -136,7 +139,7 @@ class SubscriptionController extends Controller
             ->where([
                 ['user_id', $user->id],
                 ['action', $action],
-                ['lesson_id', $lesson->id],
+                ['lesson_id', $lessonId ?? $lesson->id],
                 ['lesson_time', $timestamp]
             ])
             ->count();

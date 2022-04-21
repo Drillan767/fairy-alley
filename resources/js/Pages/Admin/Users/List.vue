@@ -225,7 +225,7 @@ export default {
         ];
 
         const onSearch = (e) => {
-            localStorage.setItem('globalSearch', e.searchTerm)
+            console.log(e)
         }
 
         const deleteUser = (user) => {

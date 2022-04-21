@@ -156,7 +156,7 @@ const registerLesson = async (lessons, date, nbReplacements) => {
             }
 
             if (currentStep === steps.length) {
-                values.push({key: 'picked', value: date.id});
+                values.push({key: 'date', value: date.id});
                 return values;
             }
         }

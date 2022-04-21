@@ -21,6 +21,7 @@ class LessonDateDisplayHandler
         $lessons = Lesson::with('movements')
             ->whereJsonContains('gender', $user->gender)
             ->where('type', 'lesson')
+            ->orderBy('title')
             ->get();
 
         foreach ($lessons as $lesson) {
