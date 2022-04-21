@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-center text-xl text-gray-800 leading-tight">{{ details.lesson }}</h2>
             <div class="mt-4">
                 <h3 class="font-semibold text-lg text-gray-800 loading-tight">
-                    Membres inscrits pour cette session :
+                    Membres inscrits pour cette session ({{ details.userList.length }} personnes) :
                 </h3>
 
                 <ul v-for="(user, i) in details.userList" :key="i" class="mt-2 list-disc">
