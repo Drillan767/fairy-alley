@@ -129,7 +129,7 @@
                                 <label for="address1" class="block text-sm font-medium text-gray-700 required">
                                     Cours désiré
                                 </label>
-                                <select name="lesson" name="" required>
+                                <select name="lesson" required>
                                     <option value="">Sélectionner un cours...</option>
                                     @foreach($lessons as $lesson)
                                         <option {{ old('lesson') === $lesson->id ? "selected" : "" }} value="{{ $lesson->id }}">{{ $lesson->title }}</option>
@@ -244,4 +244,30 @@
     </div>
 @endsection
 
-</body>
+@section('javascript')
+    <script>
+        document.querySelectorAll('input[name="gender"]').forEach((element) => {
+            element.addEventListener('change', (e) => {
+                fetch('/related-lessons/' + e.target.value)
+                    .then(response => response.json())
+                    .then((data) => {
+                        const select = document.querySelector('select[name="lesson"]');
+                        let option = select.lastElementChild;
+
+                        while (option) {
+                            select.removeChild(option);
+                            option = select.lastElementChild;
+                        }
+
+                        data.forEach((d) => {
+                            const no = document.createElement('option');
+                            no.setAttribute('value', d.id);
+                            no.appendChild(document.createTextNode(d.title));
+                            select.appendChild(no);
+                        })
+                    });
+                console.log(e.target.value)
+            })
+        })
+    </script>
+@endsection

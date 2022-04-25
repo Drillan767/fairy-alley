@@ -108,8 +108,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 });
 
 Route::get('/home', [UserController::class, 'redirectHome'])->name('redirect.home');
-Route::get('/inscription', [FirstContactController::class, 'create'])->name('fc.create');
-Route::post('/inscription', [FirstContactController::class, 'store'])->name('fc.store');
+
+Route::controller(FirstContactController::class)->group(function() {
+    Route::get('/inscription', 'create')->name('fc.create');
+    Route::get('/related-lessons/{gender}', 'relatedLessons');
+    Route::post('/inscription', 'create')->name('fc.store');
+});
+
+
 Route::get('/page/{slug}', [PageController::class, 'show'])->name('pages.show');
 
 require_once __DIR__ . '/fortify.php';

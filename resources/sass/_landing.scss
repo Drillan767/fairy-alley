@@ -35,6 +35,33 @@
     }
 }
 
+.landing-modal {
+    @apply hidden fixed z-10 pt-8 left-0 top-0 w-full h-full overflow-auto;
+    background-color: rgba(0,0,0,0.4);
+
+    .header {
+        .close {
+            @apply cursor-pointer text-black font-bold text-3xl float-right
+        }
+    }
+
+    .content {
+        @apply relative bg-white w-4/5 m-auto pt-0 pb-5 px-5 border-gray-300;
+        animation-name: animatetop;
+        animation-duration: 0.4s;
+    }
+}
+
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
 #vgt-table .vgt-left-align {
     padding: 0.75rem 0.25rem;
 }

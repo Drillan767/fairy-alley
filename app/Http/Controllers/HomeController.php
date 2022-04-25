@@ -6,6 +6,7 @@ use App\Http\Requests\ContactRequest;
 use App\Models\Service;
 use App\Notifications\ContactForm;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
@@ -17,7 +18,8 @@ class HomeController extends Controller
             ->orderBy('order')
             ->get();
 
-        return view($view, compact('services'));
+        $video = env('MEDIAS_URL') . '/videos/2%20-%20Exo%20de%20base%20Statique%203-2.AVI';
+        return view($view, compact('services', 'video'));
     }
 
     public function contact(ContactRequest $request)

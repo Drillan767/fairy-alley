@@ -129,6 +129,7 @@ export default {
         const searchOptions = {
             enabled: true,
             placeholder: 'Rechercher...',
+            trigger: 'enter',
         };
 
         const sortOption = {
@@ -142,7 +143,6 @@ export default {
             if (searchTerm) {
                 vuegoodtable.value.globalSearchTerm = searchTerm;
             }
-
         });
 
         const onSortChange = (params) => {
@@ -224,9 +224,7 @@ export default {
             }
         ];
 
-        const onSearch = (e) => {
-            console.log(e)
-        }
+        const onSearch = (e) => localStorage.setItem('globalSearch', e.searchTerm)
 
         const deleteUser = (user) => {
             const feminine = {

@@ -74,7 +74,7 @@
                     En savoir plus
                 </a>
                 <button
-                    class="flex mx-auto mt-10 text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">
+                    class="flex mx-auto mt-10 text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg preview-modal">
                     Aperçu d'une séance de gymnastique rééducative
                 </button>
             </div>
@@ -206,6 +206,48 @@
         </p>
     </div>
 </footer>
+
+<!-- Modal  -->
+<div class="landing-modal">
+
+    <!-- Modal content -->
+    <div class="content">
+        <div class="header">
+            <span class="close">&times;</span>
+        </div>
+        <div class="body">
+            <video class="w-full" src="{{$video}}" controls></video>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const modalBox = document.querySelector('.landing-modal');
+    const modalBtn = document.querySelector('button.preview-modal');
+    const modalClose = document.querySelector('span.close');
+    const body = document.querySelector('body')
+
+    modalBtn.addEventListener('click', () => {
+        modalBox.style.display = 'block';
+        body.style.overflow = 'hidden';
+    })
+
+    modalClose.addEventListener('click', () => {
+        closeModal();
+    })
+
+    window.onclick = (e) => {
+        if (e.target === modalBox) {
+            closeModal()
+        }
+    }
+
+    function closeModal() {
+        modalBox.style.display = 'none';
+        body.style.overflow = 'initial';
+    }
+</script>
 
 </body>
 </html>
