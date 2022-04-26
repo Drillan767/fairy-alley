@@ -39,6 +39,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::get('/administration', 'index')->name('admin.index');
             Route::get('/admin/lesson/list', 'lessonList')->name('admin.lesson.list');
             Route::post('/admin/lesson/detail', 'details')->name('lesson.details');
+            Route::post('/users', 'getUsers')->name('users');
         });
 
         Route::controller(MovementController::class)->group(function() {

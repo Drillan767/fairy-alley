@@ -46,7 +46,7 @@ class AdminController
 
     public function details(Request $request): JsonResponse
     {
-        $lesson = Lesson::select('id', 'title') ->find($request->get('lesson_id'));
+        $lesson = Lesson::select('id', 'title')->find($request->get('lesson_id'));
 
         $userList = $this->listUsers($lesson->id, $request->get('hour'), true);
 
@@ -54,6 +54,40 @@ class AdminController
             'userList' => $userList,
             'lesson' => $lesson->title,
         ]);
+    }
+
+    public function getUsers(Request $request): JsonResponse
+    {
+        $lesson_id = $request->get('lesson_id');
+        $hour = Carbon::parse($request->get('hour'));
+        dd($hour);
+        dd($hour->toDateTimeString());
+
+        $users = User::query()
+            // User must be able to subscribe.
+            ->whereNot('lesson_id', $lesson_id)
+            ->whereHas('roles', function ($query) {
+                $query->whereIn('name', ['subscriber', 'substitute']);
+            })
+            ->whereHas('movements', function ($query) use ($lesson_id, $hour) {
+                // User hasn't already join THIS SPECIFIC lesson.
+                $query->whereNot([
+                        ['lesson_id', $lesson_id],
+                        ['lesson_time', $hour],
+                        ['action', 'join']
+                    ]);
+            })
+            // User isn't already in this lesson
+
+            ->get(['id', 'firstname', 'lastname'])
+            ->map(function ($user) {
+                return [
+                    'value' => $user->id,
+                    'name' => $user->full_name,
+                ];
+            });
+
+        return response()->json($users);
     }
 
     public function unsubscribe(Request $request): JsonResponse

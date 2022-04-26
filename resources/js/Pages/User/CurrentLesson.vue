@@ -224,11 +224,15 @@ export default {
                 })
 
                 const result = await registerLesson(lessons, day, toRaw(availableReplacements))
+
                 if (result) {
                     let payload = {};
                     result.forEach((r) => payload[r.key] = r.value)
 
-                    Inertia.post(route('lesson-movement', payload));
+                    Inertia.post(route('lesson-movement'), payload, {
+                        resetOnSuccess: true,
+                        onSuccess: () => attributes.value = props.lessonDays
+                    });
                 }
             }
         };

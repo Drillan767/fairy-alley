@@ -13,7 +13,7 @@
                 </div>
             </div>
         </div>
-        <Detail :show="showModal" @close="closeModal" :details="details" />
+        <Detail :show="showModal" @close="closeModal" :details="details" :hour="lessonHour" />
     </admin-layout>
 </template>
 
@@ -30,6 +30,7 @@ import Detail from "./LessonDetail.vue";
 import { ref } from "vue";
 import axios from 'axios'
 import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
 
 export default {
     title: 'Administration',
@@ -42,6 +43,9 @@ export default {
     setup() {
         const showModal = ref(false)
         const details = ref(null)
+        const lessonHour = ref(null)
+
+        dayjs.extend(utc)
 
         const calendarOptions = {
             plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
@@ -60,9 +64,8 @@ export default {
 
                 axios.post(route('lesson.details', lessonProps))
                     .then((response) => {
+                        lessonHour.value = hour
                         details.value = response.data
-                        details.value.hour = hour.format('DD/MM/YYYY')
-                        details.value.lesson_time = hour.toISOString()
                         details.value.lesson_id = lessonProps.lesson_id
                         showModal.value = true
                     })
@@ -76,6 +79,7 @@ export default {
             calendarOptions,
             showModal,
             closeModal,
+            lessonHour,
             details,
         }
     },

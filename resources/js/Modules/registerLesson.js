@@ -49,7 +49,7 @@ const registerLesson = async (lessons, date, nbReplacements) => {
                     }
                 })
 
-                if (result.value === 'subscribe' && nbReplacements.value === 0) {
+                if (result.value === 'join' && nbReplacements.value === 0) {
                     await Swal.fire({
                         icon: 'error',
                         title: 'Opération impossible',

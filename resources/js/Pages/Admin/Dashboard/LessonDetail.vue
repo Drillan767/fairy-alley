@@ -15,9 +15,43 @@
                         <button @click="unsubscribe(user)" class="btn btn-xs btn-error">Désinscrire</button>
                     </li>
                 </ul>
+
+                <div v-if="displayUserList" class="mt-4">
+                    <jet-label value="Sélectionner une ou plusieurs personnes" />
+                    <Multiselect
+                        v-model="addedUsers"
+                        mode="tags"
+                        :close-on-select="false"
+                        :options="userList"
+                        track-by="name"
+                        label="name"
+                        placeholder="Sélectionner..."
+                        :searchable="true"
+                    >
+                        <template v-slot:tag="{ option, handleTagRemove, disabled }">
+                            <div class="multiselect-tag">
+                                {{ option.name }}
+                                <span
+                                    class="multiselect-tag-remove"
+                                    @mousedown.prevent="handleTagRemove(option, $event)"
+                                >
+                                  <span class="multiselect-tag-remove-icon"></span>
+                                </span>
+                            </div>
+                        </template>
+                    </Multiselect>
+
+                    <div class="flex justify-end mt-24">
+                        <jet-button>Enregistrer</jet-button>
+                    </div>
+
+                </div>
             </div>
 
-            <div class="mt-8 flex justify-end">
+            <div class="mt-8 flex gap-x-3 justify-end">
+                <button @click.prevent="addUser" class="btn btn-sm btn-success">
+                    Ajouter une personne
+                </button>
                 <button class="btn btn-sm btn-error">
                     Verrouiller le cours
                 </button>
@@ -28,20 +62,27 @@
 
 <script>
 import Modal from "@/Jetstream/Modal.vue";
+import Multiselect from '@vueform/multiselect';
+import JetLabel from "@/Jetstream/Label.vue";
+import JetButton from "@/Jetstream/Button.vue";
+import '@vueform/multiselect/themes/default.scss';
 import Swal from 'sweetalert2';
-import {watch, ref} from "vue";
+import { ref } from "vue";
+import dayjs from "dayjs";
 
 export default {
     emits: ['close'],
     components: {
         Modal,
+        Multiselect,
+        JetLabel,
+        JetButton,
     },
 
     props: {
+        hour: null,
         details: {
             lesson: '',
-            hour: '',
-            lesson_time: '',
             lesson_id: '',
             userList: [],
         },
@@ -52,6 +93,9 @@ export default {
     },
 
     setup(props, {emit}) {
+        const displayUserList = ref(false);
+        const userList = ref([]);
+        const addedUsers = ref([]);
 
         const unsubscribe = (user) => {
             Swal.fire({
@@ -61,7 +105,7 @@ export default {
                 confirmButtonText: 'Confirmer',
                 confirmButtonColor: '#f87272',
                 title: 'Confirmer la désinscription ?',
-                text: `Vous êtes sur le point de désinscrire ${user.full_name} du cours "${props.details.lesson}" du ${props.details.hour}.`
+                text: `Vous êtes sur le point de désinscrire ${user.full_name} du cours "${props.details.lesson}" du ${props.hour.format('DD/MM/YYYY')}.`
             })
                 .then((response) => {
                     if (response.isConfirmed) {
@@ -69,7 +113,7 @@ export default {
                             user_id: user.id,
                             action: 'leave',
                             lesson_id: props.details.lesson_id,
-                            lesson_time: props.details.lesson_time,
+                            lesson_time: props.hour.tz('Europe/Paris').toISOString(),
                             by_admin: true,
                         })
                             .then((response) => {
@@ -98,8 +142,24 @@ export default {
             })
         }
 
+        const addUser = () => {
+            axios.post(route('users'), {
+                lesson_id: props.details.lesson_id,
+                hour: props.hour.toISOString()
+            })
+                .then(({data}) => {
+                    console.log(data)
+                    // displayUserList.value = true;
+                    // userList.value = data
+                });
+        }
+
         return {
             unsubscribe,
+            displayUserList,
+            userList,
+            addedUsers,
+            addUser,
             lock,
         }
     },
@@ -111,3 +171,22 @@ export default {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.multiselect-tags-search:focus {
+    outline: none;
+    --tw-ring-color: transparent;
+}
+.multiselect-tag {
+    padding: 5px 8px;
+    border-radius: 22px;
+    background: #35495e;
+    margin: 3px 3px 8px;
+
+    i:before {
+        color: #ffffff;
+        border-radius: 50%;
+    }
+}
+
+</style>
