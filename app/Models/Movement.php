@@ -10,6 +10,10 @@ class Movement extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id', 'lesson_id', 'action', 'lesson_time', 'by_admin',
+    ];
+
     public function lesson(): HasOne
     {
         return $this->hasOne(Lesson::class, 'id', 'lesson_id');

@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Lesson;
-use App\Models\Movement;
-use App\Models\User;
+use App\Models\{Lesson, Movement, User};
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
+use Inertia\{Inertia, Response};
 
 class AdminController
 {
@@ -28,6 +24,7 @@ class AdminController
             foreach($lesson->schedule as $schedule) {
                 if (isset($schedule['status']) && $schedule['status'] !== 'cancelled') {
                     $time = Carbon::parse($schedule['date']);
+                    // Check if locked or is holiday, add color if so.
                     $events[] = [
                         'title' => $lesson->title . ' (' . $this->listUsers($lesson->id, $time->format('Y-m-d H:i:s')) . ' personnes)',
                         'start' => $time->format('Y-m-d H:i:s'),
@@ -60,23 +57,22 @@ class AdminController
     {
         $lesson_id = $request->get('lesson_id');
         $hour = Carbon::parse($request->get('hour'));
-        dd($hour);
-        dd($hour->toDateTimeString());
 
         $users = User::query()
+            ->with(['movements' => function ($query) use ($lesson_id, $hour) {
+                // User hasn't already join THIS SPECIFIC lesson.
+                $query->whereNot([
+                    ['lesson_id', $lesson_id],
+                    ['lesson_time', $hour],
+                    ['action', 'join']
+                ]);
+            }])
             // User must be able to subscribe.
             ->whereNot('lesson_id', $lesson_id)
             ->whereHas('roles', function ($query) {
                 $query->whereIn('name', ['subscriber', 'substitute']);
             })
-            ->whereHas('movements', function ($query) use ($lesson_id, $hour) {
-                // User hasn't already join THIS SPECIFIC lesson.
-                $query->whereNot([
-                        ['lesson_id', $lesson_id],
-                        ['lesson_time', $hour],
-                        ['action', 'join']
-                    ]);
-            })
+
             // User isn't already in this lesson
 
             ->get(['id', 'firstname', 'lastname'])
@@ -90,17 +86,51 @@ class AdminController
         return response()->json($users);
     }
 
-    public function unsubscribe(Request $request): JsonResponse
+    public function subscribe(Request $request): RedirectResponse
     {
-        $movement = new Movement();
-        $movement->lesson_id = $request->get('lesson_id');
-        $movement->user_id = $request->get('user_id');
-        $movement->lesson_time = $request->get('lesson_time');
-        $movement->action = 'leave';
-        $movement->by_admin = true;
-        $movement->save();
+        foreach ($request->get('users') as $userId) {
+            Movement::create([
+                'user_id' => $userId,
+                'lesson_id' => $request->get('lesson'),
+                'lesson_time' => Carbon::parse($request->get('date')),
+                'action' => 'join',
+                'by_admin' => true,
+            ]);
+        }
 
-        return response()->json('ok');
+        return redirect()
+            ->route('admin.index')
+            ->with('success', count($request->get('users')) . ' utilisateur(s) inscrit(s) avec succès.');
+    }
+
+    public function unsubscribe(Request $request): RedirectResponse
+    {
+        Movement::create([
+            'user_id' => $request->get('user_id'),
+            'lesson_id' => $request->get('lesson'),
+            'lesson_time' => Carbon::parse($request->get('date')),
+            'action' => 'leave',
+            'by_admin' => true,
+        ]);
+
+        return redirect()
+            ->route('admin.index')
+            ->with('success', 'Membre désinscrit inscrit(s) avec succès.');
+    }
+
+    public function lock(Request $request)
+    {
+        Movement::create([
+            'user_id' => $request->user()->id,
+            'lesson_id' => $request->get('lesson'),
+            'lesson_time' => Carbon::parse($request->get('date')),
+            'action' => 'lock',
+            'by_admin' => true,
+        ]);
+
+        return redirect()
+            ->route('admin.index')
+            ->with('success', 'Le cours a été verrouillé avec succès.');
     }
 
     private function listUsers(int $lesson_id, string $hour, $loadInfos = false): Collection|int

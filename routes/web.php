@@ -40,6 +40,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::get('/admin/lesson/list', 'lessonList')->name('admin.lesson.list');
             Route::post('/admin/lesson/detail', 'details')->name('lesson.details');
             Route::post('/users', 'getUsers')->name('users');
+            Route::post('/admin/subscribe', 'subscribe')->name('admin.subscribe');
+            Route::post('/admin/unsubscribe', 'unsubscribe')->name('admin.unsubscribe');
+            Route::post('/admin/lock', 'lock')->name('admin.lock');
         });
 
         Route::controller(MovementController::class)->group(function() {
