@@ -36,10 +36,11 @@
                                 <popover-row
                                     v-for="attr in attributes"
                                     :key="attr.key"
-                                    :attribute="attr">
-                                <span class="text-base" :class="canSubscribe(attr, day)">
-                                    {{ attr.customData.lesson_title }}
-                                </span>
+                                    :attribute="attr"
+                                >
+                                    <span class="text-base" :class="canSubscribe(attr, day)">
+                                        {{ attr.customData.lesson_title }}
+                                    </span>
                                 </popover-row>
 
                                 <div v-html="recapSubscribe(attributes, day)"></div>

@@ -29,6 +29,7 @@ class LessonDateDisplayHandler
             $statuses = $schedule->groupBy('status');
 
             foreach ($statuses as $status => $date) {
+
                 $title = $lesson->title . match ($status) {
                     'cancelled' => ' - Annulé',
                     'recovery' => ' - Rattrapage',
@@ -39,10 +40,10 @@ class LessonDateDisplayHandler
 
                 // Set colors to distinguish
                 if ($lesson->id === $userLesson) {
-
                     $color = match ($status) {
                         'cancelled', 'leave' => 'red',
                         'recovery', 'ok' => 'blue',
+                        'join' => 'green',
                         default => '',
                     };
 

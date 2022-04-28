@@ -9,8 +9,6 @@ use Illuminate\Http\Client\Request;
 
 class MovementController extends Controller
 {
-    // TODO: Move main functions from SubscriptionController to here.
-
     public function flow(MovementRequest $request)
     {
         $fields = ['user_id', 'lesson_id', 'action'];

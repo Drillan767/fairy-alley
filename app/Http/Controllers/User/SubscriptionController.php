@@ -149,12 +149,12 @@ class SubscriptionController extends Controller
             return redirect()->back()->with('error', "Vous avez déjà indiqué votre $userAction à ce cours.");
         }
 
-        $movement = new Movement();
-        $movement->user_id = auth()->id();
-        $movement->action = $action;
-        $movement->lesson_id = $lesson->id;
-        $movement->lesson_time = $timestamp;
-        $movement->save();
+        Movement::create([
+            'user_id' => auth()->id(),
+            'action' => $action,
+            'lesson_id' => $lesson->id,
+            'lesson_time' => $timestamp,
+        ]);
 
         $message = $action === 'join'
             ? "Vous avez été inscrit au cours de \"$lesson->title\" avec succès."
