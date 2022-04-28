@@ -20,21 +20,24 @@ class AdminController
         $lessons = Lesson::all();
         $events = [];
         foreach ($lessons as $lesson) {
-
             foreach($lesson->schedule as $schedule) {
-                if (isset($schedule['status']) && $schedule['status'] !== 'cancelled') {
-                    $time = Carbon::parse($schedule['date']);
-                    // Check if locked or is holiday, add color if so.
-                    $events[] = [
-                        'title' => $lesson->title . ' (' . $this->listUsers($lesson->id, $time->format('Y-m-d H:i:s')) . ' personnes)',
-                        'start' => $time->format('Y-m-d H:i:s'),
-                        'end' => $time->addHour()->addMinutes(30)->format('Y-m-d H:i:s'),
-                        'extendedProps' => [
-                            'lesson_id' => $lesson->id,
-                            'hour' => $schedule['date'],
-                        ]
-                    ];
-                }
+                $time = Carbon::parse($schedule['date']);
+                // Check if locked or is holiday, add color if so.
+                $events[] = [
+                    'title' => $lesson->title . ' (' . $this->listUsers($lesson->id, $time->format('Y-m-d H:i:s')) . ' personnes)',
+                    'start' => $time->format('Y-m-d H:i:s'),
+                    'end' => $time->addHour()->addMinutes(30)->format('Y-m-d H:i:s'),
+                    'color' => match ($schedule['status']) {
+                        'cancelled' => 'red',
+                        'locked' => 'orange',
+                        default => '#3788d8',
+                    },
+                    'extendedProps' => [
+                        'status' => $schedule['status'],
+                        'lesson_id' => $lesson->id,
+                        'hour' => $schedule['date'],
+                    ]
+                ];
             }
         }
 
@@ -120,13 +123,23 @@ class AdminController
 
     public function lock(Request $request)
     {
-        Movement::create([
-            'user_id' => $request->user()->id,
-            'lesson_id' => $request->get('lesson'),
-            'lesson_time' => Carbon::parse($request->get('date')),
-            'action' => 'lock',
-            'by_admin' => true,
-        ]);
+        $date = Carbon::parse($request->get('date'));
+        $lock = $request->get('lock');
+
+        $lesson = Lesson::find($request->get('lesson'));
+        $schedule = $lesson->schedule;
+
+        foreach ($schedule as $i => $s) {
+            if ($date->format('Y-m-d H:i') === $s['date']) {
+                $schedule[$i] = [
+                    'date' => $s['date'],
+                    'status' => $lock ? 'locked' : 'ok',
+                ];
+            }
+        }
+
+        $lesson->schedule = $schedule;
+        $lesson->save();
 
         return redirect()
             ->route('admin.index')

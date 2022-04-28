@@ -84,6 +84,7 @@ export default {
                         lessonHour.value = hour
                         details.value = response.data
                         details.value.lesson_id = lessonProps.lesson_id
+                        details.value.status = lessonProps.status
                         showModal.value = true
                     })
             },

@@ -1,7 +1,10 @@
 <template>
     <modal :show="show" :closeable="true" @close="close" max-width="3xl">
         <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <h2 class="font-semibold text-center text-xl text-gray-800 leading-tight">{{ details.lesson }}</h2>
+            <h2 class="font-semibold text-center text-xl text-gray-800 leading-tight">
+                {{ details.lesson }}
+                <template v-if="details.status === 'locked'">(verrouillé)</template>
+            </h2>
             <div class="mt-4">
                 <h3 class="font-semibold text-lg text-gray-800 loading-tight">
                     Membres inscrits pour cette session ({{ details.userList.length }} personnes) :
@@ -65,7 +68,11 @@
                 <button @click.prevent="addUser" class="btn btn-sm btn-success">
                     Ajouter une personne
                 </button>
-                <button @click.prevent="lock" class="btn btn-sm btn-error">
+
+                <button @click.prevent="lock(false)" class="btn btn-sm btn-success" v-if="details.status === 'locked'">
+                    Déverrouiller le cours
+                </button>
+                <button @click.prevent="lock(true)" class="btn btn-sm btn-error" v-if="['ok', 'recovery'].includes(details.status)">
                     Verrouiller le cours
                 </button>
             </div>
@@ -99,6 +106,7 @@ export default {
         details: {
             lesson: '',
             lesson_id: '',
+            status: '',
             userList: [],
         },
         show: {
@@ -140,16 +148,21 @@ export default {
                 })
         }
 
-        const lock = () => {
+        const lock = (lockLesson) => {
+            const action = lockLesson ? 'verrouillage' : 'déverrouillage';
+            const verb = lockLesson ? 'verrouillé' : 'déverrouilé';
+            const consequences =  lockLesson
+                ? "la possibilité aux membres de s'inscrire de nouveau aux cours"
+                : "l'incapacité des membres à s'y inscrire par la suite.";
             Swal.fire({
                 icon: 'warning',
-                title: 'Confirmer le verrouillage du cours ?',
+                title: `Confirmer le ${action} du cours ?`,
                 showCancelButton: true,
                 confirmButtonText: 'Confirmer',
                 cancelButtonText: 'Annuler',
                 html: `
                 <p>Le cours "${props.details.lesson}" du ${props.hour.format('DD/MM/YYYY')} est sur le point d'être
-                verrouillé, ce qui engendrera l'incapacité des membres à s'y inscrire par la suite.<br />
+                ${verb}, ce qui engendrera ${consequences} <br />
                 Continuer ?</p>
                 `
             })
@@ -157,7 +170,8 @@ export default {
                     if (response.isConfirmed) {
                         Inertia.post(route('admin.lock'), {
                             lesson: props.details.lesson_id,
-                            date: toIsoDate(props.hour.toDate())
+                            date: toIsoDate(props.hour.toDate()),
+                            lock: lockLesson,
                         }, {
                             onSuccess: () => emit('close')
                         })
