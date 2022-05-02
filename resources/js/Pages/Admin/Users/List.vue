@@ -142,6 +142,9 @@ export default {
 
             if (searchTerm) {
                 vuegoodtable.value.globalSearchTerm = searchTerm;
+                // Not working.
+                const searchField = document.querySelector('input[id^="vgt-search"]');
+                searchField.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter'}));
             }
         });
 
@@ -220,7 +223,8 @@ export default {
             },
             {
                 label: 'Actions',
-                field: 'actions'
+                field: 'actions',
+                sortable: false,
             }
         ];
 

@@ -21,7 +21,7 @@ class FirstContactRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'firstname' => ['required', 'string'],
@@ -45,6 +45,9 @@ class FirstContactRequest extends FormRequest
             'sports' => ['nullable', 'string'],
             'objectives' => ['nullable', 'string'],
             'other_data' => ['nullable', 'string'],
+            'role' => auth()->check() && auth()->user()->hasRole('administrator')
+                ? ['required', 'string', 'exists:roles,name']
+                : ['prohibited'],
         ];
     }
 }

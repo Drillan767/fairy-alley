@@ -49,7 +49,6 @@ class UserController extends Controller
 
     public function show(User $utilisateur): Response
     {
-        // TODO: Limiter les rôles affichés à ce qui peut être sélectionnable, ie: presubscribed => subscriber, guest, substitute.
         $utilisateur->load('currentYearData.file', 'lesson', 'subscription', 'suggestions', 'firstContactData');
         $lessons = Lesson::all('id', 'title')->mapWithKeys(fn ($l) => [$l->id => $l->title]);
         $roles = config('roles');
@@ -70,6 +69,7 @@ class UserController extends Controller
         ]);
 
         $user = User::with('subscription', 'lesson')->find($validated['user']);
+
         if ($validated['lid'] !== $user->lesson_id) {
             $user->lesson_id = $validated['lid'];
             $user->save();

@@ -84,7 +84,7 @@
                                         <jet-input-error :message="form.errors.work" class="mt-2" />
                                     </div>
 
-                                    <div class="col-span-6 sm:col-span-4">
+                                    <div class="col-span-6 sm:col-span-2">
                                         <jet-label for="family_situation" value="Situation familiale" class="required" />
                                         <jet-select id="family_situation" :choices="familySituations" v-model="form.family_situation" />
                                         <jet-input-error :message="form.errors.family_situation" class="mt-2" />
@@ -94,6 +94,12 @@
                                         <jet-label for="nb_children" value="Nombre d'enfants à charge" />
                                         <jet-input id="nb_children" type="number" class="mt-1 block w-full" v-model="form.nb_children" />
                                         <jet-input-error :message="form.errors.nb_children" class="mt-2" />
+                                    </div>
+
+                                    <div class="col-span-6 sm:col-span-2">
+                                        <jet-label for="role" value="Rôle" class="required" />
+                                        <jet-select id="role" :choices="roles" v-model="form.role" />
+                                        <jet-input-error :message="form.errors.role" class="mt-2" />
                                     </div>
 
                                     <div class="col-span-6 mt-4">
@@ -174,7 +180,7 @@ export default {
         },
     },
 
-    setup(props) {
+    setup (props) {
         const form = useForm({
             firstname: '',
             lastname: '',
@@ -183,6 +189,7 @@ export default {
             phone: '',
             pro: '',
             work: '',
+            role: '',
             gender: '',
             nb_children: 0,
             family_situation: '',
@@ -218,10 +225,20 @@ export default {
             {label: 'Veuf / Veuve', value: 'Veuf / Veuve'},
         ]);
 
+        const roles = ref([
+            {label: 'Premier contact', value: 'first_contact'},
+            {label: 'Invité', value: 'guest'},
+            {label: 'Préinscrit', value: 'presubscribed'},
+            {label: 'Inscrit', value: 'subscriber'},
+            {label: 'Remplaçant', value: 'substitute'},
+            {label: 'Ancien / Archivé', value: 'archived'},
+        ]);
+
         return {
             form,
             familySituations,
             lessonList,
+            roles,
             submit,
         }
     }

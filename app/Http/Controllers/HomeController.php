@@ -18,7 +18,7 @@ class HomeController extends Controller
             ->orderBy('order')
             ->get();
 
-        $video = env('MEDIAS_URL') . '/videos/2%20-%20Exo%20de%20base%20Statique%203-2.AVI';
+        $video = env('MEDIAS_URL') . '/videos/1%20-%20Echauffement%201-Etirements%20Allong%C3%A9s%20Au%20Sol.m4v';
         return view($view, compact('services', 'video'));
     }
 

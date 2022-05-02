@@ -123,24 +123,32 @@ export default {
         const legends = ref([
             {
                 classes: 'circle blue',
-                text: 'Jour où vous avez un cours de prévu',
+                text: 'Cours de gym normal.',
             },
             {
-                classes: 'circle green',
-                text: 'Jour où vous avez annulé un cours pour en prendre un autre',
+                classes: 'circle blue empty',
+                text: 'Cours de gym annulé.',
+            },
+            {
+                classes: 'circle blue orange border',
+                text: 'Cours de gym disponible'
             },
             {
                 classes: 'circle gray',
                 text: 'Jour où des cours sont disponibles',
             },
             {
-                classes: 'circle red',
-                text: 'Cours annulés car férié ou manuellement par l\'administration',
+                classes: 'circle green',
+                text: 'Ateliers',
             },
             {
-                classes: 'circle red empty',
-                text: 'Cours que vous avez vous-même annulés',
+                classes: 'circle orange',
+                text: 'Conférences',
             },
+            {
+                classes: 'circle pink',
+                text: 'circle pink'
+            }
         ])
 
         onMounted(() => {

@@ -15,11 +15,7 @@
             </div>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
-                    <FullCalendar ref="fullCalendar" :options="calendarOptions">
-<!--                        <template v-slot:eventContent='arg' v-if="arg.view.type === 'timeGridWeek'">-->
-<!--                            <p>{{ arg.event.title }}</p>-->
-<!--                        </template>-->
-                    </FullCalendar>
+                    <FullCalendar ref="fullCalendar" :options="calendarOptions" />
                 </div>
             </div>
         </div>
@@ -67,11 +63,14 @@ export default {
         const calendarOptions = {
             plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
             initialView: 'timeGridWeek',
+            allDayText: 'Journée',
             locale: frLocale,
+            slotMaxTime: '23:00:00',
+            slotMinTime: '08:00:00',
+            displayEventTime: false,
+
             headerToolbar: {
                 left: 'prev,next today',
-                slotMaxTime: '23:00:00',
-                slotMinTime: '08:00:00',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
             },

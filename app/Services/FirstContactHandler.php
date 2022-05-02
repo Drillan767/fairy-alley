@@ -14,6 +14,7 @@ class FirstContactHandler
     public function store(FirstContactRequest $request)
     {
         $user = new User();
+
         foreach ($this->columns()['user'] as $field) {
             $user->$field = $request->get($field);
         }
@@ -23,9 +24,10 @@ class FirstContactHandler
         $user->lesson_id = $request->get('lesson');
 
         $user->save();
-        $user->assignRole('first_contact');
+        $user->assignRole($request->get('role') ?? 'first_contact');
 
         $firstContact = new FirstContact();
+
         foreach ($this->columns()['first_contact'] as $field) {
             $firstContact->$field = $request->get($field);
         }
@@ -41,6 +43,7 @@ class FirstContactHandler
         $user->subscription()->save($subscription);
 
         $yearData = new YearData();
+
         foreach (['health_issues', 'current_health_issues', 'medical_treatment'] as $hFields) {
             if ($request->get($hFields) !== null && $request->get($hFields) !== '') {
                 $yearData->health_data = $request->get($hFields) . "\n\n";
