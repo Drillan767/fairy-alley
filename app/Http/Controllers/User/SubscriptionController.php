@@ -41,6 +41,14 @@ class SubscriptionController extends Controller
                 ->get();
 
             $lessonDays = $displayHandler->calculate($user, $movements);
+            $lessonDays[] = [
+                'dates' => '2022-05-03',
+                'highlight' => [
+                    'color' => 'blue',
+                    'fillMode' => 'light'
+                ],
+                'order' => 1,
+            ];
         }
 
         return Inertia::render('User/Landing', compact('headlines', 'lessonDays', 'nextLessons'));
@@ -122,9 +130,13 @@ class SubscriptionController extends Controller
 
     public function movement(Request $request): RedirectResponse
     {
+        $lessonId = intval($request->get('lesson'));
         $action = $request->get('action');
+
         /** @var User $user */
         $user = $request->user();
+        $movements = $user->movements();
+
         $actionDate = Carbon::parse($request->get('date'));
         $lesson = $action === 'leave'
             ? $user->lesson
@@ -135,8 +147,7 @@ class SubscriptionController extends Controller
         $timestamp = $this->retrieveTimestamp($lesson->schedule, $actionDate);
 
         // Check if movement doesn't already exist.
-        $movementExists = Movement::query()
-            ->where([
+        $movementExists = $movements->where([
                 ['user_id', $user->id],
                 ['action', $action],
                 ['lesson_id', $lessonId ?? $lesson->id],
@@ -147,6 +158,22 @@ class SubscriptionController extends Controller
         if ($movementExists) {
             $userAction = $action === 'join' ? 'présence' : 'absence';
             return redirect()->back()->with('error', "Vous avez déjà indiqué votre $userAction à ce cours.");
+        }
+
+        // Check if user is already subscribed to this lesson and if they're supposed to be there.
+        if ($lessonId === $user->lesson_id) {
+            $lastRelatedMovement = $movements
+                ->where([
+                    ['action', 'leave'],
+                    ['lesson_id', $lessonId],
+                    ['lesson_time', $timestamp],
+                ])
+                ->latest()
+                ->first();
+
+            if (!$lastRelatedMovement) {
+                return redirect()->back()->with('error', 'Vous tentez de rejoindre un cours auquel vous êtes déjà inscrit(e).');
+            }
         }
 
         Movement::create([

@@ -20,7 +20,6 @@ class LessonDateDisplayHandler
         $userLesson = $user->lesson_id;
         $lessons = Lesson::with('movements')
             ->whereJsonContains('gender', $user->gender)
-            ->where('type', 'lesson')
             ->orderBy('title')
             ->get();
 
@@ -28,8 +27,14 @@ class LessonDateDisplayHandler
             $schedule = $this->handleMovements($lesson->schedule, $movements);
             $statuses = $schedule->groupBy('status');
 
-            foreach ($statuses as $status => $date) {
+            $color = match ($lesson->type) {
+                'lesson' => 'blue',
+                'conference' => 'orange',
+                'workshop' => 'green',
+                'private lesson' => 'pink',
+            };
 
+            foreach ($statuses as $status => $date) {
                 $title = $lesson->title . match ($status) {
                     'cancelled' => ' - Annulé',
                     'recovery' => ' - Rattrapage',
@@ -38,21 +43,19 @@ class LessonDateDisplayHandler
                     default => '',
                 };
 
-                // Set colors to distinguish
                 if ($lesson->id === $userLesson) {
-                    $color = match ($status) {
-                        'cancelled', 'leave' => 'red',
-                        'recovery', 'ok' => 'blue',
-                        'join' => 'green',
-                        default => '',
-                    };
-
+                    $highlight = [
+                        'color' => $color,
+                        'fillMode' => match ($status) {
+                            'cancelled', 'leave' => 'outline',
+                            'ok', 'recovery', 'join' => 'solid'
+                        },
+                    ];
                 } else {
-                    $color = match ($status) {
-                        'cancelled' => 'red',
-                        'join' => 'green',
-                        default => 'gray',
-                    };
+                    $highlight = [
+                        'color' => $color,
+                        'fillMode' => 'light',
+                    ];
                 }
 
                 if ($status === 'join') {
@@ -67,10 +70,7 @@ class LessonDateDisplayHandler
                     'popover' => [
                         'label' => $title
                     ],
-                    'highlight' => [
-                        'color' => $color,
-                        'fillMode' => $status === 'leave' ? 'outline' : 'solid',
-                    ],
+                    'highlight' => $highlight,
                     'customData' => [
                         'color' => $color,
                         'cancelled' => $status === 'cancelled',

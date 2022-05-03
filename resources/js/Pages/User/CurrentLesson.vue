@@ -130,12 +130,8 @@ export default {
                 text: 'Cours de gym annulé.',
             },
             {
-                classes: 'circle blue orange border',
+                classes: 'circle blue light',
                 text: 'Cours de gym disponible'
-            },
-            {
-                classes: 'circle gray',
-                text: 'Jour où des cours sont disponibles',
             },
             {
                 classes: 'circle green',
@@ -147,7 +143,7 @@ export default {
             },
             {
                 classes: 'circle pink',
-                text: 'circle pink'
+                text: 'Cours particuliers'
             }
         ])
 
@@ -278,6 +274,7 @@ export default {
         @apply bg-red-400;
     }
 }
+
 .legend {
     display: grid;
     grid-template-columns: 20px auto;
@@ -288,17 +285,23 @@ export default {
         width: 20px;
         border-radius: 50%;
 
-        &.green { @apply bg-green-600; }
-        &.blue { background-color: #3182ce; }
-        &.gray { background-color: #718096; }
-        &.red {
-            background-color: #e53e3e;
+        &.blue {
+            background-color: #3182ce;
 
             &.empty {
                 background-color: white;
-                border: solid 2px #e53e3e;
+                border: solid 2px #3182ce;
+            }
+
+            &.light {
+                background-color: #bee3f8;
             }
         }
+
+        &.gray { background-color: #718096; }
+        &.orange:not(.blue) { background-color: #d76605; }
+        &.green { @apply bg-green-600; }
+        &.pink { @apply bg-pink-500; }
     }
 }
 

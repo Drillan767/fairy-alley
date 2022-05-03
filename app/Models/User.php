@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
@@ -89,6 +90,7 @@ class User extends Authenticatable
         'role',
         'lesson_title',
         'available_replacements',
+        'should_change_password',
     ];
 
     public function yearDatas(): HasMany
@@ -163,11 +165,22 @@ class User extends Authenticatable
         return $this
                 ->movements()
                 ->where('action', 'leave')
+                ->whereRelation('lesson', 'type', '=', 'lesson')
                 ->count()
             -
             $this
                 ->movements()
                 ->where('action', 'join')
+                ->whereRelation('lesson', 'type', '=', 'lesson')
                 ->count();
+    }
+
+    public function getShouldChangePasswordAttribute(): bool
+    {
+        if (app()->environment() !== 'local') {
+            return Hash::check('password', $this->password);
+        }
+
+        return false;
     }
 }
