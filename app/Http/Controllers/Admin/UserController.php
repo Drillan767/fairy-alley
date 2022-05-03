@@ -16,6 +16,8 @@ use App\Services\FirstContactHandler;
 use App\Services\SubscriptionHandler;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -190,5 +192,12 @@ class UserController extends Controller
         }
 
         return redirect()->route('landing');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        DB::table('users')
+            ->where('id', $request->get('id'))
+            ->update(['password' => Hash::make('password')]);
     }
 }

@@ -176,8 +176,6 @@
 
                                     </div>
                                 </div>
-
-
                             </div>
                         </div>
                     </div>
@@ -232,8 +230,11 @@
                         </div>
                     </div>
 
-                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-5 mt-4 flex justify-end">
-                        <jet-button type="submit">
+                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-5 mt-4 flex justify-end gap-x-3">
+                        <jet-button @click.prevent="resetPassword" class="bg-red-500">
+                            Réinitialiser le mot de passe
+                        </jet-button>
+                        <jet-button type="submit" >
                             Enregistrer
                         </jet-button>
                     </div>
@@ -383,6 +384,35 @@ export default {
             }
         }
 
+        const resetPassword = () => {
+            Swal.fire({
+                icon: 'danger',
+                title: 'Réinitialiser le mot de passe ?',
+                showCancelButton: true,
+                cancelButtonText: 'Annuler',
+                confirmButtonText: 'Confirmer',
+                html: `<p>Vous vous apprêtez à réinitialiser le mot de passe de
+                ${props.currentUser.full_name} <br /> à sa valeur initiale ("<b>password</b>" sans guillemets). Confirmer ?</p>`
+            })
+                .then((response) => {
+                    if (response.isConfirmed) {
+                        axios.post(route('utilisateurs.reset-password'), {id: props.currentUser.id})
+                            .then(() => {
+                                Swal.fire({
+                                    icon: 'success',
+                                    toast: true,
+                                    position: 'top-end',
+                                    title: 'Service supprimé.',
+                                    text: 'Le mot de passe a été réinitialisé',
+                                    timerProgressBar: true,
+                                    showConfirmButton: false,
+                                    timer: 2000,
+                                })
+                            })
+                    }
+                })
+        }
+
         const availableServices = computed(() => {
             return props.services.map((s) => s.title);
         })
@@ -394,6 +424,7 @@ export default {
             availableServices,
             defaultServices,
             serviceSelected,
+            resetPassword,
             submit,
         }
     }

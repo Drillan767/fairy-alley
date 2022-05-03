@@ -176,7 +176,10 @@ export default {
                             icon: 'success',
                             toast: true,
                             title: 'Service supprimé.',
-                            text: 'Le service a bien été supprimée'
+                            text: 'Le service a bien été supprimée',
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            timer: 2000,
                         })
                     })
                 }

@@ -58,7 +58,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::controller(UserController::class)->group(function () {
             Route::get('/utilisateurs', 'index')->name('utilisateurs.index');
             Route::post('/change-lesson', 'changeLesson')->name('utilisateurs.change-lesson');
-
+            Route::post('/admin/reset-password', 'resetPassword')->name('utilisateurs.reset-password');
             Route::post('/change-role', 'changeRole')->name('utilisateurs.change-role');
             Route::post('/preinscription', 'subscribe')->name('utilisateurs.subscribe');
             Route::post('archive/{user}', 'archiveUser')->name('utilisateurs.archive');
