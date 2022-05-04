@@ -168,13 +168,13 @@ export default {
 
         const columns = [
             {
-                label: 'Prénom',
-                field: 'firstname',
+                label: 'Nom de famille',
+                field: 'lastname',
                 sortable: true,
             },
             {
-                label: 'Nom de famille',
-                field: 'lastname',
+                label: 'Prénom',
+                field: 'firstname',
                 sortable: true,
             },
             {

@@ -65,18 +65,21 @@
                 </p>
             </div>
             <div class="px-4 sm:text-center mt-12 md:mt-0">
-                <a href="{{ route('fc.create') }}"
-                    class="flex mx-auto mt-16 mr-4 text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg block sm:inline-block">
-                    Inscription au cours de gymnastique
-                </a>
+                <button
+                    class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg preview-modal">
+                    Aperçu d'une séance de gymnastique rééducative
+                </button>
+
                 <a href="#"
                     class="flex mx-auto mt-16 text-indigo-500 white border hover:bg-indigo-50 border-indigo-500 py-2 px-8 focus:outline-none rounded text-lg block sm:inline-block">
                     En savoir plus
                 </a>
-                <button
-                    class="flex mx-auto mt-10 text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg preview-modal">
-                    Aperçu d'une séance de gymnastique rééducative
-                </button>
+                <br />
+                <a href="{{ route('fc.create') }}"
+                   class="flex mx-auto mt-16 mr-4 text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg block sm:inline-block">
+                    Inscription au cours de gymnastique
+                </a>
+
             </div>
         </div>
     </div>
@@ -120,9 +123,9 @@
                         <img alt="testimonial" src="https://dummyimage.com/107x107"
                              class="w-12 h-12 rounded-full flex-shrink-0 object-cover object-center">
                         <span class="flex-grow flex flex-col pl-4">
-              <span class="title-font font-medium text-gray-900">Alper Kamu</span>
-              <span class="text-gray-500 text-sm">DESIGNER</span>
-            </span>
+                          <span class="title-font font-medium text-gray-900">Alper Kamu</span>
+                          <span class="text-gray-500 text-sm">DESIGNER</span>
+                        </span>
                     </a>
                 </div>
             </div>

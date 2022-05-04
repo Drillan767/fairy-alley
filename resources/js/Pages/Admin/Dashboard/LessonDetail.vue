@@ -254,11 +254,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.multiselect-tags-search:focus {
-    outline: none;
-    --tw-ring-color: transparent;
-}
+<style scoped lang="scss">
 .multiselect-tag {
     padding: 5px 8px;
     border-radius: 22px;
@@ -270,5 +266,4 @@ export default {
         border-radius: 50%;
     }
 }
-
 </style>

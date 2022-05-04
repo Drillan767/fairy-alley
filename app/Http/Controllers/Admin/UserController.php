@@ -53,11 +53,15 @@ class UserController extends Controller
     {
         $utilisateur->load('currentYearData.file', 'lesson', 'subscription', 'suggestions', 'firstContactData');
         $lessons = Lesson::all('id', 'title')->mapWithKeys(fn ($l) => [$l->id => $l->title]);
+        $services = Service::orderBy('title')
+            ->get(['id', 'title'])
+            ->map(fn ($service) => ['value' => $service->id, 'title' => $service->title]);
+
         $roles = config('roles');
 
         return Inertia::render('Admin/Users/Show', [
             'currentUser' => $utilisateur,
-            'services' => Service::orderBy('title')->get(['id', 'title']),
+            'services' => $services,
             'lessons' => $lessons,
             'roles' => $roles,
         ]);
@@ -130,8 +134,9 @@ class UserController extends Controller
 
         $utilisateur->save();
 
-        $suggestions = $request->get('suggestions');
-        $utilisateur->suggestions()->sync($suggestions);
+        if ($request->has('suggestions')) {
+            $utilisateur->suggestions()->sync($request->get('suggestions'));
+        }
 
         return redirect()->route('utilisateurs.index')->with('success', 'Utilisateur mis à jour avec succès.');
     }

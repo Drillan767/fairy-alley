@@ -113,22 +113,28 @@
 
                                 <div class="mt-4" v-if="['subscriber', 'substitute', 'administrator'].includes(currentUser.role)">
                                     <jet-label for="suggestions" value="Services suggérés" />
-                                    <smart-tagz
-                                        input-placeholder="Sélectionnez un service..."
-                                        autosuggest
-                                        @keypress.enter.prevent
-                                        @click.prevent
-                                        :sources="availableServices"
-                                        :default-tags="defaultServices"
-                                        :on-changed="serviceSelected"
+                                    <Multiselect
                                         v-model="form.suggestions"
-                                        :allow-duplicates="false"
-                                        :theme="{
-                                            primary: '#212A39FF',
-                                            background: '#fff',
-                                            tagTextColor: '#fff',
-                                        }"
-                                    />
+                                        mode="tags"
+                                        :close-on-select="false"
+                                        :options="services"
+                                        track-by="title"
+                                        label="title"
+                                        placeholder="Sélectionner..."
+                                        :searchable="true"
+                                    >
+                                        <template v-slot:tag="{ option, handleTagRemove, disabled }">
+                                            <div class="multiselect-tag">
+                                                {{ option.title }}
+                                                <span
+                                                    class="multiselect-tag-remove"
+                                                    @mousedown.prevent="handleTagRemove(option, $event)"
+                                                >
+                                                  <span class="multiselect-tag-remove-icon"></span>
+                                                </span>
+                                            </div>
+                                        </template>
+                                    </Multiselect>
                                 </div>
 
                                 <hr />
@@ -173,7 +179,6 @@
                                                 Choisir un cours
                                             </jet-button-secondary>
                                         </template>
-
                                     </div>
                                 </div>
                             </div>
@@ -253,8 +258,8 @@ import JetTextarea from '@/Jetstream/Textarea.vue';
 import JetLabel from '@/Jetstream/Label.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import { useForm } from "@inertiajs/inertia-vue3";
-import { SmartTagz } from "smart-tagz";
-import "smart-tagz/dist/smart-tagz.css";
+import Multiselect from '@vueform/multiselect';
+import '@vueform/multiselect/themes/default.scss';
 import {computed, toRaw, ref, onMounted} from "vue";
 import Swal from "sweetalert2";
 import {Inertia} from "@inertiajs/inertia";
@@ -282,8 +287,8 @@ export default {
         JetTextarea,
         JetLabel,
         JetInputError,
-        SmartTagz,
         JetButtonSecondary,
+        Multiselect
     },
 
     setup (props) {
@@ -303,18 +308,9 @@ export default {
             for (const key in props.roles) {
                 roleList.value[key] = props.roles[key].display;
             }
-        })
 
-        const serviceSelected = (items) => {
-            let serviceList = [];
-            const services = toRaw(props.services);
-            items.forEach((item) => {
-                const found = services.find((s) => s.title === item)?.id;
-                console.log(found)
-                if (found) serviceList.push(found)
-            })
-            form.suggestions = serviceList;
-        }
+            form.suggestions = props.currentUser.suggestions.map((s) => s.id)
+        })
 
         const defaultServices = computed(() => {
             if (props.currentUser.suggestions) {
@@ -413,20 +409,28 @@ export default {
                 })
         }
 
-        const availableServices = computed(() => {
-            return props.services.map((s) => s.title);
-        })
-
         return {
             form,
             changeLesson,
             changeRole,
-            availableServices,
             defaultServices,
-            serviceSelected,
             resetPassword,
             submit,
         }
     }
 }
 </script>
+
+<style scoped lang="scss">
+.multiselect-tag {
+    padding: 5px 8px;
+    border-radius: 22px;
+    background: #35495e;
+    margin: 3px 3px 8px;
+
+    i:before {
+        color: #ffffff;
+        border-radius: 50%;
+    }
+}
+</style>

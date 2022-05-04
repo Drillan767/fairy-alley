@@ -210,7 +210,7 @@ export default {
 
         const setupOccurrences = ref({
             nbOccurrences: 0,
-            occurrenceStartDate: ''//dayjs().format(''),
+            occurrenceStartDate: dayjs().set('hour', 8).set('minute', 0).set('second', 0).toDate()
         })
 
         const data = props.editing ? {
