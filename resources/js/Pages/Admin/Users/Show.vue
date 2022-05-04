@@ -398,7 +398,7 @@ export default {
                                     icon: 'success',
                                     toast: true,
                                     position: 'top-end',
-                                    title: 'Service supprimé.',
+                                    title: 'Succès.',
                                     text: 'Le mot de passe a été réinitialisé',
                                     timerProgressBar: true,
                                     showConfirmButton: false,

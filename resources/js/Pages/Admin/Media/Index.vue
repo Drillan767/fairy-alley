@@ -23,16 +23,16 @@
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
                             <div class="carousel">
-                                <div class="carousel__slide">
+                                <div class="carousel__slide" :class="type">
 
                                     <template v-for="file in files">
                                         <a :href="file.src" data-fancybox="gallery" v-if="type === 'photos'">
                                             <img :src="file.src" :alt="file.src">
+                                            <span class="text-center">{{ file.src.split(/[\\/]/).pop() }}</span>
                                         </a>
                                         <template v-if="type === 'videos'">
-                                            <div data-fancybox="dialog" data-src="#video-content" class="cursor-pointer w-1/5">
+                                            <div data-fancybox="dialog" data-src="#video-content" class="list">
                                                 <svg
-                                                    class="m-16"
                                                     viewBox="0 0 24 24"
                                                     fill="none"
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -54,9 +54,8 @@
                                         </template>
 
                                         <template v-if="type === 'musiques'">
-                                            <div data-fancybox="dialog" data-src="#music-content" class="cursor-pointer w-1/5">
+                                            <div data-fancybox="dialog" data-src="#music-content" class="list">
                                                 <svg
-                                                    class="m-16"
                                                     viewBox="0 0 24 24"
                                                     fill="none"
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -143,13 +142,35 @@ export default {
 
 <style lang="scss" scoped>
 .carousel__slide {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    width: 100%;
+    &.photos {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        width: 100%;
 
-    a {
-        width: 20%;
+        a {
+            width: 20%;
+        }
+    }
+
+    &.musiques, &.videos {
+        width: 100%;
+
+        .list {
+            display: flex;
+            cursor: pointer;
+            align-items: center;
+            margin-bottom: 5px;
+
+            &:hover {
+                @apply bg-gray-200;
+            }
+
+            svg {
+                margin-right: 10px;
+                height: 20px;
+            }
+        }
     }
 }
 </style>
