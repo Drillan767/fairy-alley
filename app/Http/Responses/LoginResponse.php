@@ -13,12 +13,12 @@ class LoginResponse implements LoginResponseContract
         $role = auth()->user()->getRoleNames()->first();
         switch ($role) {
             case 'administrator':
-                return redirect()->intended('/administration');
+                return redirect()->route('admin.index');
             case 'guest':
             case 'presubscribed':
             case 'subscriber':
             case 'substitute':
-                return redirect()->intended('/profil');
+                return redirect()->route('profile.index');
 
             default:
                 auth()->logout();

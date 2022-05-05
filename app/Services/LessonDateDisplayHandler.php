@@ -47,7 +47,7 @@ class LessonDateDisplayHandler
                     $highlight = [
                         'color' => $color,
                         'fillMode' => match ($status) {
-                            'cancelled', 'leave' => 'outline',
+                            'cancelled', 'leave', 'locked' => 'outline',
                             'ok', 'recovery', 'join' => 'solid'
                         },
                     ];
