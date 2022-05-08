@@ -21,6 +21,8 @@
                 <img class="rounded" :src="illustrationPreview" alt="illustration">
             </div>
 
+            <p class="center">{{ illustrationName }}</p>
+
             <jet-secondary-button class="mt-2 mr-2" type="button" @click.prevent="selectNewillustration">
                 Ajouter une illustration
             </jet-secondary-button>
@@ -106,6 +108,12 @@ export default {
         const form = useForm(data)
 
         const illustrationPreview = ref(null);
+        const illustrationName = ref('');
+
+        onMounted(() => {
+            illustrationName.value = form.illustration.split(/[\\/]/).pop()
+        })
+
         const slug = computed(() => {
             let str = form.title;
             str = str.replace(/^\s+|\s+$/g, ""); // trim
@@ -142,10 +150,12 @@ export default {
 
         function updateillustrationPreview () {
             const illustration = document.querySelector('input[type="file"].hidden').files[0];
+            console.log(illustration)
 
             if (! illustration) return;
 
             form.imgFile = illustration;
+            illustrationName.value = illustration.name
             this.illustrationPreview = URL.createObjectURL(illustration);
         }
 
@@ -153,6 +163,7 @@ export default {
             illustrationPreview,
             form,
             slug,
+            illustrationName,
             submit,
             selectNewillustration,
             updateillustrationPreview,

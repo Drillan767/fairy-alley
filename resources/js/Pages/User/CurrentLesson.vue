@@ -165,20 +165,10 @@ export default {
          * @returns {string}
          */
         const canSubscribe = (attribute, day) => {
-
-            const selectedDay = dayjs(toRaw(day.date));
             const customData = toRaw(attribute.customData);
             const { movements } = customData
 
-            let availableSlots = 0
-            movements.map((m) => {
-                if (dayjs(m.lesson_time).isSame(selectedDay, 'day')) {
-                    if (m.action === 'leave') availableSlots++;
-                    if (m.action === 'join') availableSlots--;
-                }
-            })
-
-            if (availableSlots > 0) {
+            if (availableSlots(movements, day) > 0) {
                 return successClass
             } else {
                 let classes = errorClass
@@ -188,6 +178,19 @@ export default {
                 return classes
             }
 
+        }
+
+        const availableSlots = (movements, day) => {
+            const selectedDay = dayjs(toRaw(day.date));
+            let nbSlots = 0;
+            movements.map((m) => {
+                if (dayjs(m.lesson_time).isSame(selectedDay, 'day')) {
+                    if (m.action === 'leave') nbSlots++;
+                    if (m.action === 'join') nbSlots--;
+                }
+            })
+
+            return nbSlots
         }
 
         const recapSubscribe = (attributes, day) => {
@@ -211,7 +214,7 @@ export default {
             const date = dayjs(day.id);
 
             if (date.isBefore(dayjs())) {
-                Swal.fire({
+                await Swal.fire({
                     icon: 'error',
                     title: 'Ce cours est déjà passé !',
                     timer: 3000,
@@ -224,6 +227,7 @@ export default {
                             id: attr.customData.lesson_id,
                             title: attr.customData.lesson_title,
                             subscribed: attr.customData.isSubscribed,
+                            nbSlots: availableSlots(attr.customData.movements, day)
                         })
                     }
                 })

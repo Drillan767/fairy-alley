@@ -14,6 +14,7 @@ const SwalWizard = Swal.mixin({
 
 const registerLesson = async (lessons, date, nbReplacements) => {
     if (lessons.length) {
+        console.log(lessons);
         const values = [];
         let currentStep;
 
@@ -106,7 +107,7 @@ const registerLesson = async (lessons, date, nbReplacements) => {
                     showCancelButton: currentStep > 0,
                     cancelButtonText: 'Annuler',
                     currentProgressStep: currentStep,
-                    html: generateRadioButton(lessons, 'lesson'),
+                    html: generateRadioButton(lessons.filter((l) => l.nbSlots > 0), 'lesson'),
                     preConfirm: () => {
                         const checked = Swal
                             .getPopup()

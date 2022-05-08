@@ -31,6 +31,10 @@ import Form from "./Form.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 
 export default {
+    title () {
+        return `Éditer "${this.page.title}"`
+    },
+
     props: {
         page: {
             type: Object,

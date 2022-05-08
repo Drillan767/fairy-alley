@@ -162,11 +162,12 @@ class SubscriptionController extends Controller
 
         // Check if user is already subscribed to this lesson and if they're supposed to be there.
         if ($lessonId === $user->lesson_id) {
-            $lastRelatedMovement = $movements
+            $lastRelatedMovement = Movement::query()
                 ->where([
+                    ['user_id', $user->id],
                     ['action', 'leave'],
                     ['lesson_id', $lessonId],
-                    ['lesson_time', $timestamp],
+                    ['lesson_time', '2022-05-16 19:15:00.0'],
                 ])
                 ->latest()
                 ->first();

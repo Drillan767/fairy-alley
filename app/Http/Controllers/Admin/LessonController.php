@@ -63,11 +63,6 @@ class LessonController extends Controller
         }
     }
 
-    public function users(Lesson $cours): Response
-    {
-        return Inertia::render('Admin/Lessons/Users', ['lesson' => $cours->load('users')]);
-    }
-
     private function handleLesson(Lesson $lesson, LessonRequest $request, bool $update = false)
     {
         $function = $update ? 'update' : 'create';
