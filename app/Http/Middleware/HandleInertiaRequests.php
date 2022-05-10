@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Settings;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -37,6 +38,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $settings = Settings::make(storage_path('app/settings.json'));
         $array = array_merge(parent::share($request), [
             'flash' => [
                 'message' => fn () => $request->session()->get('message'),
@@ -45,6 +47,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'logo' => env('MEDIAS_URL') . 'system/logo.png',
             'BASE_URL' => env('APP_URL'),
+            'settings' => $settings->all(),
             'status' => [
                 Subscription::PENDING           => 'En attente',
                 Subscription::VALIDATED         => 'Validé',

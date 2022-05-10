@@ -5,11 +5,13 @@ use App\Http\Controllers\Admin\FileController;
 use App\Http\Controllers\Admin\LessonController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\ToolsController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\FirstContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MovementController;
+use App\Http\Controllers\User\RenewalController;
 use App\Http\Controllers\User\SubscriptionController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +45,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::post('/admin/subscribe', 'subscribe')->name('admin.subscribe');
             Route::post('/admin/unsubscribe', 'unsubscribe')->name('admin.unsubscribe');
             Route::post('/admin/lock', 'lock')->name('admin.lock');
+        });
+
+        Route::controller(SettingsController::class)->group(function () {
+            Route::get('/parametres', 'edit')->name('settings.edit');
+            Route::post('/settings-renewal', 'renewal')->name('settings.renewal');
         });
 
         Route::controller(MovementController::class)->group(function() {
@@ -107,6 +114,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::post('/lesson-date', 'retrieveUserLessonDate')->name('user-lesson-date');
             Route::post('/movement', 'movement')->name('lesson-movement');
 
+        });
+
+        Route::controller(RenewalController::class)->group(function() {
+            Route::get('/réinscription', 'index')->name('renewal.index');
+            Route::post('/renewal', 'update')->name('renewal.update');
         });
     });
 });
