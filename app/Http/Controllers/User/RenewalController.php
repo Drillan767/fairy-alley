@@ -4,6 +4,10 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Lesson;
+use App\Models\Subscription;
+use App\Models\User;
+use App\Models\YearData;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class RenewalController extends Controller
@@ -22,10 +26,29 @@ class RenewalController extends Controller
         return Inertia::render('User/Renewal/Index', compact('lessons'));
     }
 
-    public function store()
+    public function update(Request $request)
     {
-        // Create both subscription and year data on submit
-        // Subscription contains the data for the upcoming year
+        /** @var User $user */
+        $user = $request->user();
 
+        $yearData = new YearData();
+        $yearData->user_id = $user->id;
+        $yearData->reply_transmitted_via = 'website';
+        $yearData->total = 0;
+        $yearData->last_year_class = $user->lesson->title;
+
+        foreach (['health_issues', 'current_health_issues', 'medical_treatment'] as $hFields) {
+            if ($request->get($hFields) !== null && $request->get($hFields) !== '') {
+                $yearData->health_data = $request->get($hFields) . "\n\n";
+            }
+        }
+
+        $yearData->save();
+
+        $user->resubscription_status = Subscription::PENDING;
+        $user->save();
+
+        return redirect()->back()->with('success', 'Votre réinscription a bien été enregistrée.
+        Vous pourrez suivre son avancement directement sur votre profil.');
     }
 }

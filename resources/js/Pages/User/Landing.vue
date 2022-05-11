@@ -29,12 +29,6 @@
                             <p>
                                 <span class="font-bold">Les réinscriptions commenceront dans {{ countDown }} jours.</span> Veuillez vous réinscrire avant le {{ renewalEnd.format('DD/MM/YYYY') }} dernier délai.
                             </p>
-                            <p>
-                                <a :href="route('renewal.index')" class="text-yellow-700 bg-transparent border border-yellow-700 hover:bg-yellow-800 hover:text-white focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-xs px-3 py-1.5 text-center dark:border-yellow-800 dark:text-yellow-800 dark:hover:text-white">
-                                    Réinscription
-                                </a>
-                            </p>
-
                         </div>
                     </div>
 
@@ -49,7 +43,6 @@
                                     Réinscription
                                 </a>
                             </p>
-
                         </div>
                     </div>
                     <CurrentLesson :lesson="user.lesson" :headlines="headlines" :lesson-days="lessonDays" :next-lessons="nextLessons" />

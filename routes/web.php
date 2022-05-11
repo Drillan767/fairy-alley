@@ -13,8 +13,10 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MovementController;
 use App\Http\Controllers\User\RenewalController;
 use App\Http\Controllers\User\SubscriptionController;
+use Carbon\Carbon;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Spatie\Valuestore\Valuestore;
 
 /*
 |--------------------------------------------------------------------------
@@ -116,10 +118,15 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
         });
 
-        Route::controller(RenewalController::class)->group(function() {
-            Route::get('/réinscription', 'index')->name('renewal.index');
-            Route::post('/renewal', 'update')->name('renewal.update');
-        });
+        $settings = Valuestore::make(storage_path('app/settings.json'));
+        $start = Carbon::parse($settings->get('subscription_start'));
+        $end = Carbon::parse($settings->get('subscription_end'));
+        if (($start->isToday() || $start->isPast()) && $end->isFuture()) {
+            Route::controller(RenewalController::class)->group(function() {
+                Route::get('/réinscription', 'index')->name('renewal.index');
+                Route::post('/renewal', 'update')->name('renewal.update');
+            });
+        }
     });
 });
 

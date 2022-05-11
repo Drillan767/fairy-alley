@@ -91,7 +91,7 @@ export default {
                 .then((response) => {
                     if (response.isConfirmed) {
                         form.post(route('settings.renewal'), {
-                            onSuccess: Swal.fire({
+                            onSuccess: () => Swal.fire({
                                 toast: true,
                                 icon: 'success',
                                 title: 'Paramètres sauvegardés',

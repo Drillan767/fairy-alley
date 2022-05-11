@@ -168,7 +168,7 @@ export default {
             const customData = toRaw(attribute.customData);
             const { movements } = customData
 
-            if (availableSlots(movements, day) > 0) {
+            if (availableSlots(movements, day) > 0 || customData.type !== 'lesson') {
                 return successClass
             } else {
                 let classes = errorClass
@@ -177,7 +177,6 @@ export default {
                 }
                 return classes
             }
-
         }
 
         const availableSlots = (movements, day) => {
@@ -226,6 +225,7 @@ export default {
                         lessons.push({
                             id: attr.customData.lesson_id,
                             title: attr.customData.lesson_title,
+                            type: attr.customData.type,
                             subscribed: attr.customData.isSubscribed,
                             nbSlots: availableSlots(attr.customData.movements, day)
                         })

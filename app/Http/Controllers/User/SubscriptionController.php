@@ -153,7 +153,8 @@ class SubscriptionController extends Controller
                 ['lesson_id', $lessonId ?? $lesson->id],
                 ['lesson_time', $timestamp]
             ])
-            ->count();
+            ->latest()
+            ->first();
 
         if ($movementExists) {
             $userAction = $action === 'join' ? 'présence' : 'absence';

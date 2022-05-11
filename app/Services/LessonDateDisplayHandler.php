@@ -17,6 +17,7 @@ class LessonDateDisplayHandler
     public function calculate(Authenticatable $user, $movements): array
     {
         $attributes = [];
+        /** @var User $user */
         $userLesson = $user->lesson_id;
         $lessons = Lesson::with('movements')
             ->whereJsonContains('gender', $user->gender)
@@ -43,7 +44,7 @@ class LessonDateDisplayHandler
                     default => '',
                 };
 
-                if ($lesson->id === $userLesson) {
+                if ($lesson->id === $userLesson || ( $lesson->type !== 'lesson' && $user->movements()->where('lesson_id')->exists()) ) {
                     $highlight = [
                         'color' => $color,
                         'fillMode' => match ($status) {
@@ -78,6 +79,7 @@ class LessonDateDisplayHandler
                         'lesson_id' => $lesson->id,
                         'lesson_title' => $title,
                         'movements' => $lesson->movements,
+                        'type' => $lesson->type,
                     ],
                     'dates' => $date
                         ->filter(fn($s) => Carbon::parse($s['date']) > now())
