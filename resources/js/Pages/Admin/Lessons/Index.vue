@@ -26,12 +26,22 @@
                             <table class="min-w-max w-full table-auto">
                                 <thead>
                                 <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                                    <th class="py-3 px-6 text-left">Période</th>
                                     <th class="py-3 px-6 text-left">Titre</th>
                                     <th class="py-3 px-6 text-center">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody class="text-gray-600 text-sm font-light">
-                                <tr class="border-b border-gray-200 hover:bg-gray-100" v-for="(lesson, i) in lessonList" :key="i">
+                                <tr class="border-b border-gray-200 hover:bg-gray-100"
+                                    :class="[`bg-${parseInt(lesson.year.slice(-1)) % 2 === 0 ? 'amber' : 'cyan'}-200`]"
+                                    v-for="(lesson, i) in lessonList"
+                                    :key="i"
+                                >
+                                    <td class="py-3 px-6 text-left whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <span class="font-medium">{{ lesson.year }}</span>
+                                        </div>
+                                    </td>
                                     <td class="py-3 px-6 text-left whitespace-nowrap">
                                         <div class="flex items-center">
                                             <span class="font-medium">{{ lesson.title }}</span>

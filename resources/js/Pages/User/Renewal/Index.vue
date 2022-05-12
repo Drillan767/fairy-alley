@@ -1,5 +1,5 @@
 <template>
-    <admin-layout title="Utilisateurs en cours d'inscription">
+    <user-layout title="Utilisateurs en cours d'inscription">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
                 Renouveler votre abonnement
@@ -62,7 +62,7 @@
                 </div>
             </div>
         </div>
-    </admin-layout>
+    </user-layout>
 </template>
 
 <script>
@@ -71,7 +71,7 @@ import JetButton from '@/Jetstream/Button.vue';
 import JetLabel from '@/Jetstream/Label.vue';
 import JetTextarea from '@/Jetstream/Textarea.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
-import AdminLayout from "@/Layouts/AdminLayout.vue";
+import UserLayout from "@/Layouts/UserLayout.vue";
 import JetSelect from '@/Jetstream/Select.vue';
 import {useForm} from "@inertiajs/inertia-vue3";
 import Swal from "sweetalert2";
@@ -88,7 +88,7 @@ export default {
     },
 
     components: {
-        AdminLayout,
+        UserLayout,
         JetInput,
         JetLabel,
         JetInputError,
