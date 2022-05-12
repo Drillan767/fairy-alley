@@ -32,8 +32,9 @@
                                 </tr>
                                 </thead>
                                 <tbody class="text-gray-600 text-sm font-light">
-                                <tr class="border-b border-gray-200 hover:bg-gray-100"
-                                    :class="[`bg-${parseInt(lesson.year.slice(-1)) % 2 === 0 ? 'amber' : 'cyan'}-200`]"
+                                <tr
+                                    class="border-b border-gray-200 hover:bg-gray-100"
+                                    :class="[parseInt(lesson.year.slice(-1)) % 2 === 0 ? 'bg-green-100' : 'bg-blue-100']"
                                     v-for="(lesson, i) in lessonList"
                                     :key="i"
                                 >
