@@ -168,7 +168,7 @@ class SubscriptionController extends Controller
                     ['user_id', $user->id],
                     ['action', 'leave'],
                     ['lesson_id', $lessonId],
-                    ['lesson_time', $actionDate],
+                    ['lesson_time', Carbon::parse($timestamp)],
                 ])
                 ->latest()
                 ->first();
