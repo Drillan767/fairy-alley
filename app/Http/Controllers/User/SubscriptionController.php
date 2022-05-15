@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
 use Illuminate\Support\Facades\Storage;
 use Inertia\{Inertia, Response};
+use Spatie\Valuestore\Valuestore;
 
 class SubscriptionController extends Controller
 {
@@ -22,12 +23,17 @@ class SubscriptionController extends Controller
     {
         /** @var User $user */
         $user = auth()->user();
-
+        $settings = Valuestore::make(storage_path('app/settings.json'));
         $lessonDays = [];
         $nextLessons = [];
 
         $headlines = collect(config('lesson.headlines'))->firstWhere('status_id', $user->subscription->status);
 
+        if (now()->between(Carbon::parse($settings->get('subscription_start')), Carbon::parse($settings->get('subscription_end')))) {
+            $renewalStatus = collect(config('lesson.renewal'))->firstWhere('status', $user->resubscription_status);
+        } else {
+            $renewalStatus = [];
+        }
 
         if ($user->hasAnyRole('subscriber', 'guest', 'substitute')) {
             $user->load('suggestions.thumbnail', 'suggestions.page', 'lesson');
@@ -41,17 +47,11 @@ class SubscriptionController extends Controller
                 ->get();
 
             $lessonDays = $displayHandler->calculate($user, $movements);
-            $lessonDays[] = [
-                'dates' => '2022-05-03',
-                'highlight' => [
-                    'color' => 'blue',
-                    'fillMode' => 'light'
-                ],
-                'order' => 1,
-            ];
         }
 
-        return Inertia::render('User/Landing', compact('headlines', 'lessonDays', 'nextLessons'));
+        return Inertia::render(
+            'User/Landing',
+            compact('headlines', 'lessonDays', 'nextLessons', 'renewalStatus'));
     }
 
     public function create(Lesson $lesson): Response|RedirectResponse

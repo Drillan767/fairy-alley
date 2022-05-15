@@ -67,7 +67,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function changeLesson(Request $request)
+    public function changeLesson(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'user' => ['required', 'exists:users,id'],
@@ -85,6 +85,9 @@ class UserController extends Controller
 
             return redirect()->back()->with('success', 'Le cours a bien été changé.');
         }
+        else {
+            return redirect()->back()->with('error', 'Le cours sélectionné est le même que celui en cours.');
+        }
     }
 
     public function changeRole(Request $request): RedirectResponse
@@ -101,7 +104,7 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Le statut de la personne a bien été changé.');
     }
 
-    public function edit(User $utilisateur)
+    public function edit(User $utilisateur): Response
     {
         return Inertia::render(
             'Admin/Users/Edit',
@@ -111,7 +114,7 @@ class UserController extends Controller
         );
     }
 
-    public function update(UserUpdateRequest $request, User $utilisateur)
+    public function update(UserUpdateRequest $request, User $utilisateur): RedirectResponse
     {
         $fields = [
             'firstname',
@@ -204,5 +207,15 @@ class UserController extends Controller
         DB::table('users')
             ->where('id', $request->get('id'))
             ->update(['password' => Hash::make('password')]);
+    }
+
+    public function renewal(User $user)
+    {
+
+    }
+
+    public function storeRenewal(Request $request)
+    {
+        dd($request);
     }
 }

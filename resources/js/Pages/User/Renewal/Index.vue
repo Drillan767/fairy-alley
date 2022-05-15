@@ -27,19 +27,19 @@
                                         </div>
 
                                         <div class="mt-4">
-                                            <jet-label value="Date du dernier certificat médical d’aptitude pour la gymnastique"/>
+                                            <jet-label value="Avez-vous (ou avez-vous eu) des pb de santé / des pb de dos ou des membres etc. ?"/>
                                             <jet-textarea class="w-full" v-model="form.health_issues" />
                                             <jet-input-error :message="form.errors.health_issues" class="mt-2" />
                                         </div>
 
                                         <div class="mt-4">
-                                            <jet-label value="Avez-vous (ou avez-vous eu) des pb de santé / des pb de dos ou des membres etc. ?"/>
+                                            <jet-label value="Date du dernier certificat médical d’aptitude pour la gymnastique"/>
                                             <jet-textarea class="w-full" v-model="form.current_health_issues" />
                                             <jet-input-error :message="form.errors.current_health_issues" class="mt-2" />
                                         </div>
 
                                         <div class="mt-4">
-                                            <jet-label value="Date du dernier certificat médical d’aptitude pour la gymnastique"/>
+                                            <jet-label value="Suivez-vous un traitement médical ? Si oui lequel ?"/>
                                             <jet-textarea class="w-full" v-model="form.medical_treatment" />
                                             <jet-input-error :message="form.errors.medical_treatment" class="mt-2" />
                                         </div>

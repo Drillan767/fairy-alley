@@ -7,6 +7,7 @@ use App\Models\Lesson;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Models\YearData;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -26,7 +27,7 @@ class RenewalController extends Controller
         return Inertia::render('User/Renewal/Index', compact('lessons'));
     }
 
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
         /** @var User $user */
         $user = $request->user();
@@ -48,7 +49,7 @@ class RenewalController extends Controller
         $user->resubscription_status = Subscription::PENDING;
         $user->save();
 
-        return redirect()->back()->with('success', 'Votre réinscription a bien été enregistrée.
+        return redirect()->route('profile.index')->with('success', 'Votre réinscription a bien été enregistrée.
         Vous pourrez suivre son avancement directement sur votre profil.');
     }
 }

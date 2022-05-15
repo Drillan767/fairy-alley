@@ -55,4 +55,31 @@ return [
             'subtitle' => "La fin d'année est là, il est temps de renouveler votre présence pour l'année prochaine si vous le souhaitez !",
         ],
     ],
+
+    'renewal' => [
+        [
+            'status' => 1,
+            'title' => 'Votre demande de réinscription a bien été prise en compte, elle sera traitée dans les plus brefs délais.',
+            'color' => 'yellow',
+            'showEdit' => false,
+        ],
+        [
+            'status' => 2,
+            'title' => 'Vous êtes réinscrit(e) pour l\'année prochaine.',
+            'color' => 'green',
+            'showEdit' => false,
+        ],
+        [
+            'status' => 3,
+            'title' => 'Des documents sont manquants, veuillez modifier votre demande de réinscription.',
+            'color' => 'orange',
+            'showEdit' => true,
+        ],
+        [
+            'status' => 4,
+            'title' => 'Le paiement est manquant, veuillez vous en occuper sous les plus brefs délais.',
+            'color' => 'orange',
+            'showEdit' => false,
+        ]
+    ]
 ];

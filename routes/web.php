@@ -74,6 +74,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::get('/preinscriptions', 'preSubscribed')->name('utilisateurs.presubscribed');
             Route::get('/preinscription/{user}/editer', 'subscribing')->name('utilisateurs.subscribing');
             Route::put('/preinscription/{user}', 'updateSubscription')->name('utilisateurs.updateSubscription');
+            Route::get('/réinscription/{user}', 'renewal')->name('utilisateur.renewal.show');
+            Route::post('/store-renewal', 'storeRenewal')->name('utilisateur.renewal.store');
         });
 
         Route::controller(FileController::class)->prefix('/media')->group(function () {
