@@ -18,7 +18,7 @@ class RenewalController extends Controller
         $lessons = Lesson::query()
             ->whereJsonContains('gender', auth()->user()->gender)
             ->where('type', 'lesson')
-            ->where('year', now()->get('year') . ' - ' . now()->addYear()->get('year'))
+            ->where('year', now()->year . ' - ' . now()->addYear()->year)
             ->orderBy('title')
             ->get(['id', 'title'])
             ->map(fn ($lesson) => ['value' => $lesson->id, 'label' => $lesson->title])
@@ -45,6 +45,12 @@ class RenewalController extends Controller
         }
 
         $yearData->save();
+
+        $subscription = new Subscription();
+        $subscription->user_id = auth()->id();
+        $subscription->lesson_id = $request->get('lesson_id');
+        $subscription->status = Subscription::SUBSCRIPTION_OVER;
+        $subscription->save();
 
         $user->resubscription_status = Subscription::PENDING;
         $user->save();

@@ -105,7 +105,7 @@ class User extends Authenticatable
 
     public function subscription(): HasOne
     {
-        return $this->hasOne(Subscription::class);
+        return $this->hasOne(Subscription::class)->whereNot('status', Subscription::SUBSCRIPTION_OVER);
     }
 
     public function firstContactData(): HasOne

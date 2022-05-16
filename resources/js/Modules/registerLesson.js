@@ -1,5 +1,4 @@
 import Swal from "sweetalert2";
-import axios from 'axios';
 import dayjs from 'dayjs';
 
 const steps = ['1', '2', '3'];
@@ -17,20 +16,23 @@ const registerLesson = async (lessons, date, nbReplacements) => {
         const values = [];
         let currentStep;
         const subscribableLessons = lessons.filter((l) => l.type !== 'lesson').length > 0
+        console.log(nbReplacements)
 
         for (currentStep = 0; currentStep < steps.length;) {
             let result = null;
             if (parseInt(steps[currentStep]) === 1) {
-                const options = [
-                    {
+                let options = [{
+                    id: 'leave',
+                    title: 'Annuler ma présence au cours de cette date',
+                }];
+
+                if (nbReplacements > 0) {
+                    options.unshift({
                         id: 'join',
                         title: "M'inscrire à un cours"
-                    },
-                    {
-                        id: 'leave',
-                        title: 'Annuler ma présence au cours de cette date',
-                    },
-                ]
+                    })
+                }
+
                 result = await SwalWizard.fire({
                     icon: 'question',
                     title: 'Que voulez-vous faire ?',
@@ -194,6 +196,10 @@ const generateRadioButton = (lessons, name) => {
         input.setAttribute('name', name);
         input.setAttribute('type', 'radio');
         input.setAttribute('value', lessons[key].id);
+
+        if (lessons.length === 1) {
+            input.setAttribute('checked', 'checked')
+        }
 
         let label = document.createElement('label');
         label.setAttribute('for', `radio-${lessons[key].id}`);

@@ -232,7 +232,7 @@ export default {
                     }
                 })
 
-                const result = await registerLesson(lessons, day, toRaw(availableReplacements))
+                const result = await registerLesson(lessons, day, toRaw(availableReplacements.value))
 
                 if (result) {
                     let payload = {};

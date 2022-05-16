@@ -12,6 +12,7 @@ use App\Models\Lesson;
 use App\Models\Service;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Models\YearData;
 use App\Services\FirstContactHandler;
 use App\Services\SubscriptionHandler;
 use Illuminate\Http\RedirectResponse;
@@ -209,9 +210,25 @@ class UserController extends Controller
             ->update(['password' => Hash::make('password')]);
     }
 
-    public function renewal(User $user)
+    public function renewal(User $user): Response
     {
+        $subscription = Subscription::where([
+            ['status', Subscription::SUBSCRIPTION_OVER],
+            ['user_id', $user->id],
+        ])->first();
 
+        $lessons = Lesson::query()
+            ->where('year', now()->year . ' - ' . now()->addYear()->year)
+            ->orderBy('title')
+            ->get(['id', 'title'])
+            ->map(fn ($lesson) => ['label' => $lesson->title, 'value' => $lesson->id]);
+
+        $user->load('currentYearData', 'subscription');
+        return Inertia::render('Admin/Users/Renewal', [
+            'currentUser' => $user,
+            'lessons' => $lessons,
+            'subscription' => $subscription,
+        ]);
     }
 
     public function storeRenewal(Request $request)
