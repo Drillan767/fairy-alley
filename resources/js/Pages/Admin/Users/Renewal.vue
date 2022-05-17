@@ -46,6 +46,11 @@
                                         <jet-input-error :message="form.errors.renewal_status" class="mt-2" />
                                     </div>
                                 </div>
+                                <div class="flex justify-end">
+                                    <jet-button>
+                                        Enregistrer
+                                    </jet-button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -95,6 +100,7 @@ export default {
 
     setup (props) {
         const form = useForm({
+            user_id: props.currentUser.id,
             lesson_id: 0,
             renewal_status: 0,
             yearly_health_data: '',
@@ -102,9 +108,9 @@ export default {
 
         const renewalStatuses = ref([
             {label: 'Réinscription en cours', value: 1},
-            {label: 'Réinscription validée', value: 2},
             {label: 'Documents manquants (certificat, etc)', value: 3},
             {label: 'Paiement manquant', value: 4},
+            {label: 'Réinscription validée', value: 2},
         ])
 
         onMounted(() => {
@@ -113,10 +119,14 @@ export default {
             form.yearly_health_data = props.currentUser.current_year_data.health_data
         })
 
+        const submit = () => {
+            form.post(route('utilisateur.renewal.store'))
+        }
 
         return {
             renewalStatuses,
-            form
+            form,
+            submit,
         }
     }
 }

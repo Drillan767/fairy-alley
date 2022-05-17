@@ -5,6 +5,9 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionRequest;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 use App\Models\{Lesson, Movement, User};
 use App\Services\{LessonDateDisplayHandler, SubscriptionHandler};
 use Carbon\Carbon;
@@ -252,5 +255,25 @@ class SubscriptionController extends Controller
                 return $r;
             })
             ->values();
+    }
+
+    public function swalUpdatePassword(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => [
+                'required', 'confirmed', Password::min(8)->letters()->mixedCase()->uncompromised()
+            ]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->first(), 422);
+        }
+        else {
+            $user = $request->user();
+            $user->password = Hash::make($request->get('password'));
+            $user->save();
+
+            return response()->json('ok');
+        }
     }
 }

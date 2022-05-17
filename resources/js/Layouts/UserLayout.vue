@@ -133,6 +133,8 @@ import JetDropdownLink from '@/Jetstream/DropdownLink.vue'
 import JetNavLink from '@/Jetstream/NavLink.vue'
 import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink.vue'
 import { Head, Link } from '@inertiajs/inertia-vue3';
+import Swal from "sweetalert2";
+import axios from "axios";
 
 export default {
     props: {
@@ -153,6 +155,67 @@ export default {
     data() {
         return {
             showingNavigationDropdown: false,
+        }
+    },
+
+    mounted() {
+        const user = this.$inertia.page.props.user;
+
+        if (user.weak_password) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Veuillez changer votre mot de passe',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showLoaderOnConfirm: true,
+                html:
+                `
+                    <div class="text-left">
+                        <div>
+                            <label for="swal-input1" class="text-sm ml-10">Nouveau mot de passe</label>
+                            <input type="password" placeholder="Nouveau mot de passe" id="swal-input1" class="swal2-input">
+                        </div>
+                        <div class="mt-4">
+                            <label for="swal-input2" class="text-sm ml-10">Répéter le mot de passe</label>
+                            <input type="password" id="swal-input2" placeholder="Répéter le mot de passe" class="swal2-input">
+                        </div>
+
+                        <p class="text-sm mt-6">
+                            Le mot de passe doit avoir au moins 8 caractères, un chiffre et une lettre en majuscule.
+                            Les caractères spéciaux sont autorisés mais non requis.
+                        </p>
+                    </div>
+
+                `,
+                confirmButtonText: 'Enregistrer',
+                preConfirm: () => {
+                    const password = Swal
+                        .getPopup()
+                        .querySelector('[id="swal-input1"]').value;
+
+                    const confirmedPassword = Swal
+                        .getPopup()
+                        .querySelector('[id="swal-input2"]').value;
+
+                    if (!password || !confirmedPassword) {
+                        Swal.showValidationMessage(`Les deux champs sont requis`)
+                    }
+
+                    return axios
+                        .post(route('change.password'), {password: password, password_confirmation: confirmedPassword})
+                        .catch((error) => {
+                            Swal.showValidationMessage(error.response.data)
+                        })
+                }
+            })
+                .then(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Mot de passe modifié.',
+                        timer: 3000,
+                        text: 'Mot de passe modifié avec succès !'
+                    })
+                })
         }
     },
 

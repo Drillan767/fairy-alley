@@ -231,8 +231,12 @@ class UserController extends Controller
         ]);
     }
 
-    public function storeRenewal(Request $request)
+    public function storeRenewal(Request $request): RedirectResponse
     {
-        dd($request);
+        $user = User::find($request->get('user_id'));
+        $user->resubscription_status = $request->get('renewal_status');
+        $user->save();
+
+        return redirect()->route('utilisateurs.index')->with('success', "Réinscription de l'utilisateur mise à jour avec succès.");
     }
 }

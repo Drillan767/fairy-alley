@@ -90,7 +90,7 @@ class User extends Authenticatable
         'role',
         'lesson_title',
         'available_replacements',
-        'should_change_password',
+        'weak_password',
     ];
 
     public function yearDatas(): HasMany
@@ -175,12 +175,8 @@ class User extends Authenticatable
                 ->count();
     }
 
-    public function getShouldChangePasswordAttribute(): bool
+    public function getWeakPasswordAttribute(): bool
     {
-        if (app()->environment() !== 'local') {
-            return Hash::check('password', $this->password);
-        }
-
-        return false;
+        return Hash::check('password', $this->password);
     }
 }

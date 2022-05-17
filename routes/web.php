@@ -117,7 +117,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::put('/subscription', 'update')->name('subscription.update');
             Route::post('/lesson-date', 'retrieveUserLessonDate')->name('user-lesson-date');
             Route::post('/movement', 'movement')->name('lesson-movement');
-
+            Route::post('/user/change-password', 'swalUpdatePassword')->name('change.password');
         });
 
         $settings = Valuestore::make(storage_path('app/settings.json'));
