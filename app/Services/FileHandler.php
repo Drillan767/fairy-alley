@@ -2,9 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Media;
-use App\Models\Service;
-use App\Models\YearData;
+use App\Models\{Media, Service, YearData};
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
@@ -66,7 +64,7 @@ class FileHandler
             }
 
             Storage::disk('s3')->put($path, $img);
-            Storage::disk('local')->delete($path);
+            Storage::disk('local')->deleteDirectory('tmp');
         }
     }
 }

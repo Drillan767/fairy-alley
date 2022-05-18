@@ -16,7 +16,16 @@
                         </svg>
                         <p class="ml-5">{{ flash.success }}</p>
                     </div>
-                    <div class="flex justify-end mb-5">
+                    <div class="flex items-center justify-end mb-5 gap-5">
+                        <div class="w-1/6">
+                            <jet-select
+                                :choices="yearsList"
+                                placeholder="Choisir une année"
+                                v-model="selectedYear"
+                                @change="changeYear"
+                            />
+                        </div>
+
                         <a :href="route('utilisateurs.create')" class="btn btn-primary">
                             Nouvel utilisateur
                         </a>
@@ -87,11 +96,13 @@
 
 <script>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
+import JetSelect from '@/Jetstream/Select.vue';
 import { Link } from '@inertiajs/inertia-vue3';
-import 'vue-good-table-next/dist/vue-good-table-next.css'
+import 'vue-good-table-next/dist/vue-good-table-next.css';
 import { VueGoodTable } from 'vue-good-table-next';
 import {computed, onMounted, ref, toRaw} from "vue";
 import Swal from "sweetalert2";
+import dayjs from "dayjs";
 
 export default {
     title: 'Tous les utilisateurs',
@@ -99,6 +110,7 @@ export default {
         AdminLayout,
         Link,
         VueGoodTable,
+        JetSelect,
     },
 
     props: {
@@ -130,6 +142,37 @@ export default {
 
             return list;
         })
+
+        const currentYear = computed(() => {
+            const date = dayjs();
+
+            // Check if after september
+            if (date.month() >= 8) {
+                return `${date.year()} - ${date.add(1, 'year').year()}`
+            } else {
+                return `${date.subtract(1, 'year').year()} - ${date.year()}`;
+            }
+        })
+        const selectedYear = ref(currentYear.value);
+
+        const yearsList = computed(() => {
+            let years = [];
+            props.lessons.forEach((lesson) => {
+                if (!years.find((y) => y.value === lesson.year)) {
+                    years.push({label: lesson.year, value: lesson.year})
+                }
+            });
+
+            return years;
+        })
+
+        const changeYear = () => {
+            const selectedLesson = props.lessons
+                .filter((l) => l.year === selectedYear.value)
+                .map((l) => l.id);
+
+            userList.value = props.users.filter((u) => selectedLesson.includes(u.lesson_id))
+        }
 
         const searchOptions = {
             enabled: true,
@@ -301,6 +344,10 @@ export default {
             lessonList,
             columns,
             vuegoodtable,
+            yearsList,
+            currentYear,
+            selectedYear,
+            changeYear
         }
     }
 }

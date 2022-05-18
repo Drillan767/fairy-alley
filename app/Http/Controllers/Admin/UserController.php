@@ -31,8 +31,17 @@ class UserController extends Controller
     public function index(): Response
     {
         $roles = config('roles');
-        $lessons = Lesson::orderBy('title')->get(['id', 'title']);
-        $users = User::with('subscription.lesson')->get();
+        $lessons = Lesson::orderBy('title')->get(['id', 'title', 'year']);
+        $users = User::with('subscription.lesson')->get([
+            'id',
+            'firstname',
+            'lastname',
+            'email',
+            'phone',
+            'pro',
+            'resubscription_status',
+            'lesson_id'
+        ]);
 
         return Inertia::render('Admin/Users/List', compact('users', 'lessons', 'roles'));
     }

@@ -65,7 +65,7 @@ class ServiceController extends Controller
             $file = $request->file('illustration');
             $path = Storage::disk('local')
                 ->putFileAs(
-                    storage_path("tmp/service/$service->id"),
+                    "tmp/service/$service->id",
                     $file,
                     $file->getClientOriginalName()
                 );
