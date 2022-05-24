@@ -12,38 +12,38 @@
             <!-- Address -->
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="address1" value="Adresse" />
-                <jet-input id="address1" type="text" class="mt-1 block w-full" v-model="form.address1" autocomplete="address1" />
+                <jet-input id="address1" type="text"  v-model="form.address1" autocomplete="address1" />
                 <jet-input-error :message="form.errors.address1" class="mt-2" />
             </div>
 
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="address2" value="Complément d'adresse" />
-                <jet-input id="address2" type="text" class="mt-1 block w-full" v-model="form.address2" autocomplete="address2" />
+                <jet-input id="address2" type="text"  v-model="form.address2" autocomplete="address2" />
                 <jet-input-error :message="form.errors.address2" class="mt-2" />
             </div>
 
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="zipcode" value="Code postal" />
-                <jet-input id="zipcode" type="number" class="mt-1 block w-full" v-model="form.zipcode" autocomplete="zipcode" />
+                <jet-input id="zipcode" type="number"  v-model="form.zipcode" autocomplete="zipcode" />
                 <jet-input-error :message="form.errors.zipcode" class="mt-2" />
             </div>
 
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="city" value="Ville" />
-                <jet-input id="city" type="text" class="mt-1 block w-full" v-model="form.city" autocomplete="city" />
+                <jet-input id="city" type="text"  v-model="form.city" autocomplete="city" />
                 <jet-input-error :message="form.errors.city" class="mt-2" />
             </div>
 
             <!-- Phone -->
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="phone" value="Numéro de téléphone fixe" />
-                <jet-input id="phone" type="text" class="mt-1 block w-full" v-model="form.phone" />
+                <jet-input id="phone" type="text"  v-model="form.phone" />
                 <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
 
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="pro" value="Téléphone portable" />
-                <jet-input id="pro" type="text" class="mt-1 block w-full" v-model="form.pro" />
+                <jet-input id="pro" type="text"  v-model="form.pro" />
                 <jet-input-error :message="form.errors.pro" class="mt-2" />
             </div>
 

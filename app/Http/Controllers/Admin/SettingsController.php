@@ -22,9 +22,10 @@ class SettingsController extends Controller
     public function renewal(Request $request)
     {
         $settings = $this->instanciateSettings();
-        $dates = $request->get('dates');
-        $settings->put('subscription_start', Carbon::parse($dates[0])->startOfDay());
-        $settings->put('subscription_end', Carbon::parse($dates[1])->startOfDay());
+        $settings->put('subscription_start', Carbon::parse($request->get('start'))->startOfDay());
+        $settings->put('subscription_end', Carbon::parse($request->get('end'))->startOfDay());
+        $settings->put('price_full', $request->get('price_full'));
+        $settings->put('price_quarterly', $request->get('price_quarterly'));
 
         return redirect()->back();
     }

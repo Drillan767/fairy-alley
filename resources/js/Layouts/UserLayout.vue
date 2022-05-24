@@ -165,8 +165,6 @@ export default {
             Swal.fire({
                 icon: 'error',
                 title: 'Veuillez changer votre mot de passe',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
                 showLoaderOnConfirm: true,
                 html:
                 `

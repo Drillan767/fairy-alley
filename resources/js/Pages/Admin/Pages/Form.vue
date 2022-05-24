@@ -2,7 +2,7 @@
     <form>
         <div>
             <jet-label for="title" value="Titre" />
-            <jet-input id="title" type="text" class="mt-1 block w-full" v-model="form.title" required autofocus />
+            <jet-input id="title" type="text" v-model="form.title" required autofocus />
             <jet-input-error :message="form.errors.title" class="mt-2" />
         </div>
 
@@ -32,7 +32,7 @@
 
         <div class="mt-4">
             <jet-label for="summary" value="Résumé" />
-            <jet-input id="summary" type="text" class="mt-1 block w-full" v-model="form.summary" required />
+            <jet-input id="summary" type="text" v-model="form.summary" required />
             <jet-input-error :message="form.errors.summary" class="mt-2" />
         </div>
 

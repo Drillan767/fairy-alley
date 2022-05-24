@@ -23,19 +23,19 @@
                                 </h2>
                                 <div>
                                     <jet-label for="firstname" value="Prénom" />
-                                    <jet-input id="firstname" type="text" class="mt-1 block w-full" v-model="form.firstname" />
+                                    <jet-input id="firstname" type="text"  v-model="form.firstname" />
                                     <jet-input-error :message="form.errors.firstname" class="mt-2" />
                                 </div>
 
                                 <div class="mt-4">
                                     <jet-label for="lastname" value="Nom de famille" />
-                                    <jet-input id="lastname" type="text" class="mt-1 block w-full" v-model="form.lastname" />
+                                    <jet-input id="lastname" type="text"  v-model="form.lastname" />
                                     <jet-input-error :message="form.errors.lastname" class="mt-2" />
                                 </div>
 
                                 <div class="mt-4">
                                     <jet-label for="email" value="Adresse email" />
-                                    <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email" />
+                                    <jet-input id="email" type="email"  v-model="form.email" />
                                     <jet-input-error :message="form.errors.email" class="mt-2" />
                                 </div>
 
@@ -54,51 +54,51 @@
 
                                 <div class="mt-4">
                                     <jet-label for="birthday" value="Date de naissance" />
-                                    <jet-input id="birthday" type="date" class="mt-1 block w-full" v-model="form.birthday" />
+                                    <jet-input id="birthday" type="date"  v-model="form.birthday" />
                                     <jet-input-error :message="form.errors.birthday" class="mt-2" />
                                 </div>
 
                                 <div class="mt-4">
                                     <jet-label for="phone" value="Numéro de téléphone" />
-                                    <jet-input id="phone" type="text" class="mt-1 block w-full" v-model="form.phone" />
+                                    <jet-input id="phone" type="text"  v-model="form.phone" />
                                     <jet-input-error :message="form.errors.phone" class="mt-2" />
                                 </div>
 
                                 <div class="mt-4">
                                     <jet-label for="pro" value="Téléphone professionnel" />
-                                    <jet-input id="pro" type="text" class="mt-1 block w-full" v-model="form.pro" />
+                                    <jet-input id="pro" type="text"  v-model="form.pro" />
                                     <jet-input-error :message="form.errors.pro" class="mt-2" />
                                 </div>
 
                                 <div class="mt-4">
                                     <jet-label for="address1" value="Adresse" />
-                                    <jet-input id="address1" type="text" class="mt-1 block w-full" v-model="form.address1" />
+                                    <jet-input id="address1" type="text"  v-model="form.address1" />
                                     <jet-input-error :message="form.errors.address1" class="mt-2" />
                                 </div>
 
                                 <div class="mt-4">
                                     <jet-label for="address2" value="Complément d'adresse" />
-                                    <jet-input id="address2" type="text" class="mt-1 block w-full" v-model="form.address2" />
+                                    <jet-input id="address2" type="text"  v-model="form.address2" />
                                     <jet-input-error :message="form.errors.address2" class="mt-2" />
                                 </div>
 
                                 <div class="mt-4 flex justify-between">
                                     <div class="w-1/4">
                                         <jet-label for="zipcode" value="Code postal" />
-                                        <jet-input id="zipcode" type="text" class="mt-1 block w-full" v-model="form.zipcode" />
+                                        <jet-input id="zipcode" type="text"  v-model="form.zipcode" />
                                         <jet-input-error :message="form.errors.zipcode" class="mt-2" />
                                     </div>
 
                                     <div class="flex-1 ml-4">
                                         <jet-label for="city" value="Ville" />
-                                        <jet-input id="city" type="text" class="mt-1 block w-full" v-model="form.city" />
+                                        <jet-input id="city" type="text"  v-model="form.city" />
                                         <jet-input-error :message="form.errors.city" class="mt-2" />
                                     </div>
                                 </div>
 
                                 <div class="mt-4">
                                     <jet-label for="other_data" value="Autres informations" />
-                                    <jet-textarea id="other_data" type="text" class="mt-1 block w-full" v-model="form.other_data" />
+                                    <jet-textarea id="other_data" type="text"  v-model="form.other_data" />
                                     <jet-input-error :message="form.errors.other_data" class="mt-2" />
                                 </div>
                             </div>

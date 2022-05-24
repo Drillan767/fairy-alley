@@ -18,7 +18,7 @@ class LoginResponse implements LoginResponseContract
             case 'presubscribed':
             case 'subscriber':
             case 'substitute':
-                return redirect()->route('profile.index');
+                return redirect()->route('profile.index', ['password' => true]);
 
             default:
                 auth()->logout();

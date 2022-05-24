@@ -2,16 +2,13 @@
 
 namespace App\Services;
 
-use App\Http\Requests\SubscriptionRequest;
+use App\Http\Requests\{RenewalRequest, SubscriptionRequest};
 use App\Http\Requests\SubscriptionValidationRequest;
-use App\Models\Invite;
-use App\Models\Media;
-use App\Models\Subscription;
-use App\Models\User;
-use App\Models\YearData;
+use App\Models\{Invite, Media, Subscription, User, YearData};
 use App\Notifications\SubscriptionAccepted;
 use App\Notifications\SubscriptionMissingElements;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Valuestore\Valuestore;
 
 class SubscriptionHandler
 {
@@ -19,13 +16,37 @@ class SubscriptionHandler
     {
     }
 
-    public function create(SubscriptionRequest $request)
+    public function create(SubscriptionRequest|RenewalRequest $request)
     {
-        $user_id = $request->get('user_id');
+
+        /** @var User $user */
+        $user = $request->user();
+        $settings = Valuestore::make(storage_path('app/settings.json'));
+        $renewalData = Valuestore::make(storage_path('app/renewal.json'));
+        $renewalData->put([
+            'user_' . auth()->id() => [
+                'lesson_choices' => [$request->get('schedule1'), $request->get('schedule2')],
+                'admin_decision' => null,
+                'feedback' => '',
+                'invites' => $request->get('invites') ?? [],
+            ]
+        ]);
+
         $yearData = new YearData();
-        $yearData->user_id = $user_id;
+        $yearData->user_id = $user->id;
         $yearData->health_data = $request->get('health_data');
         $yearData->reply_transmitted_via = 'internet';
+        $yearData->last_year_class = $user->lesson->title;
+        $yearData->pre_registration_signature = now();
+        $yearData->total = $request->get('payment_method') === 'full'
+            ? $settings->get('price_full')
+            : $settings->get('price_quarterly') * 3;
+
+        $yearData->payments = [
+            ['amount' => $settings->get('price_quarterly'), 'paid' => false],
+            ['amount' => $settings->get('price_quarterly'), 'paid' => false],
+            ['amount' => $settings->get('price_quarterly'), 'paid' => false],
+        ];
 
         $yearData->save();
 
@@ -35,18 +56,14 @@ class SubscriptionHandler
 
             $media = new Media([
                 'title' => $file->getClientOriginalName(),
-                'url' => Storage::disk('s3')->putFileAs("user/{$user_id}", $file, $file->getClientOriginalName()),
+                'url' => Storage::disk('s3')->putFileAs("user/$user->id", $file, $file->getClientOriginalName()),
             ]);
 
             $yearData->file()->save($media);
         }
 
-        Subscription::create([
-            'status' => Subscription::PENDING,
-            'user_id' => $user_id,
-            'lesson_id' => $request->get('lesson_id'),
-            'invites' => $request->get('invites') ?? [],
-        ]);
+        $user->resubscription_status = Subscription::PENDING;
+        $user->save();
     }
 
     public function update(SubscriptionRequest $request)

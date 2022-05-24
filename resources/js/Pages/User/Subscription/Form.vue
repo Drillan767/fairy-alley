@@ -104,24 +104,24 @@
                 <div class="flex flex-wrap w-4/5 -mx-3">
                     <div class="flex-50 px-3 mb-2">
                         <jet-label for="content" value="Prénom"/>
-                        <jet-input v-model="entry.firstname" class="mt-1 block w-full" type="text"/>
+                        <jet-input v-model="entry.firstname" type="text"/>
                         <jet-input-error :message="form.errors[`invites.${index}.firstname`]" class="mt-2"/>
                     </div>
                     <div class="flex-50 px-3 mb-2">
                         <jet-label for="content" value="Nom"/>
-                        <jet-input v-model="entry.lastname" class="mt-1 block w-full" type="text"/>
+                        <jet-input v-model="entry.lastname" type="text"/>
                         <jet-input-error :message="form.errors[`invites.${index}.lastname`]"
                                          class="mt-2"/>
                     </div>
                     <div class="flex-50 px-3 mb-2">
                         <jet-label for="content" value="Téléphone"/>
-                        <jet-input v-model="entry.phone" class="mt-1 block w-full" type="text"/>
-                        <jet-input-error :message="form.errors[`invites.${index}.phone`]"
-                                         class="mt-2"/>
+                        <jet-input v-model="entry.phone" type="text"/>
+                        <jet-input-error :message="form.errors[`invites.${index}.phone`]" class="mt-2"/>
+
                     </div>
                     <div class="flex-50 px-3 mb-2">
                         <jet-label for="content" value="Email"/>
-                        <jet-input v-model="entry.email" class="mt-1 block w-full" type="email"/>
+                        <jet-input v-model="entry.email"  type="email"/>
                         <jet-input-error :message="form.errors[`invites.${index}.email`]"
                                          class="mt-2"/>
                     </div>

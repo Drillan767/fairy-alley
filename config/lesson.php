@@ -2,10 +2,10 @@
 
 return [
     'tos' => [
-        'details' => '<p>30 cours sur l’année 2021-2022 d’une durée d’1h15<br />L’inscription est annuelle<br />Le nombre de participants est limité à 12 personnes par cours</p>',
+        'details' => '<p>30 cours sur l’année %YEAR% d’une durée d’1h15<br />L’inscription est annuelle<br />Le nombre de participants est limité à 12 personnes par cours</p>',
         'process' => "<ol>Préinscription
                     <ol>
-                    <li>Dépôt de chèque d'accompte de 120€</li>
+                    <li>Dépôt de chèque d'accompte de %price_full% ou mise en place d'un paiement en plusieurs fois à raison de %price_quarterly% par trimestre.</li>
                     <li>Remplissage des 2 possibilités du tableau</li>
                     <li>Acceptation des conditions ci-dessous</li>
                     </ol>

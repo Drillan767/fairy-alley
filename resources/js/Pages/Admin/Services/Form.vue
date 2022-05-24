@@ -4,19 +4,19 @@
             <form @submit.prevent="submit">
                 <div>
                     <jet-label for="title" value="Titre" />
-                    <jet-input id="title" type="text" class="mt-1 block w-full" v-model="form.title" />
+                    <jet-input id="title" type="text" v-model="form.title" />
                     <jet-input-error :message="form.errors.title" class="mt-2" />
                 </div>
 
                 <div class="mt-4">
                     <jet-label for="description" value="Description" />
-                    <jet-input id="description" type="text" class="mt-1 block w-full" v-model="form.description" />
+                    <jet-input id="description" type="text"  v-model="form.description" />
                     <jet-input-error :message="form.errors.description" class="mt-2" />
                 </div>
 
                 <div class="mt-4">
                     <jet-label for="description" value="Référence" />
-                    <jet-input id="ref" type="text" class="mt-1 block w-full" v-model="form.ref" />
+                    <jet-input id="ref" type="text"  v-model="form.ref" />
                     <jet-input-error :message="form.errors.ref" class="mt-2" />
                 </div>
 

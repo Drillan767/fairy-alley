@@ -14,6 +14,8 @@
                        <SubscriptionRenewalForm
                            :start="settings.subscription_start"
                            :end="settings.subscription_end"
+                           :price_full="settings.price_full"
+                           :price_quarterly="settings.price_quarterly"
                        />
                     </div>
                 </div>

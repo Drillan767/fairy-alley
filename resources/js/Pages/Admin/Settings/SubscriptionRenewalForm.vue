@@ -4,28 +4,57 @@
         <form @submit.prevent="submit">
             <div class="grid grid-cols-6 gap-4">
                 <div class="col-span-6 sm:col-span-3">
-                    <jet-label value="Sélectionnez la date de début et de fin de la réinscription" />
+                    <jet-label value="Sélectionnez la date de début de la réinscription" />
                     <Datepicker
-                        v-model="form.dates"
+                        v-model="form.start"
                         locale="fr"
                         cancelText="Annuler"
                         textInput
                         :min-date="new Date()"
-                        range
                         :enableTimePicker="false"
                         format="dd/MM/yyyy"
                         selectText="Confirmer"
                         inputFormat="dd/MM/yyyy"
                     />
-                    <p class="text-sm mt-2">
-                        Les visiteurs pourront lire un message leur indiquant la date de réinscription deux semaines avant
-                        le début de celle-ci. Une fois la date limite passée, tous les utilisateur n'étant pas en phase de
-                        réinscription auront le statut "Archivé", ce qui leur empêcheront de se connecter.
-                    </p>
-                    <div class="mt-4">
-                        <jet-button>Enregistrer</jet-button>
-                    </div>
                 </div>
+                <div class="col-span-6 sm:col-span-3">
+                    <jet-label value="Sélectionnez la date de fin de la réinscription" />
+                    <Datepicker
+                        v-model="form.end"
+                        locale="fr"
+                        cancelText="Annuler"
+                        textInput
+                        :min-date="new Date()"
+                        :enableTimePicker="false"
+                        format="dd/MM/yyyy"
+                        selectText="Confirmer"
+                        inputFormat="dd/MM/yyyy"
+                    />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-6 gap-4 mt-4">
+                <div class="col-span-6 sm:col-span-3">
+                    <jet-label value="Prix à l'année" />
+                    <jet-input v-model="form.price_full" type="text" />
+                    <jet-input-error :message="form.errors.price_full" />
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                    <jet-label value="Prix au trimestre" />
+                    <jet-input v-model="form.price_quarterly" type="text" />
+                    <jet-input-error :message="form.errors.price_quarterly" />
+                </div>
+            </div>
+
+            <p class="text-sm mt-2">
+                Les visiteurs pourront lire un message leur indiquant la date de réinscription deux semaines avant
+                le début de celle-ci. Une fois la date limite passée, tous les utilisateur n'étant pas en phase de
+                réinscription auront le statut "Archivé", ce qui leur empêcheront de se connecter.
+            </p>
+
+            <div class="mt-4">
+                <jet-button>Enregistrer</jet-button>
             </div>
         </form>
     </div>
@@ -53,6 +82,14 @@ export default {
         end: {
             type: String,
             default: '',
+        },
+        price_full: {
+            type: String,
+            default: '',
+        },
+        price_quarterly: {
+            type: String,
+            default: '',
         }
     },
     components: {
@@ -66,16 +103,13 @@ export default {
 
     setup (props) {
         const form = useForm({
-            dates: [],
-        })
-
-        onMounted(() => {
-            form.dates = [props.start, props.end]
+            start: props.start,
+            end: props.end,
+            price_full: props.price_full,
+            price_quarterly: props.price_quarterly,
         })
 
         const submit = () => {
-            const renewalStart = dayjs(form.dates[0])
-            const renewalEnd = dayjs(form.dates[1])
 
             Swal.fire({
                 icon: 'warning',
@@ -85,7 +119,7 @@ export default {
                 confirmButtonText: 'Confirmer',
                 text: `
                 La période de réinscription sera définie comme commençant le
-                ${renewalStart.format('DD/MM/YYYY')} et se finissant le ${renewalEnd.format('DD/MM/YYYY')}.
+                ${dayjs(form.start).format('DD/MM/YYYY')} et se finissant le ${dayjs(form.end).format('DD/MM/YYYY')}.
                 `
             })
                 .then((response) => {

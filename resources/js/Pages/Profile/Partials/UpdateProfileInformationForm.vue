@@ -12,13 +12,13 @@
             <!-- Name -->
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="firstname" value="Prénom" />
-                <jet-input id="firstname" type="text" class="mt-1 block w-full" v-model="form.firstname" autocomplete="firstname" />
+                <jet-input id="firstname" type="text"  v-model="form.firstname" autocomplete="firstname" />
                 <jet-input-error :message="form.errors.firstname" class="mt-2" />
             </div>
 
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="lastname" value="Nom de famille" />
-                <jet-input id="lastname" type="text" class="mt-1 block w-full" v-model="form.lastname" autocomplete="lastname" />
+                <jet-input id="lastname" type="text"  v-model="form.lastname" autocomplete="lastname" />
                 <jet-input-error :message="form.errors.lastname" class="mt-2" />
             </div>
 
@@ -38,14 +38,14 @@
             <!-- Email -->
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="email" value="Email" />
-                <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email" />
+                <jet-input id="email" type="email"  v-model="form.email" />
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
 
             <!-- Birthday -->
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="birthday" value="Date d'anniversaire" />
-                <jet-input id="birthday" type="date" class="mt-1 block w-full" v-model="form.birthday" />
+                <jet-input id="birthday" type="date"  v-model="form.birthday" />
                 <jet-input-error :message="form.errors.birthday" class="mt-2" />
             </div>
 

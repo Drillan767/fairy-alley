@@ -21,12 +21,12 @@
         <form @submit.prevent="submit">
             <div v-if="! recovery">
                 <jet-label for="code" value="Code" />
-                <jet-input ref="code" id="code" type="text" inputmode="numeric" class="mt-1 block w-full" v-model="form.code" autofocus autocomplete="one-time-code" />
+                <jet-input ref="code" id="code" type="text" inputmode="numeric"  v-model="form.code" autofocus autocomplete="one-time-code" />
             </div>
 
             <div v-else>
                 <jet-label for="recovery_code" value="Recovery Code" />
-                <jet-input ref="recovery_code" id="recovery_code" type="text" class="mt-1 block w-full" v-model="form.recovery_code" autocomplete="one-time-code" />
+                <jet-input ref="recovery_code" id="recovery_code" type="text"  v-model="form.recovery_code" autocomplete="one-time-code" />
             </div>
 
             <div class="flex items-center justify-end mt-4">

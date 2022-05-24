@@ -107,7 +107,7 @@ export default {
         })
 
         const renewalStatuses = ref([
-            {label: 'Réinscription en cours', value: 1},
+            {label: 'Demande de réinscription en cours', value: 1},
             {label: 'Documents manquants (certificat, etc)', value: 3},
             {label: 'Paiement manquant', value: 4},
             {label: 'Réinscription validée', value: 2},

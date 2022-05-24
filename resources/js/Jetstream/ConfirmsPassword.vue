@@ -13,7 +13,7 @@
                 {{ content }}
 
                 <div class="mt-4">
-                    <jet-input type="password" class="mt-1 block w-3/4" placeholder="Password"
+                    <jet-input type="password" class="w-3/4" placeholder="Password"
                                 ref="password"
                                 v-model="form.password"
                                 @keyup.enter="confirmPassword" />

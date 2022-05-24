@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RenewalRequest;
 use App\Models\Lesson;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Models\YearData;
+use App\Services\SubscriptionHandler;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -15,45 +17,25 @@ class RenewalController extends Controller
 {
     public function index()
     {
+        $tos = config('lesson.tos');
+
         $lessons = Lesson::query()
-            ->whereJsonContains('gender', auth()->user()->gender)
             ->where('type', 'lesson')
             ->where('year', now()->year . ' - ' . now()->addYear()->year)
             ->orderBy('title')
-            ->get(['id', 'title'])
-            ->map(fn ($lesson) => ['value' => $lesson->id, 'label' => $lesson->title])
+            ->get(['id', 'title', 'gender'])
+            ->map(fn ($lesson) => ['value' => $lesson->id, 'label' => $lesson->title, 'gender' => $lesson->gender])
         ;
 
-        return Inertia::render('User/Renewal/Index', compact('lessons'));
+        return Inertia::render('User/Renewal/Index', compact('tos', 'lessons'));
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(RenewalRequest $request, SubscriptionHandler $subscriptionHandler): RedirectResponse
     {
-        /** @var User $user */
-        $user = $request->user();
 
-        $yearData = new YearData();
-        $yearData->user_id = $user->id;
-        $yearData->reply_transmitted_via = 'website';
-        $yearData->total = 0;
-        $yearData->last_year_class = $user->lesson->title;
+        $method = $request->user()->resubscription_status ? 'update' : 'create';
 
-        foreach (['health_issues', 'current_health_issues', 'medical_treatment'] as $hFields) {
-            if ($request->get($hFields) !== null && $request->get($hFields) !== '') {
-                $yearData->health_data = $request->get($hFields) . "\n\n";
-            }
-        }
-
-        $yearData->save();
-
-        $subscription = new Subscription();
-        $subscription->user_id = auth()->id();
-        $subscription->lesson_id = $request->get('lesson_id');
-        $subscription->status = Subscription::SUBSCRIPTION_OVER;
-        $subscription->save();
-
-        $user->resubscription_status = Subscription::PENDING;
-        $user->save();
+        $subscriptionHandler->$method($request);
 
         return redirect()->route('profile.index')->with('success', 'Votre réinscription a bien été enregistrée.
         Vous pourrez suivre son avancement directement sur votre profil.');
