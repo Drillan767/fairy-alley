@@ -68,17 +68,59 @@
                                         </a>
                                     </div>
 
-                                    <h2 class="font-semibold text-l text-gray-700 leading-tight mb-5">
+                                    <h2 class="font-semibold text-l text-gray-700 leading-tight mb-5 col-span-6">
                                         Paiement
                                     </h2>
 
                                     <div class="col-span-6 sm:col-span-3">
                                         <jet-label value="Total" />
-                                        <jet-input />
+                                        <jet-input type="text" v-model="form.year_data.total" />
                                     </div>
 
                                     <div class="col-span-6 sm:col-span-3">
+                                        <template v-if="renewalData.payment === 'quarterly'">
+                                            <p class="mb-4">La personne a souhaité un paiement en plusieurs fois.</p>
+                                            <div
+                                                v-for="(entry, index) in form.year_data.payments"
+                                                :key="index"
+                                                class="flex items-end"
+                                            >
+                                                <div>
+                                                    <div class="flex flex-wrap w-4/5 -mx-3 mb-2">
+                                                        <div class="flex-50 px-3">
+                                                            <jet-label value="Montant à verser :"/>
+                                                            <jet-input v-model="entry.amount" type="text" />
+                                                            <jet-input-error :message="form.errors[`payments.${index}.date`]" class="mt-2"/>
+                                                        </div>
 
+                                                        <div class="flex-50 px-3">
+                                                            <jet-label value="Reçu le :"/>
+                                                            <jet-input v-model="entry.date" type="date" />
+                                                            <jet-input-error :message="form.errors[`payments.${index}.date`]" class="mt-2"/>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex justify-center items-center w-1/5">
+                                                    <div v-if="form.year_data.payments.length > 1">
+                                                        <jet-secondary-button @click="removePayment(index)">Retirer</jet-secondary-button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mt-8" v-if="form.year_data.payments.length < 3">
+                                                <jet-button type="button" @click="addPayment">Ajouter une mensualité</jet-button>
+                                            </div>
+                                        </template>
+
+                                    </div>
+
+                                    <div class="col-span-6">
+                                        <jet-label value="Observations" />
+                                        <jet-textarea v-model="form.year_data.observations" class="w-full" />
+                                        <p class="text-sm">Inscrivez les indications pour aider la personne à compléter sa réinscription.</p>
+                                        <jet-input-error :message="form.errors.observations" class="mt-2" />
                                     </div>
 
                                     <div class="col-span-6 sm:col-span-3">
@@ -105,6 +147,7 @@
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import JetInput from '@/Jetstream/Input.vue';
 import JetButton from '@/Jetstream/Button.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
 import JetFileUpload from '@/Jetstream/FileUpload.vue';
 import JetLabel from '@/Jetstream/Label.vue';
 import JetSelect from '@/Jetstream/Select.vue';
@@ -113,6 +156,7 @@ import JetCheckbox from '@/Jetstream/Checkbox.vue';
 import { useForm } from "@inertiajs/inertia-vue3";
 import JetTextarea from '@/Jetstream/Textarea.vue';
 import {computed, onMounted, ref} from "vue";
+import Swal from "sweetalert2";
 
 export default {
     title () {
@@ -123,6 +167,7 @@ export default {
         AdminLayout,
         JetInput,
         JetButton,
+        JetSecondaryButton,
         JetLabel,
         JetSelect,
         JetInputError,
@@ -143,27 +188,19 @@ export default {
     },
 
     setup (props) {
-        const form = useForm({
-            lesson_decision: 0,
-            renewal_status: 0,
-            year_data: {
-                health_data: '',
-                total: 0,
-                payments: [],
-                file: null,
-            },
-        })
+        const { currentUser } = props;
 
-        onMounted(() => {
-            const { currentUser } = props;
-            form.lesson_decision = props.renewalData.admin_decision ?? null;
-            form.renewal_status = currentUser.resubscription_status;
-            form.year_data = {
+        const form = useForm({
+            lesson_decision: props.renewalData.admin_decision ?? null,
+            renewal_status: currentUser.resubscription_status,
+            user_id: currentUser.id,
+            year_data: {
                 file: currentUser.current_year_data.file,
                 health_data: currentUser.current_year_data.health_data,
                 total: currentUser.current_year_data.total,
-                payments: currentUser.current_year_data.payments
-            };
+                payments: currentUser.current_year_data.payments ?? [],s
+                observations: currentUser.current_year_data.observations,
+            },
         })
 
         const renewalStatuses = ref([
@@ -176,6 +213,15 @@ export default {
         const handleUpload = (file) => {
             form.year_data.file = file
         };
+
+        const addPayment = () => {
+            form.year_data.payments.push({date: '', amount: ''})
+
+        }
+
+        const removePayment = (index) => {
+            form.year_data.payments.splice(index, 1)
+        }
 
         const firstLessonChoice = computed(() => {
             const firstLesson = props.renewalData.lesson_choices[0];
@@ -193,14 +239,27 @@ export default {
             return '';
         })
 
-        onMounted(() => {
-            form.lesson_id = props.subscription.lesson_id;
-            form.renewal_status = props.currentUser.resubscription_status;
-            form.yearly_health_data = props.currentUser.current_year_data.health_data
-        })
-
         const submit = () => {
-            form.post(route('utilisateur.renewal.store'))
+
+            let total = 0;
+            form.year_data.payments.forEach((p) => total += parseInt(p.amount));
+
+            if (total !== form.year_data.total) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Les mensualités ne correspondent pas avec le total',
+                    text: 'Il apparaît que les valeurs indiquées dans les mensualités ne correspondent pas au total défini. Confirmer malgré tout ?',
+                    showCancelButton: true,
+                    cancelButtonText: 'Annuler',
+                    confirmButtonText: 'Enregistrer',
+                })
+                    .then((response) => {
+                        if (response.isConfirmed) form.post(route('utilisateur.renewal.store'))
+                    })
+            }
+            else {
+                form.post(route('utilisateur.renewal.store'))
+            }
         }
 
         return {
@@ -208,6 +267,8 @@ export default {
             secondLessonChoice,
             renewalStatuses,
             form,
+            addPayment,
+            removePayment,
             handleUpload,
             submit,
         }

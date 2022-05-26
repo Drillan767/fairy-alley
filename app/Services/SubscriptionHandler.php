@@ -28,6 +28,7 @@ class SubscriptionHandler
                 'lesson_choices' => [$request->get('schedule1'), $request->get('schedule2')],
                 'admin_decision' => null,
                 'feedback' => '',
+                'payment' => $request->get('payment_method'),
                 'invites' => $request->get('invites') ?? [],
             ]
         ]);
@@ -42,17 +43,13 @@ class SubscriptionHandler
         if ($request->get('payment_method') === 'full') {
             $yearData->total = $settings->get('price_full');
         } else {
-
+            $yearData->total = $settings->get('price_quarterly') * 3;
+            $yearData->payments = [
+                ['amount' => $settings->get('price_quarterly'), 'paid_at' => ''],
+                ['amount' => $settings->get('price_quarterly'), 'paid_at' => ''],
+                ['amount' => $settings->get('price_quarterly'), 'paid_at' => ''],
+            ];
         }
-        $yearData->total = $request->get('payment_method') === 'full'
-            ? $settings->get('price_full')
-            : $settings->get('price_quarterly') * 3;
-
-        $yearData->payments = [
-            ['amount' => $settings->get('price_quarterly'), 'paid' => false],
-            ['amount' => $settings->get('price_quarterly'), 'paid' => false],
-            ['amount' => $settings->get('price_quarterly'), 'paid' => false],
-        ];
 
         $yearData->save();
 
