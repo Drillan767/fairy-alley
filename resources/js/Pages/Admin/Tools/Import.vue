@@ -55,7 +55,7 @@ import JetSelect from '@/Jetstream/Select.vue';
 import JetFileUpload from '@/Jetstream/FileUpload.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
 import JetButton from '@/Jetstream/Button.vue';
-c
+
 export default {
     title: 'Importer des utilisateurs...',
     components: {

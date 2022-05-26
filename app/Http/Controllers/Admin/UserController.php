@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Valuestore\Valuestore;
 
 class UserController extends Controller
 {
@@ -221,6 +222,8 @@ class UserController extends Controller
 
     public function renewal(User $user): Response
     {
+        $renewalData = Valuestore::make(storage_path('app/renewal.json'))->all();
+
         $subscription = Subscription::where([
             ['status', Subscription::SUBSCRIPTION_OVER],
             ['user_id', $user->id],
@@ -232,10 +235,11 @@ class UserController extends Controller
             ->get(['id', 'title'])
             ->map(fn ($lesson) => ['label' => $lesson->title, 'value' => $lesson->id]);
 
-        $user->load('currentYearData', 'subscription');
+        $user->load('currentYearData.file', 'subscription');
         return Inertia::render('Admin/Users/Renewal', [
             'currentUser' => $user,
             'lessons' => $lessons,
+            'renewalData' => $renewalData["user_$user->id"],
             'subscription' => $subscription,
         ]);
     }

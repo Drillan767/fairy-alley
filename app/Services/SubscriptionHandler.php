@@ -38,6 +38,12 @@ class SubscriptionHandler
         $yearData->reply_transmitted_via = 'internet';
         $yearData->last_year_class = $user->lesson->title;
         $yearData->pre_registration_signature = now();
+
+        if ($request->get('payment_method') === 'full') {
+            $yearData->total = $settings->get('price_full');
+        } else {
+
+        }
         $yearData->total = $request->get('payment_method') === 'full'
             ? $settings->get('price_full')
             : $settings->get('price_quarterly') * 3;

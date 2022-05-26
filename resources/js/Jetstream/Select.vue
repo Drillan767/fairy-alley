@@ -10,7 +10,7 @@
 <script>
 export default {
     props: {
-        modelValue: String,
+        modelValue: String|Number,
         choices: Array,
         placeholder: {
             type: String,
