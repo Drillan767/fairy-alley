@@ -198,7 +198,7 @@ export default {
                 file: currentUser.current_year_data.file,
                 health_data: currentUser.current_year_data.health_data,
                 total: currentUser.current_year_data.total,
-                payments: currentUser.current_year_data.payments ?? [],s
+                payments: currentUser.current_year_data.payments ?? [],
                 observations: currentUser.current_year_data.observations,
             },
         })
