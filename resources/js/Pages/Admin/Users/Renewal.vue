@@ -54,7 +54,7 @@
                                     <div class="col-span-6">
                                         <jet-label value="Document joint par l'utilisateur" />
                                         <jet-file-upload
-                                            :currentFile="currentUser.current_year_data.file ?? ''"
+                                            :currentFile="currentUser.current_year_data.file || ''"
                                             @input="handleUpload"
                                         />
 
