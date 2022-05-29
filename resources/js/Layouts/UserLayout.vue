@@ -161,21 +161,27 @@ export default {
     mounted() {
         const user = this.$inertia.page.props.user;
 
-        if (user.weak_password) {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        /**
+
+         */
+
+        if (urlParams.get('password')) {
             Swal.fire({
                 icon: 'error',
-                title: 'Veuillez changer votre mot de passe',
+                title: 'Il est conseillé de changer votre mot de passe',
                 showLoaderOnConfirm: true,
                 html:
                 `
                     <div class="text-left">
-                        <div>
-                            <label for="swal-input1" class="text-sm ml-10">Nouveau mot de passe</label>
-                            <input type="password" placeholder="Nouveau mot de passe" id="swal-input1" class="swal2-input">
+                        <div class="flex flex-col">
+                            <label for="swal-input1" class="text-sm">Nouveau mot de passe</label>
+                            <input type="password" placeholder="Nouveau mot de passe" id="swal-input1">
                         </div>
-                        <div class="mt-4">
-                            <label for="swal-input2" class="text-sm ml-10">Répéter le mot de passe</label>
-                            <input type="password" id="swal-input2" placeholder="Répéter le mot de passe" class="swal2-input">
+                        <div class="mt-4 flex flex-col">
+                            <label for="swal-input2" class="text-sm">Répéter le mot de passe</label>
+                            <input type="password" id="swal-input2" placeholder="Répéter le mot de passe">
                         </div>
 
                         <p class="text-sm mt-6">

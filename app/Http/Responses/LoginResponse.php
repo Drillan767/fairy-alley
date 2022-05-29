@@ -4,6 +4,7 @@ namespace App\Http\Responses;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 
 class LoginResponse implements LoginResponseContract
@@ -18,7 +19,8 @@ class LoginResponse implements LoginResponseContract
             case 'presubscribed':
             case 'subscriber':
             case 'substitute':
-                return redirect()->route('profile.index', ['password' => true]);
+                $password = Hash::check('password', auth()->user()->password) ? ['password' => true] : [];
+                return redirect()->route('profile.index', $password);
 
             default:
                 auth()->logout();

@@ -250,7 +250,7 @@ class UserController extends Controller
 
     public function storeRenewal(Request $request, FileHandler $fileHandler): RedirectResponse
     {
-        $renewalData = Valuestore::make(storage_path('app/renewal.json'))->all();
+        $renewalData = Valuestore::make(storage_path('app/renewal.json'));
 
         $user = User::find($request->get('user_id'));
         $user->load('currentYearData.file');
@@ -268,8 +268,9 @@ class UserController extends Controller
             $fileHandler->uploadOrReplace($request->file('year_data')['file'], $yearData, $user);
         }
 
-        $userRenewalInfos = $renewalData["user_$user->id"];
+        $userRenewalInfos = $renewalData->all()["user_$user->id"];
         $userRenewalInfos['admin_decision'] = $request->get('lesson_decision');
+        $renewalData->put("user_$user->id", $userRenewalInfos);
 
         return redirect()->route('utilisateurs.index')->with('success', "Réinscription de l'utilisateur mise à jour avec succès.");
     }

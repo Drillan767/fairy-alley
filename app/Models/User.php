@@ -90,7 +90,6 @@ class User extends Authenticatable
         'role',
         'lesson_title',
         'available_replacements',
-        'weak_password',
     ];
 
     public function yearDatas(): HasMany
@@ -173,10 +172,5 @@ class User extends Authenticatable
                 ->where('action', 'join')
                 ->whereRelation('lesson', 'type', '=', 'lesson')
                 ->count();
-    }
-
-    public function getWeakPasswordAttribute(): bool
-    {
-        return Hash::check('password', $this->password);
     }
 }

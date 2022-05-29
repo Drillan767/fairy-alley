@@ -85,26 +85,20 @@
                                                 :key="index"
                                                 class="flex items-end"
                                             >
-                                                <div>
-                                                    <div class="flex flex-wrap w-4/5 -mx-3 mb-2">
-                                                        <div class="flex-50 px-3">
-                                                            <jet-label value="Montant à verser :"/>
-                                                            <jet-input v-model="entry.amount" type="text" />
-                                                            <jet-input-error :message="form.errors[`payments.${index}.date`]" class="mt-2"/>
-                                                        </div>
-
-                                                        <div class="flex-50 px-3">
-                                                            <jet-label value="Reçu le :"/>
-                                                            <jet-input v-model="entry.date" type="date" />
-                                                            <jet-input-error :message="form.errors[`payments.${index}.date`]" class="mt-2"/>
-                                                        </div>
-
-
+                                                <div class="flex gap-x2">
+                                                    <div class="px-3">
+                                                        <jet-label value="Montant à verser :"/>
+                                                        <jet-input v-model="entry.amount" type="text" />
+                                                        <jet-input-error :message="form.errors[`payments.${index}.date`]" class="mt-2"/>
                                                     </div>
-                                                </div>
 
-                                                <div class="flex justify-center items-center w-1/5">
-                                                    <div v-if="form.year_data.payments.length > 1">
+                                                    <div class="px-3">
+                                                        <jet-label value="Reçu le :"/>
+                                                        <jet-input v-model="entry.date" type="date" />
+                                                        <jet-input-error :message="form.errors[`payments.${index}.date`]" class="mt-2"/>
+                                                    </div>
+
+                                                    <div v-if="form.year_data.payments.length > 1" class="flex items-end">
                                                         <jet-secondary-button @click="removePayment(index)">Retirer</jet-secondary-button>
                                                     </div>
                                                 </div>
@@ -216,7 +210,6 @@ export default {
 
         const addPayment = () => {
             form.year_data.payments.push({date: '', amount: ''})
-
         }
 
         const removePayment = (index) => {
@@ -240,7 +233,6 @@ export default {
         })
 
         const submit = () => {
-
             let total = 0;
             form.year_data.payments.forEach((p) => total += parseInt(p.amount));
 

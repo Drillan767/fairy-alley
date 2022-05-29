@@ -98,7 +98,7 @@
 
                                 <div class="mt-4">
                                     <jet-label for="other_data" value="Autres informations" />
-                                    <jet-textarea id="other_data" type="text"  v-model="form.other_data" />
+                                    <jet-textarea id="other_data" class="w-full" v-model="form.other_data" />
                                     <jet-input-error :message="form.errors.other_data" class="mt-2" />
                                 </div>
                             </div>
