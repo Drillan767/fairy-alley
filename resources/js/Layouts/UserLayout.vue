@@ -135,6 +135,7 @@ import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink.vue'
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import Swal from "sweetalert2";
 import axios from "axios";
+import {Inertia} from "@inertiajs/inertia";
 
 export default {
     props: {
@@ -210,16 +211,17 @@ export default {
                         .catch((error) => {
                             Swal.showValidationMessage(error.response.data)
                         })
+                        .then(() => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Mot de passe modifié.',
+                                timer: 3000,
+                                text: 'Mot de passe modifié avec succès !'
+                            })
+                                .then(() => Inertia.get(route('profile.index')))
+                        })
                 }
             })
-                .then(() => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Mot de passe modifié.',
-                        timer: 3000,
-                        text: 'Mot de passe modifié avec succès !'
-                    })
-                })
         }
     },
 

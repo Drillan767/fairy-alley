@@ -10,7 +10,7 @@
 </head>
 <body class="text-gray-600 body-font">
 <header>
-    <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center justify-between absolute top-0 left-0 right-0">
+    <div class="container mx-auto mt-6 flex flex-wrap flex-col md:flex-row items-center justify-between absolute top-0 left-0 right-0">
         <div class="flex items-center flex-shrink-0 text-white mr-6">
             <img src="/img/ADF-Logo.png" alt="logo" />
         </div>
