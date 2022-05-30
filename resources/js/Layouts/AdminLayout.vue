@@ -1,6 +1,9 @@
 <template>
     <div>
-        <Head :title="title" />
+<!--        <Head :title="title ? `${title} | L'allée des Fées` : 'L\'allée des Fées'" />-->
+        <Head>
+            <title>{{ title ? `${title} | L'allée des Fées` : 'L\'allée des Fées' }}</title>
+        </Head>
 
         <jet-banner />
 
@@ -53,9 +56,41 @@
                                         </jet-dropdown>
                                     </div>
                                 </div>
-                                <jet-nav-link :href="route('utilisateurs.index')" :active="route().current('utilisateurs.index')">
-                                    Utilisateurs
-                                </jet-nav-link>
+                                <template v-if="displayRenewalPage">
+                                    <div class="hidden sm:flex sm:items-center">
+                                        <div class="relative">
+                                        <jet-dropdown align="left">
+                                            <template #trigger>
+
+                                                <span class="inline-flex rounded-md">
+                                                    <button type="button" class="inline-flex items-center border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition">
+                                                        Utilisateurs
+
+                                                        <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                                </span>
+                                            </template>
+
+                                            <template #content>
+                                                <jet-dropdown-link :href="route('utilisateurs.index')">
+                                                    Liste
+                                                </jet-dropdown-link>
+                                                <jet-dropdown-link :href="route('utilisateur.renewal.index')">
+                                                    En cours de réinscription
+                                                </jet-dropdown-link>
+                                            </template>
+                                        </jet-dropdown>
+                                    </div>
+                                    </div>
+                                </template>
+                                <template v-else>
+                                    <jet-nav-link :href="route('utilisateurs.index')" :active="route().current('utilisateurs.index')">
+                                        Utilisateurs
+                                    </jet-nav-link>
+                                </template>
+
                                 <div class="hidden sm:flex sm:items-center">
                                     <!-- Contents Dropdown -->
                                     <div class="relative">
@@ -212,53 +247,40 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import JetApplicationMark from '@/Jetstream/ApplicationMark.vue'
 import JetBanner from '@/Jetstream/Banner.vue'
 import JetDropdown from '@/Jetstream/Dropdown.vue'
 import JetDropdownLink from '@/Jetstream/DropdownLink.vue'
 import JetNavLink from '@/Jetstream/NavLink.vue'
 import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink.vue'
-import { Head, Link } from '@inertiajs/inertia-vue3';
+import {Head, Link, usePage} from '@inertiajs/inertia-vue3';
+import dayjs from "dayjs";
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import {computed, ref} from "vue";
+import {Inertia} from "@inertiajs/inertia";
 
-export default {
-    props: {
-        title: String,
-    },
+defineProps({title: String})
 
-    components: {
-        Head,
-        JetApplicationMark,
-        JetBanner,
-        JetDropdown,
-        JetDropdownLink,
-        JetNavLink,
-        JetResponsiveNavLink,
-        Link,
-    },
+dayjs.extend(isSameOrAfter)
+dayjs.extend(isSameOrBefore)
 
-    data() {
-        return {
-            showingNavigationDropdown: false,
-        }
-    },
+const showingNavigationDropdown = ref(false);
 
-    methods: {
-        switchToTeam(team) {
-            this.$inertia.put(route('current-team.update'), {
-                'team_id': team.id
-            }, {
-                preserveState: false
-            })
-        },
+const home = () => Inertia.get(route('redirect.home'))
+const logout = () => Inertia.post(route('logout'));
+const page = usePage().props.value;
 
-        home() {
-            this.$inertia.get(route('redirect.home'))
-        },
+const displayRenewalPage = computed(() => {
+    const settings = page.settings;
+    const start = dayjs(settings.subscription_start)
+    const end = dayjs(settings.subscription_end);
 
-        logout() {
-            this.$inertia.post(route('logout'));
-        },
+    if (start.isValid() && end.isValid()) {
+        return dayjs().isSameOrAfter(start) && dayjs().isSameOrBefore(end)
     }
-}
+
+    return false
+})
 </script>

@@ -29,16 +29,18 @@ use Spatie\Valuestore\Valuestore;
 |
 */
 
-Route::get('/', [HomeController::class, 'landing'])->name('landing');
+$settings = Valuestore::make(storage_path('app/settings.json'));
+$start = Carbon::parse($settings->get('subscription_start'));
+$end = Carbon::parse($settings->get('subscription_end'));
 
+Route::get('/', [HomeController::class, 'landing'])->name('landing');
 Route::post('/contact', [HomeController::class, 'contact'])->name('contact');
 
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+Route::middleware(['auth:sanctum', 'verified'])->group(function () use ($start, $end) {
 
     Route::post('/flow', [MovementController::class, 'flow'])->name('movement.flow');
 
-    Route::middleware(['role:administrator'])->group(function () {
-
+    Route::middleware(['role:administrator'])->group(function () use ($start, $end) {
         Route::controller(AdminController::class)->group(function() {
             Route::get('/administration', 'index')->name('admin.index');
             Route::get('/admin/lesson/list', 'lessonList')->name('admin.lesson.list');
@@ -64,7 +66,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             ->except('edit', 'update')
             ->parameters(['premiers-contacts' => 'contact']);
 
-        Route::controller(UserController::class)->group(function () {
+        Route::controller(UserController::class)->group(function () use ($start, $end) {
             Route::get('/utilisateurs', 'index')->name('utilisateurs.index');
             Route::post('/change-lesson', 'changeLesson')->name('utilisateurs.change-lesson');
             Route::post('/admin/reset-password', 'resetPassword')->name('utilisateurs.reset-password');
@@ -74,8 +76,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::get('/preinscriptions', 'preSubscribed')->name('utilisateurs.presubscribed');
             Route::get('/preinscription/{user}/editer', 'subscribing')->name('utilisateurs.subscribing');
             Route::put('/preinscription/{user}', 'updateSubscription')->name('utilisateurs.updateSubscription');
-            Route::get('/réinscription/{user}', 'renewal')->name('utilisateur.renewal.show');
-            Route::post('/store-renewal', 'storeRenewal')->name('utilisateur.renewal.store');
+
+            if (($start->isToday() || $start->isPast()) && $end->isFuture()) {
+                Route::get('/réinscriptions', 'renewalIndex')->name('utilisateur.renewal.index');
+                Route::get('/réinscription/{user}', 'renewal')->name('utilisateur.renewal.show');
+                Route::post('/store-renewal', 'storeRenewal')->name('utilisateur.renewal.store');
+            }
+
         });
 
         Route::controller(FileController::class)->prefix('/media')->group(function () {
@@ -109,7 +116,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('lessonDetail', 'lessonDetail')->name('lesson-detail');
     });
 
-    Route::middleware(['role:subscriber'])->group(function () {
+    Route::middleware(['role:subscriber'])->group(function () use ($start, $end) {
         Route::controller(SubscriptionController::class)->group(function () {
             Route::get('/inscription-cours/{lesson}', 'create')->name('subscription.create');
             Route::get('/inscription/cours/{lesson}/editer', 'edit')->name('subscription.edit');
@@ -120,9 +127,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::post('/user/change-password', 'swalUpdatePassword')->name('change.password');
         });
 
-        $settings = Valuestore::make(storage_path('app/settings.json'));
-        $start = Carbon::parse($settings->get('subscription_start'));
-        $end = Carbon::parse($settings->get('subscription_end'));
+
         if (($start->isToday() || $start->isPast()) && $end->isFuture()) {
             Route::controller(RenewalController::class)->group(function() {
                 Route::get('/réinscription', 'index')->name('renewal.index');

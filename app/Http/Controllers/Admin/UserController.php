@@ -221,10 +221,24 @@ class UserController extends Controller
             ->update(['password' => Hash::make('password')]);
     }
 
+    public function renewalIndex()
+    {
+        $renewals = Valuestore::make(storage_path('app/renewal.json'))->all();
+        $lessons = Lesson::where('year', now()->year . ' - ' . now()->addYear()->year)->get(['id', 'title']);
+        $users = User::with('currentYearData')->get([
+            'id',
+            'firstname',
+            'lastname',
+            'email',
+            'resubscription_status',
+        ]);
+
+        return Inertia::render('Admin/Users/RenewalList', compact('renewals', 'lessons', 'users'));
+    }
+
     public function renewal(User $user): Response
     {
         $vs = Valuestore::make(storage_path('app/renewal.json'));
-
         $renewalData = $vs->all();
 
         $subscription = Subscription::where([
