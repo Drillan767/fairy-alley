@@ -41,9 +41,13 @@ class RenewalStatusChanged extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->from('nepasrepondre@alleedesfees.fr', "L'allée des Fées")
+            ->subject('Votre demande de réinscription')
+            ->greeting('Bonjour,')
+            ->line('Votre demande de réinscription a été mise à jour')
+            ->line('Vous pouvez la consulter en vous connectant à votre compte')
+            ->action('Connectez-vous', url('/connexion'))
+            ->line('Bonne journée !');
     }
 
     /**

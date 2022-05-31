@@ -13,6 +13,7 @@ use App\Models\Service;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Models\YearData;
+use App\Notifications\RenewalStatusChanged;
 use App\Services\FileHandler;
 use App\Services\FirstContactHandler;
 use App\Services\SubscriptionHandler;
@@ -285,6 +286,8 @@ class UserController extends Controller
         $userRenewalInfos = $renewalData->all()["user_$user->id"];
         $userRenewalInfos['admin_decision'] = $request->get('lesson_decision');
         $renewalData->put("user_$user->id", $userRenewalInfos);
+
+        $user->notify(new RenewalStatusChanged());
 
         return redirect()->route('utilisateurs.index')->with('success', "Réinscription de l'utilisateur mise à jour avec succès.");
     }

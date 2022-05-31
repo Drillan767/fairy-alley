@@ -54,7 +54,7 @@
                                     <div class="col-span-6">
                                         <jet-label value="Document joint par l'utilisateur" />
                                         <jet-file-upload
-                                            :currentFile="currentUser.current_year_data.file || ''"
+                                            :currentFile="currentUser.current_year_data.file || null"
                                             @input="handleUpload"
                                         />
 
@@ -223,7 +223,7 @@ export default {
         });
 
         const secondLessonChoice = computed(() => {
-            if (props.renewalData.lesson_choices[2] !== null) {
+            if (props.renewalData.lesson_choices[1] !== null) {
                 const secondLesson = props.renewalData.lesson_choices[1];
                 const lesson = props.lessons.find((l) => l.value === parseInt(secondLesson))
                 return lesson.label;
@@ -236,7 +236,7 @@ export default {
             let total = 0;
             form.year_data.payments.forEach((p) => total += parseInt(p.amount));
 
-            if (total !== form.year_data.total) {
+            if (props.renewalData.payment === "quarterly" && total !== form.year_data.total) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Les mensualités ne correspondent pas avec le total',
