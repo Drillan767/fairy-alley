@@ -285,6 +285,9 @@ class UserController extends Controller
 
         $userRenewalInfos = $renewalData->all()["user_$user->id"];
         $userRenewalInfos['admin_decision'] = $request->get('lesson_decision');
+        $userRenewalInfos['documents'] = $request->get('documents_complete');
+        $userRenewalInfos['payment'] = $request->get('payment_complete');
+
         $renewalData->put("user_$user->id", $userRenewalInfos);
 
         $user->notify(new RenewalStatusChanged());

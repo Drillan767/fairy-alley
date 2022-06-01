@@ -1,5 +1,5 @@
 <template>
-    <admin-layout>
+    <admin-layout :title="`Renouvellement de l'abonnement de ${currentUser.full_name}`">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
                 Renouvellement de l'abonnement de {{ currentUser.full_name }}
@@ -122,6 +122,21 @@
                                         <jet-select :choices="renewalStatuses" v-model="form.renewal_status" />
                                         <jet-input-error :message="form.errors.renewal_status" class="mt-2" />
                                     </div>
+
+                                    <div class="col-span-6 sm:col-span-3">
+                                        <jet-label value="Statut de la réinscription" />
+                                        <div class="flex gap-x-3 h-2/3">
+                                            <label class="flex items-center">
+                                                <jet-checkbox name="remember" v-model:checked="form.payment_complete" />
+                                                <span class="ml-2 text-sm text-gray-600">Paiement reçu</span>
+                                            </label>
+                                            <label class="flex items-center">
+                                                <jet-checkbox name="remember" v-model:checked="form.documents_complete" />
+                                                <span class="ml-2 text-sm text-gray-600">Documents validés</span>
+                                            </label>
+                                        </div>
+
+                                    </div>
                                 </div>
                                 <div class="flex justify-end">
                                     <jet-button>
@@ -137,7 +152,7 @@
     </admin-layout>
 </template>
 
-<script>
+<script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import JetInput from '@/Jetstream/Input.vue';
 import JetButton from '@/Jetstream/Button.vue';
@@ -152,118 +167,89 @@ import JetTextarea from '@/Jetstream/Textarea.vue';
 import {computed, onMounted, ref} from "vue";
 import Swal from "sweetalert2";
 
-export default {
-    title () {
-        return 'Renouvellement de l\'abonnement de ' + this.currentUser.full_name
+const props = defineProps({
+    currentUser: Object,
+    subscription: Object,
+    lessons: Array,
+    renewalData: Object,
+    flash: {
+        type: Object,
+        required: false
     },
+})
 
-    components: {
-        AdminLayout,
-        JetInput,
-        JetButton,
-        JetSecondaryButton,
-        JetLabel,
-        JetSelect,
-        JetInputError,
-        JetCheckbox,
-        JetFileUpload,
-        JetTextarea
+const { currentUser } = props;
+
+const form = useForm({
+    lesson_decision: props.renewalData.admin_decision ?? null,
+    documents_complete: props.renewalData.documents || false,
+    payment_complete: props.renewalData.paid || false,
+    renewal_status: currentUser.resubscription_status,
+    user_id: currentUser.id,
+    year_data: {
+        file: currentUser.current_year_data.file,
+        health_data: currentUser.current_year_data.health_data,
+        total: currentUser.current_year_data.total,
+        payments: currentUser.current_year_data.payments ?? [],
+        observations: currentUser.current_year_data.observations,
     },
+})
 
-    props: {
-        currentUser: Object,
-        subscription: Object,
-        lessons: Array,
-        renewalData: Object,
-        flash: {
-            type: Object,
-            required: false
-        },
-    },
+const renewalStatuses = ref([
+    {label: 'Demande de réinscription en cours', value: 1},
+    {label: 'Documents manquants (certificat, etc)', value: 3},
+    {label: 'Paiement manquant', value: 4},
+    {label: 'Réinscription validée', value: 2},
+])
 
-    setup (props) {
-        const { currentUser } = props;
+const handleUpload = (file) => {
+    form.year_data.file = file
+};
 
-        const form = useForm({
-            lesson_decision: props.renewalData.admin_decision ?? null,
-            renewal_status: currentUser.resubscription_status,
-            user_id: currentUser.id,
-            year_data: {
-                file: currentUser.current_year_data.file,
-                health_data: currentUser.current_year_data.health_data,
-                total: currentUser.current_year_data.total,
-                payments: currentUser.current_year_data.payments ?? [],
-                observations: currentUser.current_year_data.observations,
-            },
+const addPayment = () => {
+    form.year_data.payments.push({date: '', amount: ''})
+}
+
+const removePayment = (index) => {
+    form.year_data.payments.splice(index, 1)
+}
+
+const firstLessonChoice = computed(() => {
+    const firstLesson = props.renewalData.lesson_choices[0];
+    const lesson = props.lessons.find((l) => l.value === parseInt(firstLesson))
+    return lesson.label;
+});
+
+const secondLessonChoice = computed(() => {
+    if (props.renewalData.lesson_choices[1] !== null) {
+        const secondLesson = props.renewalData.lesson_choices[1];
+        const lesson = props.lessons.find((l) => l.value === parseInt(secondLesson))
+        return lesson.label;
+    }
+
+    return '';
+})
+
+const submit = () => {
+    let total = 0;
+    form.year_data.payments.forEach((p) => total += parseInt(p.amount));
+
+    if (props.renewalData.payment === "quarterly" && total !== form.year_data.total) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Les mensualités ne correspondent pas avec le total',
+            text: 'Il apparaît que les valeurs indiquées dans les mensualités ne correspondent pas au total défini. Confirmer malgré tout ?',
+            showCancelButton: true,
+            cancelButtonText: 'Annuler',
+            confirmButtonText: 'Enregistrer',
         })
-
-        const renewalStatuses = ref([
-            {label: 'Demande de réinscription en cours', value: 1},
-            {label: 'Documents manquants (certificat, etc)', value: 3},
-            {label: 'Paiement manquant', value: 4},
-            {label: 'Réinscription validée', value: 2},
-        ])
-
-        const handleUpload = (file) => {
-            form.year_data.file = file
-        };
-
-        const addPayment = () => {
-            form.year_data.payments.push({date: '', amount: ''})
-        }
-
-        const removePayment = (index) => {
-            form.year_data.payments.splice(index, 1)
-        }
-
-        const firstLessonChoice = computed(() => {
-            const firstLesson = props.renewalData.lesson_choices[0];
-            const lesson = props.lessons.find((l) => l.value === parseInt(firstLesson))
-            return lesson.label;
-        });
-
-        const secondLessonChoice = computed(() => {
-            if (props.renewalData.lesson_choices[1] !== null) {
-                const secondLesson = props.renewalData.lesson_choices[1];
-                const lesson = props.lessons.find((l) => l.value === parseInt(secondLesson))
-                return lesson.label;
-            }
-
-            return '';
-        })
-
-        const submit = () => {
-            let total = 0;
-            form.year_data.payments.forEach((p) => total += parseInt(p.amount));
-
-            if (props.renewalData.payment === "quarterly" && total !== form.year_data.total) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Les mensualités ne correspondent pas avec le total',
-                    text: 'Il apparaît que les valeurs indiquées dans les mensualités ne correspondent pas au total défini. Confirmer malgré tout ?',
-                    showCancelButton: true,
-                    cancelButtonText: 'Annuler',
-                    confirmButtonText: 'Enregistrer',
-                })
-                    .then((response) => {
-                        if (response.isConfirmed) form.post(route('utilisateur.renewal.store'))
-                    })
-            }
-            else {
-                form.post(route('utilisateur.renewal.store'))
-            }
-        }
-
-        return {
-            firstLessonChoice,
-            secondLessonChoice,
-            renewalStatuses,
-            form,
-            addPayment,
-            removePayment,
-            handleUpload,
-            submit,
-        }
+            .then((response) => {
+                if (response.isConfirmed) form.post(route('utilisateur.renewal.store'))
+            })
+    }
+    else {
+        form.post(route('utilisateur.renewal.store'))
     }
 }
+
 </script>

@@ -58,16 +58,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.224.1",
+            "version": "3.224.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "97bbc5682472883233e4b6a1184e2da8755c5b38"
+                "reference": "a2e6461261a92570128e6c2b6fb1896f3d16b424"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/97bbc5682472883233e4b6a1184e2da8755c5b38",
-                "reference": "97bbc5682472883233e4b6a1184e2da8755c5b38",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/a2e6461261a92570128e6c2b6fb1896f3d16b424",
+                "reference": "a2e6461261a92570128e6c2b6fb1896f3d16b424",
                 "shasum": ""
             },
             "require": {
@@ -143,9 +143,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.224.1"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.224.2"
             },
-            "time": "2022-05-31T18:45:52+00:00"
+            "time": "2022-06-01T18:17:06+00:00"
         },
         {
             "name": "bacon/bacon-qr-code",
@@ -3315,16 +3315,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.13.2",
+            "version": "v4.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "210577fe3cf7badcc5814d99455df46564f3c077"
+                "reference": "34bea19b6e03d8153165d8f30bba4c3be86184c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/210577fe3cf7badcc5814d99455df46564f3c077",
-                "reference": "210577fe3cf7badcc5814d99455df46564f3c077",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/34bea19b6e03d8153165d8f30bba4c3be86184c1",
+                "reference": "34bea19b6e03d8153165d8f30bba4c3be86184c1",
                 "shasum": ""
             },
             "require": {
@@ -3365,9 +3365,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v4.13.2"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v4.14.0"
             },
-            "time": "2021-11-30T19:35:32+00:00"
+            "time": "2022-05-31T20:59:12+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -4407,16 +4407,16 @@
         },
         {
             "name": "shuchkin/simplexlsxgen",
-            "version": "1.2.12",
+            "version": "1.2.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/shuchkin/simplexlsxgen.git",
-                "reference": "199e5691e773b1d49092f0c56c60e05d687b7935"
+                "reference": "b63c66f8e9f97a546f5ac91e8e6650b56330de59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shuchkin/simplexlsxgen/zipball/199e5691e773b1d49092f0c56c60e05d687b7935",
-                "reference": "199e5691e773b1d49092f0c56c60e05d687b7935",
+                "url": "https://api.github.com/repos/shuchkin/simplexlsxgen/zipball/b63c66f8e9f97a546f5ac91e8e6650b56330de59",
+                "reference": "b63c66f8e9f97a546f5ac91e8e6650b56330de59",
                 "shasum": ""
             },
             "require": {
@@ -4453,9 +4453,9 @@
             ],
             "support": {
                 "issues": "https://github.com/shuchkin/simplexlsxgen/issues",
-                "source": "https://github.com/shuchkin/simplexlsxgen/tree/1.2.12"
+                "source": "https://github.com/shuchkin/simplexlsxgen/tree/1.2.13"
             },
-            "time": "2022-05-17T06:10:24+00:00"
+            "time": "2022-06-01T06:58:01+00:00"
         },
         {
             "name": "spatie/laravel-permission",
