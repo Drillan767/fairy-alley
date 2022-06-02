@@ -258,7 +258,7 @@ class UserController extends Controller
         return Inertia::render('Admin/Users/Renewal', [
             'currentUser' => $user,
             'lessons' => $lessons,
-            'renewalData' => $renewalData["user_$user->id"],
+            'renewalData' => $renewalData["user_$user->id"] ?? [],
             'subscription' => $subscription,
         ]);
     }
