@@ -43,6 +43,9 @@ class RenewalRequest extends FormRequest
     public function attributes(): array
     {
         return [
+            'medical_certificate' => 'Certificat médical',
+            'schedule1' => 'Choix 1',
+            'schedule2' => 'Choix 2',
             'invites.*.firstname' => 'Prénom',
             'invites.*.lastname' => 'Nom',
             'invites.*.email' => 'email',

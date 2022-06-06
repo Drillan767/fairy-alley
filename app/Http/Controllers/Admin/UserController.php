@@ -232,7 +232,37 @@ class UserController extends Controller
             'lastname',
             'email',
             'resubscription_status',
-        ]);
+        ])
+        ->map(function ($user) use ($renewals) {
+
+            $user = [
+                'id' => $user->id,
+                'firstname' => $user->firstname,
+                'lastname' => $user->lastname,
+                'email' => $user->email,
+                'resubscription_status' => $user->resubscription_status,
+            ];
+
+            if (array_key_exists("user_{$user['id']}", $renewals)) {
+                $relatedInfos = $renewals["user_{$user['id']}"];
+
+                $addedData = [
+                    'choice1' => $relatedInfos['lesson_choices'][0],
+                    'choice2' => $relatedInfos['lesson_choices'][1],
+                    'decision' => $relatedInfos['admin_decision'],
+                    'paid' => $relatedInfos['paid'],
+                    'documents' => $relatedInfos['documents']
+                ];
+
+            } else {
+                $addedData = [];
+                foreach (['choice1', 'choice2', 'decision', 'paid', 'documents'] as $field) {
+                    $addedData[$field] = null;
+                }
+            }
+
+            return array_merge($user, $addedData);
+        });
 
         return Inertia::render('Admin/Users/RenewalList', compact('renewals', 'lessons', 'users'));
     }

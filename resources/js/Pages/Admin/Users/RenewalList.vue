@@ -27,11 +27,6 @@
                                 :columns="columns"
                             >
                                 <template #table-row="props">
-                                    <div v-if="props.column.field === 'email'">
-                                        <a :href="`mailto:${props.row.email}`" class="text-blue-700 underline">
-                                            {{ props.row.email }}
-                                        </a>
-                                    </div>
                                     <div v-if="props.column.field === 'choice1'">
                                         {{ getLesson(props.row.id, 0) }}
                                     </div>
@@ -39,7 +34,8 @@
                                         {{ getLesson(props.row.id, 1) }}
                                     </div>
                                     <div v-else-if="props.column.field === 'decision'">
-                                        {{ findLesson(props.row.id) }}
+<!--                                        <jet-select />-->
+<!--                                        {{ findLesson(props.row.id) }}-->
                                     </div>
                                     <div v-else-if="props.column.field === 'document'">
                                         <template class="flex justify-center" v-if="findRequirements(props.row.id, 'documents')">
@@ -55,16 +51,32 @@
                                             </svg>
                                         </div>
                                     </div>
-                                    <div class="flex justify-center" v-else-if="findRequirements(props.row.id, 'payment') === false">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill="currentColor" d="M16.3394 9.32245C16.7434 8.94589 16.7657 8.31312 16.3891 7.90911C16.0126 7.50509 15.3798 7.48283 14.9758 7.85938L12.0497 10.5866L9.32245 7.66048C8.94589 7.25647 8.31312 7.23421 7.90911 7.61076C7.50509 7.98731 7.48283 8.62008 7.85938 9.0241L10.5866 11.9502L7.66048 14.6775C7.25647 15.054 7.23421 15.6868 7.61076 16.0908C7.98731 16.4948 8.62008 16.5171 9.0241 16.1405L11.9502 13.4133L14.6775 16.3394C15.054 16.7434 15.6868 16.7657 16.0908 16.3891C16.4948 16.0126 16.5171 15.3798 16.1405 14.9758L13.4133 12.0497L16.3394 9.32245Z" />
-                                            <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12ZM12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21Z"/>
-                                        </svg>
+
+                                    <div v-else-if="props.column.field === 'paid'">
+                                        <template class="flex justify-center" v-if="findRequirements(props.row.id, 'paid')">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M10.2426 16.3137L6 12.071L7.41421 10.6568L10.2426 13.4853L15.8995 7.8284L17.3137 9.24262L10.2426 16.3137Z" fill="currentColor"/>
+                                                <path fill-rule="evenodd" fill="currentColor" clip-rule="evenodd" d="M1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12ZM12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21Z"/>
+                                            </svg>
+                                        </template>
+                                        <div class="flex justify-center" v-else-if="findRequirements(props.row.id, 'paid') === false">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill="currentColor" d="M16.3394 9.32245C16.7434 8.94589 16.7657 8.31312 16.3891 7.90911C16.0126 7.50509 15.3798 7.48283 14.9758 7.85938L12.0497 10.5866L9.32245 7.66048C8.94589 7.25647 8.31312 7.23421 7.90911 7.61076C7.50509 7.98731 7.48283 8.62008 7.85938 9.0241L10.5866 11.9502L7.66048 14.6775C7.25647 15.054 7.23421 15.6868 7.61076 16.0908C7.98731 16.4948 8.62008 16.5171 9.0241 16.1405L11.9502 13.4133L14.6775 16.3394C15.054 16.7434 15.6868 16.7657 16.0908 16.3891C16.4948 16.0126 16.5171 15.3798 16.1405 14.9758L13.4133 12.0497L16.3394 9.32245Z" />
+                                                <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12ZM12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21Z"/>
+                                            </svg>
+                                        </div>
                                     </div>
+
                                     <div v-else-if="props.column.field === 'resubscription_status'">
                                         {{ getStatus(props.row.resubscription_status) }}
                                     </div>
                                     <div v-else-if="props.column.field === 'action'" class="flex justify-center">
+                                        <a :href="`mailto:${props.row.email}`" v-if="props.row.resubscription_status !== null">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                            </svg>
+                                        </a>
+
                                         <Link :href="route('utilisateur.renewal.show', {user: props.row.id})" v-if="props.row.resubscription_status !== null">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -84,6 +96,7 @@
 
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
+import JetSelect from '@/Jetstream/Select.vue';
 import 'vue-good-table-next/dist/vue-good-table-next.css';
 import { VueGoodTable } from 'vue-good-table-next';
 import {ref, defineProps} from "vue";
@@ -135,10 +148,6 @@ const columns = ref([
         width: '100px',
     },
     {
-        label: 'Adresse e-mail',
-        field: 'email',
-    },
-    {
         label: 'Statut',
         field: 'resubscription_status',
         filterOptions: {
@@ -161,14 +170,35 @@ const columns = ref([
     {
         label: 'Choix 1',
         field: 'choice1',
+        filterOptions: {
+            enabled: true,
+            placeholder: 'Sélectionner...',
+            filterDropdownItems: props.lessons.map((l) => {
+                return {text: l.title, value: l.id}
+            }),
+        }
     },
     {
         label: 'Choix 2',
         field: 'choice2',
+        filterOptions: {
+            enabled: true,
+            placeholder: 'Sélectionner...',
+            filterDropdownItems: props.lessons.map((l) => {
+                return {text: l.title, value: l.id}
+            })
+        }
     },
     {
         label: 'Décision',
         field: 'decision',
+        filterOptions: {
+            enabled: true,
+            placeholder: 'Sélectionner...',
+            filterDropdownItems: props.lessons.map((l) => {
+                return {text: l.title, value: l.id}
+            })
+        }
     },
     {
         label: 'Documents validés',
@@ -176,7 +206,7 @@ const columns = ref([
     },
     {
         label: 'Paiement reçu',
-        field: 'payment',
+        field: 'paid',
     },
     {
         label: 'Action',

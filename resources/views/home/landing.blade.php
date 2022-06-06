@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
     <title>L'allée des fées</title>
     @routes
     @vite
@@ -85,7 +89,7 @@
     </div>
 </section>
 
-<section>
+<<!--section>
     <div class="container px-5 py-12 mx-auto">
         <h1 class="text-3xl font-medium title-font text-gray-900 mb-12 text-center">Témoignages</h1>
         <div class="flex flex-wrap -m-4">
@@ -131,7 +135,7 @@
             </div>
         </div>
     </div>
-</section>
+</section>-->
 
 <section class="relative">
     <div class="container px-5 py-12 mx-auto flex sm:flex-nowrap flex-wrap">
