@@ -251,7 +251,7 @@ const getLesson = (user_id, choice = null) => {
 
     if (relatedRenewalInfos ) {
 
-        if (choice) {
+        if (choice !== null) {
             const lessonId = relatedRenewalInfos.lesson_choices[choice]
 
             if (lessonId) {

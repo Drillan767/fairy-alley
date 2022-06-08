@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -30,6 +31,11 @@ class Service extends Model
     public function page(): HasOne
     {
         return $this->hasOne(Page::class, 'id', 'page_id');
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(ServiceSubscription::class);
     }
 
     protected $fillable = [

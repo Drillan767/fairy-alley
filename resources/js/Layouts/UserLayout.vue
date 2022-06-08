@@ -1,6 +1,8 @@
 <template>
     <div>
-        <Head :title="title" />
+        <Head>
+            <title>{{ title ? `${title} | L'allée des Fées` : 'L\'allée des Fées' }}</title>
+        </Head>
 
         <jet-banner />
 

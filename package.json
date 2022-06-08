@@ -45,6 +45,7 @@
         "@vuepic/vue-datepicker": "^3.1.1",
         "daisyui": "^2.0.8",
         "dayjs": "^1.10.7",
+        "intro.js": "^5.1.0",
         "smart-tagz": "^0.3.1",
         "sweetalert2": "^11.1.5",
         "v-calendar": "^3.0.0-alpha.6"

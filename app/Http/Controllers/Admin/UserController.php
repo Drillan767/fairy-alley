@@ -250,8 +250,8 @@ class UserController extends Controller
                     'choice1' => $relatedInfos['lesson_choices'][0],
                     'choice2' => $relatedInfos['lesson_choices'][1],
                     'decision' => $relatedInfos['admin_decision'],
-                    'paid' => $relatedInfos['paid'],
-                    'documents' => $relatedInfos['documents']
+                    'paid' => $relatedInfos['paid'] ?? false,
+                    'documents' => $relatedInfos['documents'] ?? false
                 ];
 
             } else {
@@ -310,14 +310,14 @@ class UserController extends Controller
         $user = User::find($request->get('user_id'));
         $user->load('currentYearData.file');
         $user->resubscription_status = $request->get('renewal_status');
-         $user->save();
+        $user->save();
 
         $yearData = $user->currentYearData;
 
         $yearData->observations = $request->get('year_data')['observations'];
         $yearData->total = $request->get('year_data')['total'];
         $yearData->payments = $request->get('year_data')['payments'];
-         $yearData->save();
+        $yearData->save();
 
         if ($request->hasFile('year_data')) {
             $fileHandler->uploadOrReplace($request->file('year_data')['file'], $yearData, $user);
@@ -326,7 +326,7 @@ class UserController extends Controller
         $userRenewalInfos = $renewalData->get("user_$user->id");
         $userRenewalInfos['admin_decision'] = $request->get('lesson_decision');
         $userRenewalInfos['documents'] = $request->get('documents_complete');
-        $userRenewalInfos['payment'] = $request->get('payment_complete');
+        $userRenewalInfos['paid'] = $request->get('payment_complete');
 
         $renewalData->put("user_$user->id", $userRenewalInfos);
 

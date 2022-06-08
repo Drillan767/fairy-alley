@@ -1,5 +1,5 @@
 <template>
-    <user-layout title="Dashboard">
+    <user-layout title="Accueil">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
                 Accueil
@@ -65,88 +65,69 @@
                         </div>
                     </div>
                     <CurrentLesson :lesson="user.lesson" :headlines="headlines" :lesson-days="lessonDays" :next-lessons="nextLessons" />
-                    <ServicesSuggestion :suggestions="user.suggestions" v-if="user.suggestions.length" />
+<!--                    <ServicesSuggestion :suggestions="user.suggestions" v-if="user.suggestions.length" />-->
+                    <ServiceList :services="services" />
                 </div>
             </div>
         </div>
     </user-layout>
 </template>
 
-<script>
+<script setup>
 import UserLayout from '@/Layouts/UserLayout.vue';
 import Welcome from '@/Jetstream/Welcome.vue';
 import CurrentLesson from "./CurrentLesson.vue";
-import ServicesSuggestion from "./ServicesSuggestion.vue";
+import ServiceList from "./ServiceList.vue";
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import dayjs from "dayjs";
 import {computed, ref} from "vue";
 
-export default {
-    title: 'Profil',
-    props: {
-        user: Object,
-        lessonDays: Object,
-        headlines: Object,
-        nextLessons: Array,
-        renewalStatus: Object,
-        flash: {
-            type: Object,
-            required: false,
-        },
-        settings: Object,
+const props = defineProps({
+    user: Object,
+    lessonDays: Object,
+    headlines: Object,
+    nextLessons: Array,
+    renewalStatus: Object,
+    services: Array,
+    flash: {
+        type: Object,
+        required: false,
     },
+    settings: Object,
+})
 
-    components: {
-        ServicesSuggestion,
-        UserLayout,
-        Welcome,
-        CurrentLesson,
-    },
+dayjs.extend(isSameOrAfter)
+dayjs.extend(isSameOrBefore)
 
-    setup (props) {
-        dayjs.extend(isSameOrAfter)
-        dayjs.extend(isSameOrBefore)
+const renewalStart = ref(dayjs(props.settings.subscription_start ?? null))
+const renewalEnd = ref(dayjs(props.settings.subscription_end ?? null))
 
-        const renewalStart = ref(dayjs(props.settings.subscription_start ?? null))
-        const renewalEnd = ref(dayjs(props.settings.subscription_end ?? null))
-
-        const renewalWarning = computed(() => {
-            if (renewalStart.value.isValid()) {
-                const warning = renewalStart.value.subtract(15, 'days')
-                return dayjs().isSameOrAfter(warning) && dayjs().isBefore(renewalStart.value)
-            } else {
-                return  false
-            }
-        })
-
-        const displayRenewal = computed(() => {
-            if (renewalStart.value.isValid() && renewalEnd.value.isValid()) {
-                return props.user.resubscription_status === null
-                    && dayjs().isSameOrAfter(renewalStart.value)
-                    && dayjs().isSameOrBefore(renewalEnd.value)
-            } else {
-                return false
-            }
-        })
-
-        const countDown = computed(() => {
-            if (renewalStart.value.isValid()) {
-                return renewalStart.value.diff(dayjs(), 'day')
-            } else {
-                return 0
-            }
-        })
-
-        // const
-
-        return {
-            renewalStart,
-            renewalEnd,
-            renewalWarning,
-            displayRenewal,
-            countDown,
-        }
+const renewalWarning = computed(() => {
+    if (renewalStart.value.isValid()) {
+        const warning = renewalStart.value.subtract(15, 'days')
+        return dayjs().isSameOrAfter(warning) && dayjs().isBefore(renewalStart.value)
+    } else {
+        return  false
     }
-}
+})
+
+const displayRenewal = computed(() => {
+    if (renewalStart.value.isValid() && renewalEnd.value.isValid()) {
+        return props.user.resubscription_status === null
+            && dayjs().isSameOrAfter(renewalStart.value)
+            && dayjs().isSameOrBefore(renewalEnd.value)
+    } else {
+        return false
+    }
+})
+
+const countDown = computed(() => {
+    if (renewalStart.value.isValid()) {
+        return renewalStart.value.diff(dayjs(), 'day')
+    } else {
+        return 0
+    }
+})
+
 </script>

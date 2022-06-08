@@ -68,7 +68,7 @@
                                         </a>
                                     </div>
 
-                                    <h2 class="font-semibold text-l text-gray-700 leading-tight mb-5 col-span-6">
+                                    <h2 class="font-semibold text-l text-gray-700 leading-tight mb-2 col-span-6">
                                         Paiement
                                     </h2>
 

@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
-use App\Models\{Lesson, Movement, User};
+use App\Models\{Lesson, Movement, Service, User};
 use App\Services\{LessonDateDisplayHandler, SubscriptionHandler};
 use Carbon\Carbon;
 use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
@@ -24,7 +24,7 @@ class SubscriptionController extends Controller
 
     public function index(LessonDateDisplayHandler $displayHandler): Response|RedirectResponse
     {
-        /** @var User $user */
+        $services = Service::with('subscriptions')->get();
         $user = auth()->user();
         $settings = Valuestore::make(storage_path('app/settings.json'));
         $lessonDays = [];
@@ -39,7 +39,7 @@ class SubscriptionController extends Controller
         }
 
         if ($user->hasAnyRole('subscriber', 'guest', 'substitute')) {
-            $user->load('suggestions.thumbnail', 'suggestions.page', 'lesson');
+            $user->load('lesson');
 
             $nextLessons = $this->defineNextLessons($user);
 
@@ -54,7 +54,7 @@ class SubscriptionController extends Controller
 
         return Inertia::render(
             'User/Landing',
-            compact('headlines', 'lessonDays', 'nextLessons', 'renewalStatus'));
+            compact('headlines', 'lessonDays', 'nextLessons', 'renewalStatus', 'services'));
     }
 
     public function create(Lesson $lesson): Response|RedirectResponse

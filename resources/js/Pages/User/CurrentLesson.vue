@@ -1,5 +1,13 @@
 <template>
     <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
+<!--        <div class="flex justify-end">
+            <jet-button @click.prevent="help">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                Aide
+            </jet-button>
+        </div>-->
         <div class="mt-8 font-semibold text-2xl text-gray-800 leading-tight">
             {{ headlines.title }}
         </div>
@@ -93,8 +101,9 @@
 
 </template>
 
-<script>
+<script setup>
 import UserLayout from '@/Layouts/UserLayout.vue'
+import JetButton from '@/Jetstream/Button.vue'
 import {Link, usePage} from '@inertiajs/inertia-vue3';
 import { Calendar, PopoverRow } from 'v-calendar';
 import 'v-calendar/dist/style.css';
@@ -103,167 +112,173 @@ import Swal from "sweetalert2";
 import registerLesson from "../../Modules/registerLesson.js";
 import dayjs from "dayjs";
 import {Inertia} from "@inertiajs/inertia";
+import introJs from 'intro.js';
 
-export default {
-    props: ['lesson', 'headlines', 'lessonDays', 'nextLessons'],
-    components: {
-        UserLayout,
-        Link,
-        Calendar,
-        PopoverRow
+const props = defineProps({
+    lesson: Object,
+    headlines: Object,
+    lessonDays: Array,
+    nextLessons: Array,
+})
+
+const thatDaysLessons = ref([]);
+const attributes = ref([]);
+const errorClass = 'text-red-600';
+const successClass = 'text-green-600';
+const page = usePage()
+
+const legends = ref([
+    {
+        classes: 'circle blue',
+        text: 'Cours de gym normal.',
     },
+    {
+        classes: 'circle blue empty',
+        text: 'Cours de gym annulé.',
+    },
+    {
+        classes: 'circle blue light',
+        text: 'Cours de gym disponible'
+    },
+    {
+        classes: 'circle green',
+        text: 'Ateliers',
+    },
+    {
+        classes: 'circle orange',
+        text: 'Conférences',
+    },
+    {
+        classes: 'circle pink',
+        text: 'Cours particuliers'
+    }
+])
 
-    setup (props) {
-        const thatDaysLessons = ref([]);
-        const attributes = ref([]);
-        const errorClass = 'text-red-600';
-        const successClass = 'text-green-600';
-        const page = usePage()
+onMounted(() => {
+    attributes.value = props.lessonDays
+})
 
-        const legends = ref([
-            {
-                classes: 'circle blue',
-                text: 'Cours de gym normal.',
-            },
-            {
-                classes: 'circle blue empty',
-                text: 'Cours de gym annulé.',
-            },
-            {
-                classes: 'circle blue light',
-                text: 'Cours de gym disponible'
-            },
-            {
-                classes: 'circle green',
-                text: 'Ateliers',
-            },
-            {
-                classes: 'circle orange',
-                text: 'Conférences',
-            },
-            {
-                classes: 'circle pink',
-                text: 'Cours particuliers'
-            }
-        ])
+const availableReplacements = computed(() => {
+    return page.props.value.user.available_replacements;
+})
 
-        onMounted(() => {
-            attributes.value = props.lessonDays
-        })
+/**
+ * Will return false IF
+ * - 6 people joined that lesson that day
+ * - 6 people are waiting to be accepted in that lesson that day.
+ *
+ * @param attribute
+ * @param day
+ * @returns {string}
+ */
+const canSubscribe = (attribute, day) => {
+    const customData = toRaw(attribute.customData);
+    const { movements } = customData
 
-        const availableReplacements = computed(() => {
-            return page.props.value.user.available_replacements;
-        })
-
-        /**
-         * Will return false IF
-         * - 6 people joined that lesson that day
-         * - 6 people are waiting to be accepted in that lesson that day.
-         *
-         * @param attribute
-         * @param day
-         * @returns {string}
-         */
-        const canSubscribe = (attribute, day) => {
-            const customData = toRaw(attribute.customData);
-            const { movements } = customData
-
-            if (availableSlots(movements, day) > 0 || customData.type !== 'lesson') {
-                return successClass
-            } else {
-                let classes = errorClass
-                if (customData.isSubscribed) {
-                    classes += 'font-bold'
-                }
-                return classes
-            }
+    if (availableSlots(movements, day) > 0 || customData.type !== 'lesson') {
+        return successClass
+    } else {
+        let classes = errorClass
+        if (customData.isSubscribed) {
+            classes += 'font-bold'
         }
-
-        const availableSlots = (movements, day) => {
-            const selectedDay = dayjs(toRaw(day.date));
-            let nbSlots = 0;
-            movements.map((m) => {
-                if (dayjs(m.lesson_time).isSame(selectedDay, 'day')) {
-                    if (m.action === 'leave') nbSlots++;
-                    if (m.action === 'join') nbSlots--;
-                }
-            })
-
-            return nbSlots
-        }
-
-        const recapSubscribe = (attributes, day) => {
-            const classes = [];
-            attributes.forEach((attr) => {
-                classes.push(canSubscribe(attr, day))
-            })
-
-            const defaultClasses = 'font-bold text-base text-center mt-4 mx-2'
-
-            if (classes.includes(successClass)) {
-                return `<p class="${successClass} ${defaultClasses}">Places disponibles</p>`
-            }
-
-            if (classes.includes(errorClass)) {
-                return `<p class="${errorClass} ${defaultClasses}">Aucune place disponible pour le moment</p>`
-            }
-        }
-
-        const onDayClick = async (day) => {
-            const date = dayjs(day.id);
-
-            if (date.isBefore(dayjs())) {
-                await Swal.fire({
-                    icon: 'error',
-                    title: 'Ce cours est déjà passé !',
-                    timer: 3000,
-                })
-            } else {
-                const lessons = [];
-                day.attributes.forEach((attr) => {
-                    if (attr.customData.cancelled === false) {
-                        lessons.push({
-                            id: attr.customData.lesson_id,
-                            title: attr.customData.lesson_title,
-                            type: attr.customData.type,
-                            subscribed: attr.customData.isSubscribed,
-                            nbSlots: availableSlots(attr.customData.movements, day)
-                        })
-                    }
-                })
-
-                const result = await registerLesson(lessons, day, toRaw(availableReplacements.value))
-
-                if (result) {
-                    let payload = {};
-                    result.forEach((r) => payload[r.key] = r.value)
-
-                    Inertia.post(route('lesson-movement'), payload, {
-                        resetOnSuccess: true,
-                        onSuccess: () => attributes.value = props.lessonDays
-                    });
-                }
-            }
-        };
-
-        const breakpoint = computed(() => {
-            const width = window.innerWidth
-            if (width >= 810) return 2
-            return 1;
-        })
-
-        return {
-            onDayClick,
-            breakpoint,
-            thatDaysLessons,
-            canSubscribe,
-            recapSubscribe,
-            attributes,
-            legends,
-            availableReplacements,
-        }
+        return classes
     }
 }
+
+const availableSlots = (movements, day) => {
+    const selectedDay = dayjs(toRaw(day.date));
+    let nbSlots = 0;
+    movements.map((m) => {
+        if (dayjs(m.lesson_time).isSame(selectedDay, 'day')) {
+            if (m.action === 'leave') nbSlots++;
+            if (m.action === 'join') nbSlots--;
+        }
+    })
+
+    return nbSlots
+}
+
+const help = () => {
+    introJs().setOptions({
+        steps: [
+            {
+                title: 'Welcome',
+                intro: 'Hello World! 👋'
+            },
+            {
+                element: document.querySelector('h2.title-font'),
+                intro: 'This step focuses on an image'
+            },
+            // {
+            //     title: 'Farewell!',
+            //     element: document.querySelector('.vc-pane-container'),
+            //     intro: 'And this is our final step!'
+            // }
+        ]
+    }).start();
+}
+
+const recapSubscribe = (attributes, day) => {
+    const classes = [];
+    attributes.forEach((attr) => {
+        classes.push(canSubscribe(attr, day))
+    })
+
+    const defaultClasses = 'font-bold text-base text-center mt-4 mx-2'
+
+    if (classes.includes(successClass)) {
+        return `<p class="${successClass} ${defaultClasses}">Places disponibles</p>`
+    }
+
+    if (classes.includes(errorClass)) {
+        return `<p class="${errorClass} ${defaultClasses}">Aucune place disponible pour le moment</p>`
+    }
+}
+
+const onDayClick = async (day) => {
+    const date = dayjs(day.id);
+
+    if (date.isBefore(dayjs())) {
+        await Swal.fire({
+            icon: 'error',
+            title: 'Ce cours est déjà passé !',
+            timer: 3000,
+        })
+    } else {
+        const lessons = [];
+        day.attributes.forEach((attr) => {
+            if (attr.customData.cancelled === false) {
+                lessons.push({
+                    id: attr.customData.lesson_id,
+                    title: attr.customData.lesson_title,
+                    type: attr.customData.type,
+                    subscribed: attr.customData.isSubscribed,
+                    nbSlots: availableSlots(attr.customData.movements, day)
+                })
+            }
+        })
+
+        const result = await registerLesson(lessons, day, toRaw(availableReplacements.value))
+
+        if (result) {
+            let payload = {};
+            result.forEach((r) => payload[r.key] = r.value)
+
+            Inertia.post(route('lesson-movement'), payload, {
+                resetOnSuccess: true,
+                onSuccess: () => attributes.value = props.lessonDays
+            });
+        }
+    }
+};
+
+const breakpoint = computed(() => {
+    const width = window.innerWidth
+    if (width >= 810) return 2
+    return 1;
+})
+
 </script>
 
 <style lang="scss" scoped>
