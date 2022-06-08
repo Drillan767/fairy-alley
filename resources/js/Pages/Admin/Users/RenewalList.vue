@@ -33,9 +33,13 @@
                                     <div v-else-if="props.column.field === 'choice2'">
                                         {{ getLesson(props.row.id, 1) }}
                                     </div>
-                                    <div v-else-if="props.column.field === 'decision'">
-<!--                                        <jet-select />-->
-<!--                                        {{ findLesson(props.row.id) }}-->
+                                    <div class="gap-x-2" v-else-if="props.column.field === 'decision'">
+                                        <template v-if="props.row.resubscription_status !== null">
+                                            {{ getLesson(props.row.id) }}
+                                            <button type="button" class="btn btn-xs" @click="changeLesson(props.row.id)">
+                                                Modifier
+                                            </button>
+                                        </template>
                                     </div>
                                     <div v-else-if="props.column.field === 'document'">
                                         <template class="flex justify-center" v-if="findRequirements(props.row.id, 'documents')">
@@ -96,11 +100,12 @@
 
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import JetSelect from '@/Jetstream/Select.vue';
 import 'vue-good-table-next/dist/vue-good-table-next.css';
 import { VueGoodTable } from 'vue-good-table-next';
-import {ref, defineProps} from "vue";
+import {ref, defineProps, computed} from "vue";
 import {Link} from "@inertiajs/inertia-vue3";
+import Swal from "sweetalert2";
+import {Inertia} from "@inertiajs/inertia";
 
 const props = defineProps({
     flash: {
@@ -111,6 +116,24 @@ const props = defineProps({
     lessons: Array,
     renewals: Object,
 })
+
+const changeLesson = (user_id) => {
+    Swal.fire({
+        icon: 'question',
+        text: 'Sélectionner un cours',
+        input: 'select',
+        inputOptions: lessonSelect.value,
+        displayCancelButton: true,
+        confirmButtonText: 'Enregistrer',
+        cancelButtonText: 'Annuler',
+        preConfirm: (select) => {
+            Inertia.post(route('utilisateurs.updateDecision'), {
+                lesson: select,
+                user_id: user_id
+            })
+        }
+    })
+}
 
 const status = ref([
     {
@@ -214,15 +237,33 @@ const columns = ref([
     }
 ])
 
-const getLesson = (user_id, choice) => {
+const lessonSelect = computed(() => {
+    let list = {}
+    props.lessons.forEach((l) => {
+        list[l.id] = l.title
+    })
+
+    return list
+})
+
+const getLesson = (user_id, choice = null) => {
     const relatedRenewalInfos = props.renewals[`user_${user_id}`]
 
     if (relatedRenewalInfos ) {
-        const lessonId = relatedRenewalInfos.lesson_choices[choice]
 
-        if (lessonId) {
-            const relatedLesson = props.lessons.find((l) => l.id === parseInt(lessonId))
-            return relatedLesson.title
+        if (choice) {
+            const lessonId = relatedRenewalInfos.lesson_choices[choice]
+
+            if (lessonId) {
+                const relatedLesson = props.lessons.find((l) => l.id === parseInt(lessonId))
+                return relatedLesson.title
+            }
+        } else {
+            const lessonId = relatedRenewalInfos['admin_decision'];
+
+            if (lessonId) {
+                return props.lessons.find((l) => l.id === parseInt(lessonId)).title + usersForGivenLesson(lessonId)
+            }
         }
 
         return 'Aucun';
@@ -232,21 +273,16 @@ const getLesson = (user_id, choice) => {
     }
 }
 
-const findLesson = (user_id) => {
-    const relatedRenewalInfos = props.renewals[`user_${user_id}`]
+const usersForGivenLesson = (lid) => {
+    let nbUsers = 0;
 
-    if (relatedRenewalInfos ) {
-        const lessonId = relatedRenewalInfos['admin_decision'];
-
-        if (lessonId) {
-            return props.lessons.find((l) => l.id === parseInt(lessonId)).title
+    for (const renewal in props.renewals) {
+        if (props.renewals[renewal].admin_decision === lid) {
+            nbUsers++
         }
-
-        return '';
-
     }
 
-    return '';
+    return ` (${nbUsers} personnes)`;
 }
 
 const getStatus = (user_status) => status.value.find((s) => s.value === user_status).text

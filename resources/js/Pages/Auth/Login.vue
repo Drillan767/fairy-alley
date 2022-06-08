@@ -1,5 +1,5 @@
 <template>
-    <Head title="Log in" />
+    <Head title="Connexion | L'allée des Fées" />
 
     <jet-authentication-card>
         <template #logo>

@@ -222,7 +222,7 @@ class UserController extends Controller
             ->update(['password' => Hash::make('password')]);
     }
 
-    public function renewalIndex()
+    public function renewalIndex(): Response
     {
         $renewals = Valuestore::make(storage_path('app/renewal.json'))->all();
         $lessons = Lesson::where('year', now()->year . ' - ' . now()->addYear()->year)->get(['id', 'title']);
@@ -265,6 +265,16 @@ class UserController extends Controller
         });
 
         return Inertia::render('Admin/Users/RenewalList', compact('renewals', 'lessons', 'users'));
+    }
+
+    public function updateDecision (Request $request)
+    {
+        $renewals = Valuestore::make(storage_path('app/renewal.json'));
+        $relatedRenewal = $renewals->get("user_{$request->get('user_id')}");
+        $relatedRenewal['admin_decision'] = $request->get('lesson');
+        $renewals->put("user_{$request->get('user_id')}", $relatedRenewal);
+
+        return redirect()->route('utilisateur.renewal.index');
     }
 
     public function renewal(User $user): Response
@@ -313,7 +323,7 @@ class UserController extends Controller
             $fileHandler->uploadOrReplace($request->file('year_data')['file'], $yearData, $user);
         }
 
-        $userRenewalInfos = $renewalData->all()["user_$user->id"];
+        $userRenewalInfos = $renewalData->get("user_$user->id");
         $userRenewalInfos['admin_decision'] = $request->get('lesson_decision');
         $userRenewalInfos['documents'] = $request->get('documents_complete');
         $userRenewalInfos['payment'] = $request->get('payment_complete');

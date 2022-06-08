@@ -74,6 +74,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () use ($start, 
             Route::post('/preinscription', 'subscribe')->name('utilisateurs.subscribe');
             Route::post('archive/{user}', 'archiveUser')->name('utilisateurs.archive');
             Route::get('/preinscriptions', 'preSubscribed')->name('utilisateurs.presubscribed');
+            Route::post('/preinscription/update-decision', 'updateDecision')->name('utilisateurs.updateDecision');
             Route::get('/preinscription/{user}/editer', 'subscribing')->name('utilisateurs.subscribing');
             Route::put('/preinscription/{user}', 'updateSubscription')->name('utilisateurs.updateSubscription');
 
