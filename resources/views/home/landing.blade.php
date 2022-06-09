@@ -38,7 +38,7 @@
     </div>
 </header>
 
-<div class="flex justify-center">
+<div class="flex justify-center my-4">
     <button
         class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg preview-modal" data-video="visite">
         Venez découvrir le site
@@ -230,8 +230,8 @@
             <span class="close">&times;</span>
         </div>
         <div class="body">
-            <video class="w-full echauffement" src="{{$echauffement}}" controls></video>
-            <video class="w-full visite" src="{{$visite}}" controls></video>
+            <video class="w-full hidden echauffement" src="{{$echauffement}}" controls></video>
+            <video class="w-full hidden visite" src="{{$visite}}" controls></video>
         </div>
     </div>
 
