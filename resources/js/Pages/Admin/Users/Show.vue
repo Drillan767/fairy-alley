@@ -371,7 +371,7 @@ export default {
 
         const resetPassword = () => {
             Swal.fire({
-                icon: 'danger',
+                icon: 'warning',
                 title: 'Réinitialiser le mot de passe ?',
                 showCancelButton: true,
                 cancelButtonText: 'Annuler',
