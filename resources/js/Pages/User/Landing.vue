@@ -55,7 +55,7 @@
                         <svg class="inline flex-shrink-0 mr-3 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
                         <div class="flex justify-between w-full">
                             <p>
-                                <span class="font-bold">Les réinscriptions sont ouvertes depuis maintenant {{  }}</span> Veuillez vous réinscrire avant le {{ renewalEnd.format('DD/MM/YYYY') }} dernier délai.
+                                <span class="font-bold">Les réinscriptions sont ouvertes depuis le {{ renewalStart.format('DD MMMM') }}</span> Veuillez vous réinscrire avant le {{ renewalEnd.format('DD/MM/YYYY') }} dernier délai.
                             </p>
                             <p>
                                 <a :href="route('renewal.index')" class="text-yellow-700 bg-transparent border border-yellow-700 hover:bg-yellow-800 hover:text-white focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-xs px-3 py-1.5 text-center dark:border-yellow-800 dark:text-yellow-800 dark:hover:text-white">
@@ -80,6 +80,7 @@ import CurrentLesson from "./CurrentLesson.vue";
 import ServiceList from "./ServiceList.vue";
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import fr from 'dayjs/locale/fr';
 import dayjs from "dayjs";
 import {computed, ref} from "vue";
 
