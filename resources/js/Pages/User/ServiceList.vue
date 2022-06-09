@@ -5,7 +5,9 @@
         <table class="w-full">
             <tbody class="border-b">
             <tr v-for="(service, i) in services" class="border-b" :key="i">
-                <td class="text-sm text-gray-900 font-light px-3 py-2 whitespace-nowrap">{{ service.title }}</td>
+                <td class="text-sm text-gray-900 font-light px-3 text-lg py-2 whitespace-nowrap">
+                    {{ service.title }}
+                </td>
                 <td class="flex justify-end pr-4">
                     <button class="btn btn-sm" @click="subscribe(service)">Inscription</button>
                 </td>
