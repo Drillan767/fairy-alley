@@ -294,7 +294,6 @@ export default {
     setup (props) {
         const form = useForm({
             _method: 'PUT',
-            suggestions: [],
             ...props.currentUser
         })
 
@@ -307,16 +306,6 @@ export default {
         onMounted(() => {
             for (const key in props.roles) {
                 roleList.value[key] = props.roles[key].display;
-            }
-
-            form.suggestions = props.currentUser.suggestions.map((s) => s.id)
-        })
-
-        const defaultServices = computed(() => {
-            if (props.currentUser.suggestions) {
-                return props.currentUser.suggestions.map((s) => s.title)
-            } else {
-                return [];
             }
         })
 
@@ -413,7 +402,6 @@ export default {
             form,
             changeLesson,
             changeRole,
-            defaultServices,
             resetPassword,
             submit,
         }

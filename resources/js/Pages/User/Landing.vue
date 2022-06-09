@@ -65,7 +65,6 @@
                         </div>
                     </div>
                     <CurrentLesson :lesson="user.lesson" :headlines="headlines" :lesson-days="lessonDays" :next-lessons="nextLessons" />
-<!--                    <ServicesSuggestion :suggestions="user.suggestions" v-if="user.suggestions.length" />-->
                     <ServiceList :services="services" />
                 </div>
             </div>
