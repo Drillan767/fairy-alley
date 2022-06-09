@@ -52,7 +52,6 @@ class User extends Authenticatable
             $user->yearDatas()->delete();
             $user->files()->delete();
             $user->subscription()->delete();
-            $user->suggestions()->detach();
             $user->roles()->detach();
             $user->firstContactData()->delete();
         });
@@ -120,11 +119,6 @@ class User extends Authenticatable
     public function files()
     {
         return $this->morphMany(Media::class, 'illustrable');
-    }
-
-    public function suggestions()
-    {
-        return $this->belongsToMany(Service::class, 'service_user');
     }
 
     public function movements()

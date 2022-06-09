@@ -155,10 +155,6 @@ class UserImportHandler
             $user->save();
             $user->assignRole($roles[$data['role']]);
 
-            if (isset($data['services'])) {
-                $user->suggestions()->sync($data['services']);
-            }
-
             if (in_array($user->role, ['guest', 'presubscribed', 'subscriber', 'substitute', 'archived', 'administrator']) && isset($data['lesson_id'])) {
                 $subscription = new Subscription();
                 $subscription->user_id = $user->id;

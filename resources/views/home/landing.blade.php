@@ -38,6 +38,13 @@
     </div>
 </header>
 
+<div class="flex justify-center">
+    <button
+        class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg preview-modal" data-video="visite">
+        Venez découvrir le site
+    </button>
+</div>
+
 <section>
     <div class="services">
         @foreach($services as $service)
@@ -70,7 +77,7 @@
             </div>
             <div class="px-4 sm:text-center mt-12 md:mt-0">
                 <button
-                    class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg preview-modal">
+                    class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg preview-modal" data-video="echauffement">
                     Aperçu d'une séance de gymnastique rééducative
                 </button>
 
@@ -223,11 +230,13 @@
             <span class="close">&times;</span>
         </div>
         <div class="body">
-            <video class="w-full" src="{{$video}}" controls></video>
+            <video class="w-full echauffement" src="{{$echauffement}}" controls></video>
+            <video class="w-full visite" src="{{$visite}}" controls></video>
         </div>
     </div>
 
 </div>
+
 
 <script>
     const modalBox = document.querySelector('.landing-modal');
@@ -237,6 +246,7 @@
 
     modalBtn.addEventListener('click', () => {
         modalBox.style.display = 'block';
+        modalBox.querySelector('.' + modalBtn.getAttribute('data-video')).style.display = 'block';
         body.style.overflow = 'hidden';
     })
 
@@ -251,6 +261,8 @@
     }
 
     function closeModal() {
+        modalBox.querySelector('.visite').style.display = 'none';
+        modalBox.querySelector('.echauffement').style.display = 'none';
         modalBox.style.display = 'none';
         body.style.overflow = 'initial';
     }

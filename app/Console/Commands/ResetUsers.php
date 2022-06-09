@@ -43,7 +43,6 @@ class ResetUsers extends Command
             $user->yearDatas()->delete();
             $user->files()->delete();
             $user->subscription()->delete();
-            $user->suggestions()->detach();
             $user->roles()->detach();
             $user->firstContactData()->delete();
             $user->delete();

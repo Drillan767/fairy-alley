@@ -150,10 +150,6 @@ class UserController extends Controller
 
         $utilisateur->save();
 
-        if ($request->has('suggestions')) {
-            $utilisateur->suggestions()->sync($request->get('suggestions'));
-        }
-
         return redirect()->route('utilisateurs.index')->with('success', 'Utilisateur mis à jour avec succès.');
     }
 

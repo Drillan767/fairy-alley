@@ -66,10 +66,16 @@ class LessonController extends Controller
     private function handleLesson(Lesson $lesson, LessonRequest $request, bool $update = false)
     {
         $function = $update ? 'update' : 'create';
-        $fields = array_merge(
-            $request->validated(),
-            ['year' => now()->year . ' - ' . now()->addYear()->year]
-        );
+        if ($function === 'create') {
+            $fields = array_merge(
+                $request->validated(),
+                ['year' => now()->year . ' - ' . now()->addYear()->year]
+            );
+        }
+        else {
+            $fields = $request->validated();
+        }
+
 
         $lesson->$function($fields);
     }
