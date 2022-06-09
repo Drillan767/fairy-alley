@@ -64,7 +64,7 @@ class UserController extends Controller
 
     public function show(User $utilisateur): Response
     {
-        $utilisateur->load('currentYearData.file', 'lesson', 'subscription', 'suggestions', 'firstContactData');
+        $utilisateur->load('currentYearData.file', 'lesson', 'subscription', 'firstContactData');
         $lessons = Lesson::all('id', 'title')->mapWithKeys(fn ($l) => [$l->id => $l->title]);
         $services = Service::orderBy('title')
             ->get(['id', 'title'])

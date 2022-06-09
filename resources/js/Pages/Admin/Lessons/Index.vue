@@ -108,7 +108,7 @@ export default {
     },
 
     mounted() {
-        this.lessonList = this.lessons
+        this.lessonList = this.lessons.sort((a, b) => a.title - b.title)
     },
 
     methods: {
@@ -135,6 +135,18 @@ export default {
                             })
                     }
                 })
+        },
+
+        sort (a, b) {
+            if (a.title < b.title) {
+                return -1
+            }
+
+            if (a.title > b.title) {
+                return 1
+            }
+
+            return 0;
         }
     }
 }

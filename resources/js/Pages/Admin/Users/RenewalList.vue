@@ -239,6 +239,9 @@ const columns = ref([
 
 const lessonSelect = computed(() => {
     let list = {}
+
+    list[null] = 'Aucun'
+
     props.lessons.forEach((l) => {
         list[l.id] = l.title
     })
