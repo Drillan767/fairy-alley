@@ -5,19 +5,21 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RenewalRequest;
 use App\Models\Lesson;
-use App\Models\Subscription;
-use App\Models\User;
-use App\Models\YearData;
 use App\Services\SubscriptionHandler;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Spatie\Valuestore\Valuestore;
 
 class RenewalController extends Controller
 {
     public function index()
     {
-        $tos = config('lesson.tos');
+        $config = Valuestore::make(storage_path('app/settings.json'));
+        $tos = [];
+
+        foreach (['details', 'process', 'organization', 'condition'] as $field) {
+            $tos[$field] = $config->get($field);
+        }
 
         $lessons = Lesson::query()
             ->where('type', 'lesson')

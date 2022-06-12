@@ -21,7 +21,7 @@
                                     <h2 class="text-2xl text-gray-700 leading-tight mb-2">
                                         Détail des cours
                                     </h2>
-                                    <div class="prose max-w-none" v-html="tos.details.replace('%YEAR%', currentYear)"></div>
+                                    <div class="prose max-w-none" v-html="tos.details"></div>
                                 </div>
 
                                 <div class="mb-4">
@@ -29,7 +29,7 @@
                                         Processus de réservation du cours
                                     </h2>
 
-                                    <div class="prose max-w-none" v-html="handledProcess"></div>
+                                    <div class="prose max-w-none" v-html="tos.process"></div>
                                 </div>
 
                                 <div class="mb-4">
@@ -249,13 +249,6 @@ export default {
             return props.lessons.filter((l) => l.gender.includes(props.user.gender))
         });
 
-        const handledProcess = computed(() => {
-            return props.tos.process.replaceAll(/%price_full%|%price_quarterly%/g, (matched) => {
-                const trimmedMatch = matched.replaceAll('%', '');
-                return `${props.settings[trimmedMatch]}€`;
-            });
-        });
-
         const handleUpload = (file) => {
             form.medical_certificate = file
         };
@@ -275,7 +268,6 @@ export default {
         return {
             filteredLessons,
             currentYear,
-            handledProcess,
             form,
             submit,
             add,
