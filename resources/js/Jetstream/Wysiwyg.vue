@@ -39,7 +39,7 @@ export default {
                 ],
                 toolbar:
                     'bold italic link| \
-                    alignleft alignjustify alignright alignjustify | \
+                    alignleft aligncenter alignright alignjustify | \
                     bullist numlist outdent indent | fontselect fontsizeselect | \
                     table image removeformat undo redo fullscreen code',
 

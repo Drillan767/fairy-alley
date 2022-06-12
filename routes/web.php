@@ -54,6 +54,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () use ($start, 
         Route::controller(SettingsController::class)->group(function () {
             Route::get('/parametres', 'edit')->name('settings.edit');
             Route::post('/settings-renewal', 'renewal')->name('settings.renewal');
+            Route::post('/settings-holidays', 'holidays')->name('settings.holidays');
         });
 
         Route::controller(MovementController::class)->group(function() {

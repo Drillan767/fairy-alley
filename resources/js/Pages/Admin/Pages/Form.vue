@@ -1,7 +1,7 @@
 <template>
     <form>
         <div>
-            <jet-label for="title" value="Titre" />
+            <jet-label for="title" value="Titre" class="required" />
             <jet-input id="title" type="text" v-model="form.title" required autofocus />
             <jet-input-error :message="form.errors.title" class="mt-2" />
         </div>
@@ -31,13 +31,13 @@
         </div>
 
         <div class="mt-4">
-            <jet-label for="summary" value="Résumé" />
+            <jet-label for="summary" value="Résumé" class="required" />
             <jet-input id="summary" type="text" v-model="form.summary" required />
             <jet-input-error :message="form.errors.summary" class="mt-2" />
         </div>
 
         <div class="mt-4">
-            <jet-label for="content" value="Contenu de la page" />
+            <jet-label for="content" value="Contenu de la page" class="required" />
             <wysiwyg v-model="form.content" :tiny="tiny" />
             <jet-input-error :message="form.errors.content" class="mt-2" />
         </div>

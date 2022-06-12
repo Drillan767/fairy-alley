@@ -1,5 +1,5 @@
 <template>
-    <admin-layout title="Utilisateurs en cours d'inscription">
+    <admin-layout title="Paramètres du site">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
                 Paramètres du site
@@ -16,7 +16,13 @@
                            :end="settings.subscription_end"
                            :price_full="settings.price_full"
                            :price_quarterly="settings.price_quarterly"
+                           :details="settings.details"
+                           :process="settings.process"
+                           :organization="settings.organization"
+                           :conditions="settings.conditions"
                        />
+
+                        <CustomHolidays :holidays="settings.holidays" />
                     </div>
                 </div>
             </div>
@@ -27,11 +33,12 @@
 <script>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import SubscriptionRenewalForm from "./SubscriptionRenewalForm.vue";
+import CustomHolidays from "./CustomHolidaysForm.vue";
 
 export default {
-    title: 'Éditer les paramètres',
     props: ['settings'],
     components: {
+        CustomHolidays,
         AdminLayout,
         SubscriptionRenewalForm
     },

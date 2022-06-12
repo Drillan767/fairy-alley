@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Valuestore\Valuestore;
 
 class LessonController extends Controller
 {
@@ -76,14 +77,21 @@ class LessonController extends Controller
             $fields = $request->validated();
         }
 
-
         $lesson->$function($fields);
     }
 
     private function handleHolidays(): array
     {
+        $settings = Valuestore::make(storage_path('app/settings.json'));
+        $customVacations = $settings->get('holidays');
         $file = Storage::disk('s3')->get('system/holidays.json');
         $holidays = json_decode($file, true);
+
+        foreach ($customVacations as $date => $reason) {
+            if (!array_key_exists($date, $holidays)) {
+                $holidays[$date] = $reason;
+            }
+        }
 
         return array_keys($holidays);
     }

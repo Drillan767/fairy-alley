@@ -267,7 +267,7 @@ class UserController extends Controller
     {
         $renewals = Valuestore::make(storage_path('app/renewal.json'));
         $relatedRenewal = $renewals->get("user_{$request->get('user_id')}");
-        $relatedRenewal['admin_decision'] = $request->get('lesson');
+        $relatedRenewal['admin_decision'] = $request->get('lesson') === 'null' ? null : $request->get('lesson');
         $renewals->put("user_{$request->get('user_id')}", $relatedRenewal);
 
         return redirect()->route('utilisateur.renewal.index');
