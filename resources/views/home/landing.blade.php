@@ -96,7 +96,7 @@
     </div>
 </section>
 
-<<!--section>
+<!--section>
     <div class="container px-5 py-12 mx-auto">
         <h1 class="text-3xl font-medium title-font text-gray-900 mb-12 text-center">Témoignages</h1>
         <div class="flex flex-wrap -m-4">
@@ -222,7 +222,7 @@
 </footer>
 
 <!-- Modal  -->
-<div class="landing-modal">
+<div class="landing-modal hidden">
 
     <!-- Modal content -->
     <div class="content">
@@ -237,17 +237,19 @@
 
 </div>
 
-
 <script>
     const modalBox = document.querySelector('.landing-modal');
-    const modalBtn = document.querySelector('button.preview-modal');
     const modalClose = document.querySelector('span.close');
-    const body = document.querySelector('body')
+    const body = document.querySelector('body');
+    const visite = modalBox.querySelector('.visite');
+    const echauffement = modalBox.querySelector('.echauffement');
 
-    modalBtn.addEventListener('click', () => {
-        modalBox.style.display = 'block';
-        modalBox.querySelector('.' + modalBtn.getAttribute('data-video')).style.display = 'block';
-        body.style.overflow = 'hidden';
+    document.querySelectorAll('button.preview-modal').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            modalBox.classList.remove('hidden');
+            modalBox.querySelector('.' + btn.getAttribute('data-video')).classList.remove('hidden');
+            body.style.overflow = 'hidden';
+        })
     })
 
     modalClose.addEventListener('click', () => {
@@ -261,9 +263,11 @@
     }
 
     function closeModal() {
-        modalBox.querySelector('.visite').style.display = 'none';
-        modalBox.querySelector('.echauffement').style.display = 'none';
-        modalBox.style.display = 'none';
+        visite.pause();
+        echauffement.pause();
+        visite.classList.add('hidden');
+        echauffement.classList.add('hidden');
+        modalBox.classList.add('hidden');
         body.style.overflow = 'initial';
     }
 </script>

@@ -10,7 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
-use SimpleXLSXGen;
+use Shuchkin\SimpleXLSXGen;
 
 class ToolsController extends Controller
 {

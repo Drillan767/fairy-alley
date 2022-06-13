@@ -8,6 +8,7 @@ use App\Models\FirstContact;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Models\YearData;
+use Illuminate\Support\Facades\Hash;
 
 class FirstContactHandler
 {
@@ -20,7 +21,7 @@ class FirstContactHandler
         }
 
         // User won't be able to login anyway.
-        $user->password = '';
+        $user->password = $request->has('role') ? Hash::make('password') : '';
         $user->lesson_id = $request->get('lesson');
 
         $user->save();

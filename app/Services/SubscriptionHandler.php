@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Notifications\RenewalUpdated;
+use Illuminate\Support\Facades\Notification;
 use App\Http\Requests\{RenewalRequest, SubscriptionRequest};
 use App\Http\Requests\SubscriptionValidationRequest;
 use App\Models\{Invite, Media, Subscription, User, YearData};
@@ -86,6 +88,8 @@ class SubscriptionHandler
 
             // Send notification saying an update was made to the subscription
         }
+
+        Notification::sendNow(User::role('administrator')->get(), new RenewalUpdated($user->full_name, $user->id));
     }
 
     public function validate(SubscriptionValidationRequest $request): array

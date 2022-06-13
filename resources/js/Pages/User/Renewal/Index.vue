@@ -1,5 +1,5 @@
 <template>
-    <user-layout title="Utilisateurs en cours d'inscription">
+    <user-layout title="Renouveler votre abonnement">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
                 Renouveler votre abonnement
@@ -55,6 +55,14 @@
                                     </svg>
                                     <p>Veuillez corriger les erreurs dans le formulaire</p>
                                 </div>
+
+                                <div v-if="feedback !== ''" class="flex items-center bg-orange-500 text-white text-sm font-bold px-4 py-3 mb-4" role="alert">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <p>{{ feedback }}</p>
+                                </div>
+
                                 <h2 class="text-2xl text-gray-700 leading-tight mb-2">
                                     Choix du cours
                                 </h2>
@@ -71,10 +79,6 @@
                                         <jet-input-error :message="form.errors.schedule2" class="mt-2"/>
                                     </div>
                                 </div>
-                                <!-- Store data into another json file than settings -->
-                                <!-- Do not recreate a subscription -->
-                                <!-- Create the script to trigger the new year -->
-                                <!-- Display the texts cf l.21, the prices need to be included -->
                                 <div>
                                     <jet-label for="health_data" value="Avez-vous des informations médicales dont vous voudriez nous faire part ?"/>
                                     <jet-textarea id="health_data" v-model="form.health_data" class="mt-1 block w-full"/>
@@ -86,7 +90,7 @@
                                         <jet-label for="health_data" value="Certificat médical"/>
                                         <jet-file-upload
                                             @input="handleUpload"
-                                            :current-file="user.current_year_data?.file"
+                                            :current-file="currentYear.file || null"
                                         />
                                         <jet-input-error :message="form.errors.medical_certificate" class="mt-2"/>
                                     </div>
@@ -180,7 +184,7 @@
     </user-layout>
 </template>
 
-<script>
+<script setup>
 import JetInput from '@/Jetstream/Input.vue'
 import JetTextarea from '@/Jetstream/Textarea.vue'
 import JetSelect from '@/Jetstream/Select.vue'
@@ -189,91 +193,85 @@ import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
 import JetLabel from '@/Jetstream/Label.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
 import JetFileUpload from '@/Jetstream/FileUpload.vue'
-import { useForm } from "@inertiajs/inertia-vue3";
+import {useForm, usePage} from "@inertiajs/inertia-vue3";
 import UserLayout from "@/Layouts/UserLayout.vue";
-import { computed } from "vue";
+import {computed, onMounted, ref} from "vue";
 import dayjs from "dayjs";
 
-export default {
-    title: 'Renouveller votre abonnement',
-    props: {
-        editing: {
-            type: Boolean,
-            default: false,
-        },
-        tos: Object,
-        user: Object,
-        lessons: Array,
-        settings: Object,
-        flash: {
-            type: Object,
-            required: false
-        }
+const props = defineProps({
+    editing: {
+        type: Boolean,
+        default: false,
     },
-
-    components: {
-        JetInput,
-        JetTextarea,
-        JetLabel,
-        JetButton,
-        JetSelect,
-        JetInputError,
-        JetSecondaryButton,
-        JetFileUpload,
-        UserLayout,
-    },
-
-    setup (props) {
-        const form = useForm({
-            payment_method: '',
-            schedule1: null,
-            schedule2: null,
-            medical_certificate: null,
-            invites: props.editing ? props.user.subscription.invites : [],
-            health_data: props.editing ? props.user.current_year_data?.health_data : '',
-            accepts: props.editing,
-        })
-
-        const currentYear = computed(() => {
-            const date = dayjs();
-
-            // Check if after september
-            if (date.month() >= 8) {
-                return `${date.year()} - ${date.add(1, 'year').year()}`
-            } else {
-                return `${date.subtract(1, 'year').year()} - ${date.year()}`;
-            }
-        })
-
-        const filteredLessons = computed(() => {
-            return props.lessons.filter((l) => l.gender.includes(props.user.gender))
-        });
-
-        const handleUpload = (file) => {
-            form.medical_certificate = file
-        };
-
-        const add = () => {
-            form.invites.push({firstname: '', lastname: '', email: '', phone: '', lid: ''})
-        }
-
-        const remove = (index) => {
-            form.invites.splice(index, 1)
-        }
-
-        function submit() {
-            form.post(route('renewal.update'))
-        }
-
-        return {
-            filteredLessons,
-            currentYear,
-            form,
-            submit,
-            add,
-            remove,
-            handleUpload,
-        }
+    tos: Object,
+    user: Object,
+    lessons: Array,
+    settings: Object,
+    relatedRenewal: Object,
+    yearData: Object,
+    flash: {
+        type: Object,
+        required: false
     }
+})
+
+const user = usePage().props.value.user
+
+const feedback = ref('');
+
+
+const form = useForm({
+    payment_method: '',
+    schedule1: null,
+    schedule2: null,
+    medical_certificate: null,
+    invites: props.editing ? props.user.subscription.invites : [],
+    health_data: props.editing ? props.user.current_year_data?.health_data : '',
+    accepts: props.editing,
+})
+
+onMounted(() => {
+    if (user.resubscription_status) {
+        const { relatedRenewal } = props;
+        form.accepts = true;
+        form.payment_method = relatedRenewal.payment;
+        form.schedule1 = relatedRenewal.lesson_choices[0];
+        form.schedule2 = relatedRenewal.lesson_choices[1];
+        form.invites = relatedRenewal.invites;
+
+        feedback.value = relatedRenewal.feedback;
+    }
+})
+
+const currentYear = computed(() => {
+    const date = dayjs();
+
+    // Check if after september
+    if (date.month() >= 8) {
+        return `${date.year()} - ${date.add(1, 'year').year()}`
+    } else {
+        return `${date.subtract(1, 'year').year()} - ${date.year()}`;
+    }
+})
+
+const filteredLessons = computed(() => {
+    return props.lessons.filter((l) => l.gender.includes(props.user.gender))
+});
+
+const handleUpload = (file) => {
+    form.medical_certificate = file
+};
+
+const add = () => {
+    form.invites.push({firstname: '', lastname: '', email: '', phone: '', lid: ''})
 }
+
+const remove = (index) => {
+    form.invites.splice(index, 1)
+}
+
+function submit() {
+    form.post(route('renewal.update'))
+}
+
 </script>
