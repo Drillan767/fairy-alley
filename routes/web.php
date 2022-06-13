@@ -108,6 +108,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () use ($start, 
             'utilisateurs' => UserController::class,
         ]);
 
+        Route::get('/services/souscriptions', [ServiceController::class, 'subscriptions'])->name('services.subscriptions.index');
+        Route::post('services/subscriptions', [ServiceController::class, 'updateSubscription'])->name('services.subscriptions.update');
+
         Route::apiResources([
             'services' => ServiceController::class,
         ]);
@@ -129,6 +132,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () use ($start, 
             Route::post('/user/change-password', 'swalUpdatePassword')->name('change.password');
         });
 
+        Route::post('ask-service', [ServiceController::class, 'askService'])->name('service.ask');
 
         if (($start->isToday() || $start->isPast()) && $end->isFuture()) {
             Route::controller(RenewalController::class)->group(function() {

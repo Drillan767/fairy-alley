@@ -6,11 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceRequest;
 use App\Models\Page;
 use App\Models\Service;
+use App\Models\ServiceSubscription;
+use App\Models\User;
+use App\Notifications\ServiceAsked;
 use App\Services\FileHandler;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -28,6 +32,29 @@ class ServiceController extends Controller
         $pages = Page::all(['id', 'title']);
 
         return Inertia::render('Admin/Services/Index', compact('services', 'pages'));
+    }
+
+    public function subscriptions()
+    {
+        $subscriptions = ServiceSubscription::with('service:id,title', 'user:id,firstname,lastname')->get();
+        return Inertia::render('Admin/Services/Subscriptions', compact('subscriptions'));
+    }
+
+    public function askService(Request $request)
+    {
+        ServiceSubscription::create([
+            'user_id' => $request->user()->id,
+            'service_id' => $request->get('service')
+        ]);
+
+        Notification::sendNow(User::role('administrator')->get(), new ServiceAsked($request->user()->id, $request->get('service')));
+
+        return redirect()->back()->with('success', 'Votre demande pour ce service a bien été prise en compte');
+    }
+
+    public function updateSubscription(Request $request)
+    {
+
     }
 
     public function store(ServiceRequest $request)

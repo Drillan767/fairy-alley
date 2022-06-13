@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ServiceSubscription extends Model
 {
 
+    protected $fillable = ['user_id', 'service_id'];
+
     public function user(): belongsTo
     {
         return $this->belongsTo(User::class);
@@ -19,6 +21,7 @@ class ServiceSubscription extends Model
     }
 
     protected $casts = [
+        'accepted' => 'boolean',
         'accepted_at' => 'date:d/m/Y',
         'created_at' => 'date:d/m/Y',
     ];

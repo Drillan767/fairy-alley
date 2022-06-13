@@ -16,7 +16,10 @@
                         </svg>
                         <p class="ml-5">{{ flash.success }}</p>
                     </div>
-                    <div class="flex justify-end mb-5">
+                    <div class="flex justify-end mb-5 gap-x-5">
+                        <Link :href="route('services.subscriptions.index')" class="btn">
+                            Souscriptions
+                        </Link>
                         <span class="btn btn-primary" @click="showModal = true">
                             Nouveau service
                         </span>
@@ -89,7 +92,6 @@ import Swal from "sweetalert2";
 import { Link } from "@inertiajs/inertia-vue3";
 import axios from "axios";
 export default {
-    title: 'Services',
     props: {
         services: Array,
         pages: Array,
