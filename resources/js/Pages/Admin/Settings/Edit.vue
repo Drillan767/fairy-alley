@@ -16,10 +16,7 @@
                            :end="settings.subscription_end"
                            :price_full="settings.price_full"
                            :price_quarterly="settings.price_quarterly"
-                           :details="settings.details"
-                           :process="settings.process"
-                           :organization="settings.organization"
-                           :conditions="settings.conditions"
+                           :tos="settings.tos"
                        />
 
                         <CustomHolidays :holidays="settings.holidays" />

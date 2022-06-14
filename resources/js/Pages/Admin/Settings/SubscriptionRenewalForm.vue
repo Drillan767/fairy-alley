@@ -55,29 +55,11 @@
 
             <h2 class="font-semibold text-l text-gray-800 leading-tight">Termes d'utilisation</h2>
 
-            <div class="grid grid-cols-6 gap-4 mt-4">
-                <div class="col-span-6 sm:col-span-3">
-                    <jet-label value="Détails" />
-                    <wysiwyg v-model="form.details" :tiny="tiny" />
-                </div>
-
-                <div class="col-span-6 sm:col-span-3">
-                    <jet-label value="Procédure" />
-                    <wysiwyg v-model="form.process" :tiny="tiny" />
-                </div>
-
-                <div class="col-span-6 sm:col-span-3">
-                    <jet-label value="Organisation" />
-                    <wysiwyg v-model="form.organization" :tiny="tiny" />
-                </div>
-
-                <div class="col-span-6 sm:col-span-3">
-                    <jet-label value="Conditions" />
-                    <wysiwyg v-model="form.conditions" :tiny="tiny" />
-                </div>
+            <div class="mt-4">
+                <wysiwyg v-model="form.tos" :tiny="tiny" />
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4 flex justify-end">
                 <jet-button>Enregistrer</jet-button>
             </div>
         </form>
@@ -121,19 +103,7 @@ const props = defineProps({
         type: String,
         default: '',
     },
-    details: {
-        type: String,
-        default: '',
-    },
-    process: {
-        type: String,
-        default: '',
-    },
-    organization: {
-        type: String,
-        default: '',
-    },
-    conditions: {
+    tos: {
         type: String,
         default: '',
     },
@@ -144,10 +114,7 @@ const form = useForm({
     end: props.end,
     price_full: props.price_full,
     price_quarterly: props.price_quarterly,
-    details: props.details,
-    process: props.process,
-    organization: props.organization,
-    conditions: props.conditions,
+    tos: props.tos,
 })
 
 const submit = () => {

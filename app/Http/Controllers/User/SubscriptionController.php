@@ -24,7 +24,12 @@ class SubscriptionController extends Controller
 
     public function index(LessonDateDisplayHandler $displayHandler): Response|RedirectResponse
     {
-        $services = Service::with('subscriptions')->get();
+        $services = Service::query()
+        ->with(['subscriptions' => function ($query) {
+            $query->where('expires_at', '>=', now());
+        }])
+        ->get();
+
         $user = auth()->user();
         $settings = Valuestore::make(storage_path('app/settings.json'));
         $lessonDays = [];

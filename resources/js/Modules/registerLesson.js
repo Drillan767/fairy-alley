@@ -16,7 +16,6 @@ const registerLesson = async (lessons, date, nbReplacements) => {
         const values = [];
         let currentStep;
         const subscribableLessons = lessons.filter((l) => l.type !== 'lesson').length > 0
-        console.log(nbReplacements)
 
         for (currentStep = 0; currentStep < steps.length;) {
             let result = null;
@@ -37,7 +36,7 @@ const registerLesson = async (lessons, date, nbReplacements) => {
                     icon: 'question',
                     title: 'Que voulez-vous faire ?',
                     showCancelButton: currentStep > 0,
-                    html: generateRadioButton(options, 'stayOrGo'),
+                    html: generateRadioButton(options, 'stayOrGo', date),
                     currentProgressStep: currentStep,
                     preConfirm: () => {
                         const checked = Swal
@@ -184,8 +183,15 @@ const registerLesson = async (lessons, date, nbReplacements) => {
     }
 };
 
-const generateRadioButton = (lessons, name) => {
+const generateRadioButton = (lessons, name, date) => {
+    console.log(date)
     let form = document.createElement('form');
+
+    let dateDiv = document.createElement('div');
+    dateDiv.classList.add('date', 'text-center')
+    const dateText = document.createTextNode(date.ariaLabel)
+    dateDiv.appendChild(dateText);
+    form.appendChild(dateDiv)
 
     for (let key in lessons) {
         let div = document.createElement('div');

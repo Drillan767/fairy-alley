@@ -80,113 +80,102 @@
                 </div>
             </div>
         </div>
-        <Form :show="showModal" :service="service" @close="closeModal" :pages="pages"/>
+        <Form :show="showModal" :service="selectedService" @close="closeModal" :pages="pages"/>
     </admin-layout>
 </template>
 
-<script>
+<script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import Form from "./Form.vue";
 import draggable from "vuedraggable";
 import Swal from "sweetalert2";
 import { Link } from "@inertiajs/inertia-vue3";
 import axios from "axios";
-export default {
-    props: {
-        services: Array,
+import { ref } from '@vue/reactivity';
+import { onMounted } from '@vue/runtime-core';
+
+const props = defineProps({
+    services: Array,
         pages: Array,
         flash: {
             type: Object,
             required: false
         }
-    },
+})
 
-    components: {
-        Form,
-        AdminLayout,
-        Link,
-        draggable,
-    },
+const orderChanged = ref(false)
+const currentServiceOrder = ref([])
+const servicesList = ref([])
+const showModal = ref(false)
+const selectedService = ref(null)
+const dragging = ref(false)
 
-    data () {
-        return {
-            orderChanged: false,
-            currentServiceOrder: [],
-            servicesList: [],
-            showModal: false,
-            service: null,
-            dragging: false
-        }
-    },
+onMounted(() => {
+    servicesList.value = props.services
+})
 
-    mounted() {
-        this.servicesList = this.services
-    },
-
-    methods: {
-        addService () {
-            this.showModal = true;
-        },
-
-        closeModal () {
-            this.showModal = false;
-        },
-
-        log () {
-            this.orderChanged = true;
-            this.currentOrder = this.servicesList.map((s) => {
-                return {id: s.id, order: s.order}
-            })
-        },
-
-        updateServiceOrder() {
-            axios.post(route('services.order'), this.currentOrder)
-                .then(() => {
-                    this.orderChanged = false
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Ordre enregistré',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                });
-        },
-
-        editService(service) {
-            this.service = service;
-            this.service.file = this.service.banner;
-            this.showModal = true;
-        },
-
-        deleteService(service) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Supprimer le service ?',
-                text: `Le service intitulé "${service.title}" va être supprimé,`,
-                showCancelButton: true,
-                cancelButtonText: 'Annuler',
-                confirmButtonText: 'Supprimer',
-                confirmButtonColor: '#DC2626',
-            })
-            .then((result) => {
-                if (result.isConfirmed) {
-                    axios.delete(route('services.destroy', {service: service.id}))
-                    .then(() => {
-                        this.servicesList = this.servicesList.filter((s) => s.id !== service.id)
-                        Swal.fire({
-                            icon: 'success',
-                            toast: true,
-                            title: 'Service supprimé.',
-                            text: 'Le service a bien été supprimée',
-                            timerProgressBar: true,
-                            showConfirmButton: false,
-                            timer: 2000,
-                        })
-                    })
-                }
-            })
-        },
-    },
+const addService = () => {
+    showModal.value = true
 }
+
+const closeModal = () => {
+    showModal.value = false
+}
+
+const log = () => {
+    orderChanged.value = true
+    currentOrder.value = servicesList.value.map((s) => {
+        return {id: s.id, order: s.order}
+    })
+}
+
+const updateServiceOrder = () => {
+    axios.post(route('services.order'), currentOrder.value)
+        .then(() => {
+            orderChanged.value = false
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Ordre enregistré',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        });
+}
+
+const editService = (service) => {
+    selectedService.value = service
+    selectedService.value.file = selectedService.value.banner
+    showModal.value = true
+}
+
+const deleteService = (service) => {
+    Swal.fire({
+        icon: 'warning',
+        title: 'Supprimer le service ?',
+        text: `Le service intitulé "${service.title}" va être supprimé,`,
+        showCancelButton: true,
+        cancelButtonText: 'Annuler',
+        confirmButtonText: 'Supprimer',
+        confirmButtonColor: '#DC2626',
+    })
+    .then((result) => {
+        if (result.isConfirmed) {
+            axios.delete(route('services.destroy', {service: service.id}))
+            .then(() => {
+                servicesList.value = servicesList.value.filter((s) => s.id !== service.id)
+                Swal.fire({
+                    icon: 'success',
+                    toast: true,
+                    title: 'Service supprimé.',
+                    text: 'Le service a bien été supprimée',
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    timer: 2000,
+                })
+            })
+        }
+    })
+}
+
 </script>

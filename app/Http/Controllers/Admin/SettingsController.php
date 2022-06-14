@@ -26,6 +26,7 @@ class SettingsController extends Controller
         $settings->put('subscription_end', Carbon::parse($request->get('end'))->startOfDay());
         $settings->put('price_full', $request->get('price_full'));
         $settings->put('price_quarterly', $request->get('price_quarterly'));
+        $settings->put('tos', $request->get('tos'));
         $settings->put('details', $request->get('details'));
         $settings->put('process', $request->get('process'));
         $settings->put('organization', $request->get('organization'));

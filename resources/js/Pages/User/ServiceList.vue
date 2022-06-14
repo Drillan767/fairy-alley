@@ -18,8 +18,6 @@
                     <template v-if="subscriptionStatus(service) === 'subscribed'">
                         <span class="text-green-500">Expire le {{ getExpirationDate(service) }}</span>
                     </template>
-
-
                 </td>
             </tr>
             </tbody>

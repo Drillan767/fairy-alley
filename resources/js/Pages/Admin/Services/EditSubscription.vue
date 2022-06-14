@@ -1,8 +1,13 @@
 <template>
     <modal :show="show" :closeable="true" @close="close">
         <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <h1 class="font-semibold text-lg text-gray-800 leading-tight text-center mb-4">
+                Souscription à un service
+            </h1>
+            <p class="text-center">
+                {{ subscription.user.full_name }} souhaiterait s'inscrire au service intitulé "{{ subscription.service.title }}".
+            </p>
             <form @submit.prevent="submit">
-
                 <div class="mt-4">
                     <jet-label for="accept" value="Valider l'inscription ?" />
                     <label class="inline-flex items-center mr-6">
@@ -46,6 +51,8 @@ import {useForm} from "@inertiajs/inertia-vue3";
 import JetInputError from '@/Jetstream/InputError.vue';
 import JetCheckbox from '@/Jetstream/Checkbox.vue'
 import Datepicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
+import { watch } from 'vue';
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -53,13 +60,29 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
+    subscription: Object,
 })
 
 const form = useForm({
+    subscription_id: null,
     accept: false,
     expires_at: '',
 })
 
-const close = () => emit('close')
+watch(() => props.subscription, (fields) => {
+    form.subscription_id = fields.id;
+});
+
+const close = () => {
+    // form.reset();
+    emit('close');
+
+}
+
+const submit = () => {
+    form.post(route('services.subscriptions.update'), {
+        onSuccess: () => close()
+    })
+}
 
 </script>

@@ -17,36 +17,8 @@
                     <section class="text-gray-600 body-font">
                         <div class="container p-6 sm:px-20 mx-auto">
                             <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-                                <div class="mb-4">
-                                    <h2 class="text-2xl text-gray-700 leading-tight mb-2">
-                                        Détail des cours
-                                    </h2>
-                                    <div class="prose max-w-none" v-html="tos.details"></div>
-                                </div>
 
-                                <div class="mb-4">
-                                    <h2 class="text-2xl text-gray-700 leading-tight mb-2">
-                                        Processus de réservation du cours
-                                    </h2>
-
-                                    <div class="prose max-w-none" v-html="tos.process"></div>
-                                </div>
-
-                                <div class="mb-4">
-                                    <h2 class="text-2xl text-gray-700 leading-tight mb-2">
-                                        Organisation des cours
-                                    </h2>
-
-                                    <div class="prose max-w-none" v-html="tos.organization"></div>
-                                </div>
-
-                                <div class="mb-4">
-                                    <h2 class="text-2xl text-gray-700 leading-tight mb-2">
-                                        Acceptation des conditions
-                                    </h2>
-
-                                    <div class="prose max-w-none" v-html="tos.conditions"></div>
-                                </div>
+                                <div class="prose max-w-none" v-html="tos"></div>
                             </div>
                             <form class="mt-5" @submit.prevent="submit">
                                 <div v-if="form.errors.length > 0" class="flex items-center bg-red-500 text-white text-sm font-bold px-4 py-3 mb-4" role="alert">
@@ -203,7 +175,7 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
-    tos: Object,
+    tos: String,
     user: Object,
     lessons: Array,
     settings: Object,

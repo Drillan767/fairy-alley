@@ -40,11 +40,13 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </td>
-                                    <td>{{ subscription.expires_at !== null ? subscription.expires_at : 'N/A' }}</td>
+                                    <td>{{ subscription.expires_at !== null ? dayjs(subscription.expires_at).format('DD/MM/YYYY') : 'N/A' }}</td>
                                     <td>
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                        </svg>
+                                        <div class="cursor-pointer flex justify-end" @click="editSubscription(subscription)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </div>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -54,12 +56,19 @@
                 </div>
             </div>
         </div>
+
+        <Form :show="showModal" @close="closeModal" :subscription="selectedSubscription" />
     </admin-layout>
 </template>
 
 <script setup>
+import dayjs from 'dayjs'
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import Swal from "sweetalert2";
+import Form from './EditSubscription.vue';
+import { ref } from 'vue';
+
+const selectedSubscription = ref(null);
+const showModal = ref(false);
 
 const props = defineProps({
     subscriptions: Array,
@@ -68,4 +77,24 @@ const props = defineProps({
         required: false
     }
 })
+
+const editSubscription = (subscription) => {
+    console.log('oué')
+    selectedSubscription.value = subscription;
+    showModal.value = true;
+}
+
+const closeModal = () => {
+    showModal.value = false;
+    Swal.fire({
+        icon: 'success',
+        toast: true,
+        title: 'Souscription mise à jour',
+        text: 'La souscription au service a bien été mise à jour.',
+        timerProgressBar: true,
+        showConfirmButton: false,
+        timer: 2000,
+    })
+}
+
 </script>

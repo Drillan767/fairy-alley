@@ -43,7 +43,7 @@
                 <jet-button type="button" @click="add">Ajouter</jet-button>
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4 flex justify-end">
                 <jet-button>Enregistrer</jet-button>
             </div>
         </form>

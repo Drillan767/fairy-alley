@@ -18,11 +18,7 @@ class RenewalController extends Controller
         $config = Valuestore::make(storage_path('app/settings.json'));
         $renewal = Valuestore::make(storage_path('app/renewal.json'));
 
-        $tos = [];
-
-        foreach (['details', 'process', 'organization', 'conditions'] as $field) {
-            $tos[$field] = $config->get($field);
-        }
+        $tos = $config->get('tos');
 
         $relatedRenewal = $renewal->get('user_' . auth()->id());
 

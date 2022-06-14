@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class ServiceController extends Controller
@@ -54,7 +55,23 @@ class ServiceController extends Controller
 
     public function updateSubscription(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'expires_at' => ['required', 'date'],
+            'accept' => ['required', 'accepted'],
+        ], [], [
+            'expires_at' => "Date de fin",
+            'accept' => "Acceptation"
+        ]);
 
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->errors());
+        }
+
+        $subscription = ServiceSubscription::find($request->get('subscription_id'));
+        $subscription->accepted = $request->get('accept');
+        $subscription->expires_at = Carbon::parse($request->get('expires_at'));
+        $subscription->save();
+        return redirect()->back()->with('success', 'La souscription a bien été mise à jour.');
     }
 
     public function store(ServiceRequest $request)
