@@ -196,10 +196,10 @@ const form = useForm({
 })
 
 const renewalStatuses = ref([
-    {label: 'Demande de réinscription en cours', value: 1},
+    {label: 'En attente', value: 1},
     {label: 'Documents manquants (certificat, etc)', value: 3},
     {label: 'Paiement manquant', value: 4},
-    {label: 'Réinscription validée', value: 2},
+    {label: 'Réinscription complète', value: 2},
 ])
 
 const handleUpload = (file) => {

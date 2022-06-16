@@ -301,10 +301,16 @@ class UserController extends Controller
 
     public function storeRenewal(Request $request, FileHandler $fileHandler): RedirectResponse
     {
+        $statusChanged = false;
         $renewalData = Valuestore::make(storage_path('app/renewal.json'));
 
         $user = User::find($request->get('user_id'));
         $user->load('currentYearData.file');
+
+        if ($user->resubscription_status !== $request->get('renewal_status')) {
+            $statusChanged = true;
+        }
+
         $user->resubscription_status = $request->get('renewal_status');
         $user->save();
 
@@ -326,8 +332,15 @@ class UserController extends Controller
 
         $renewalData->put("user_$user->id", $userRenewalInfos);
 
-        $user->notify(new RenewalStatusChanged());
+        if ($statusChanged && $request->get('renewal_status') === 4) {
+            $user->notify(new RenewalStatusChanged());
+        }
 
         return redirect()->route('utilisateurs.index')->with('success', "Réinscription de l'utilisateur mise à jour avec succès.");
     }
 }
+
+/*
+ Votre demande de réinscription pour le cours X a été validée,
+ Merci de votre attention
+ */

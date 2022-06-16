@@ -231,7 +231,7 @@
         </div>
         <div class="body">
             <video class="w-full hidden echauffement" src="{{$echauffement}}" controls></video>
-            <video class="w-full hidden visite" src="{{$visite}}" controls></video>
+            <video class="w-full hidden visite" src="{{$visite}}" controls muted></video>
         </div>
     </div>
 

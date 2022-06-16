@@ -65,19 +65,19 @@ return [
         ],
         [
             'status' => 2,
-            'title' => 'Vous êtes réinscrit(e) pour l\'année prochaine.',
+            'title' => 'Votre demande d\'inscription est terminée : vous êtes réinscrit(e) pour l\'année prochaine.',
             'color' => 'green',
             'showEdit' => false,
         ],
         [
             'status' => 3,
-            'title' => 'Des documents sont manquants, veuillez modifier votre demande de réinscription.',
+            'title' => 'Demande d\'inscription incomplète : des documents sont manquants, veuillez modifier votre demande de réinscription.',
             'color' => 'orange',
             'showEdit' => true,
         ],
         [
             'status' => 4,
-            'title' => 'Le paiement est manquant, veuillez vous en occuper sous les plus brefs délais.',
+            'title' => 'Demande d\'inscription incomplète : le paiement est manquant, veuillez vous en occuper sous les plus brefs délais.',
             'color' => 'orange',
             'showEdit' => false,
         ]
