@@ -45,6 +45,12 @@
     </button>
 </div>
 
+<div class="px-4">
+    <p class="text-2xl text-center text-gray-900">
+        Venez profiter d'un environnement unique pour découvrir l'univers de la relaxation et du bien-être.
+    </p>
+</div>
+
 <section>
     <div class="services">
         @foreach($services as $service)
@@ -70,25 +76,16 @@
 <section>
     <div class="container px-5 py-10 mx-auto">
         <div class="md:-mx-4 xl:py-4">
-            <div class="px-4">
-                <p class="text-2xl text-gray-900">
-                    Venez profiter d'un environnement unique pour découvrir l'univers de la relaxation et du bien-être.
-                </p>
-            </div>
             <div class="px-4 sm:text-center mt-12 md:mt-0">
-                <button
+<!--                <button
                     class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg preview-modal" data-video="echauffement">
                     Aperçu d'une séance de gymnastique rééducative
-                </button>
+                </button>-->
 
-                <a href="#"
-                    class="flex mx-auto mt-16 text-indigo-500 white border hover:bg-indigo-50 border-indigo-500 py-2 px-8 focus:outline-none rounded text-lg block sm:inline-block">
-                    En savoir plus
-                </a>
                 <br />
                 <a href="{{ route('fc.create') }}"
                    class="flex mx-auto mt-16 mr-4 text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg block sm:inline-block">
-                    Inscription au cours de gymnastique
+                    Demande d'inscription au cours de gymnastique
                 </a>
 
             </div>
