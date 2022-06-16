@@ -77,7 +77,7 @@ return [
         ],
         [
             'status' => 4,
-            'title' => 'Demande d\'inscription incomplète : le paiement est manquant, veuillez vous en occuper sous les plus brefs délais.',
+            'title' => 'Demande d\'inscription incomplète : le paiement est manquant, veuillez vous en occuper dans les plus brefs délais.',
             'color' => 'orange',
             'showEdit' => false,
         ]
