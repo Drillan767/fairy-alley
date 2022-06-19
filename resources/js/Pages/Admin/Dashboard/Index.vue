@@ -1,5 +1,5 @@
 <template>
-    <admin-layout title="Dashboard">
+    <admin-layout title="Administration">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
                 Administration

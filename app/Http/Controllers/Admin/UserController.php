@@ -316,6 +316,8 @@ class UserController extends Controller
 
         $yearData = $user->currentYearData;
 
+        // Health data forgotten
+        $yearData->healt_data = $request->get('year_data')['health_data'];
         $yearData->observations = $request->get('year_data')['observations'];
         $yearData->total = $request->get('year_data')['total'];
         $yearData->payments = $request->get('year_data')['payments'];

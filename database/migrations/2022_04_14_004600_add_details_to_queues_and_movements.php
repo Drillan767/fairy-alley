@@ -19,7 +19,6 @@ return new class extends Migration
         });
 
         Schema::table('lessons', function (Blueprint $table) {
-            $table->string('gender', 10);
             $table->string('type', 60);
         });
 

@@ -25,6 +25,7 @@ class LessonFactory extends Factory
             'title' => 'Gymnastique rééducative posturale globale',
             'year' => '2021 - 2022',
             'ref' => 'Gym',
+            'type' => 'lesson',
             'description' => "Tousled 90's truffaut copper mug. Chartreuse tote bag activated charcoal tbh man bun coloring book godard.",
             'schedule' => $dates,
         ];
