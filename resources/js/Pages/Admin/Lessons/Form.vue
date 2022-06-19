@@ -158,7 +158,7 @@ export default {
 
         onMounted(() => {
             if (props.editing) {
-                setupOccurrences.value.nbOccurrences = props.lesson.schedule.length
+                setupOccurrences.value.nbOccurrences = props.lesson.schedule.filter((l) => l.status !== 'cancelled').length
                 setupOccurrences.value.occurrenceStartDate = props.lesson.schedule[0].date
 
                 occurrences.value = props.lesson.schedule;
@@ -242,7 +242,7 @@ export default {
                 status: 'ok',
             })
 
-            for (let i = 1; i < nbOccurrences; i++) {
+            for (let i = 1; i <= nbOccurrences; i++) {
                 date = dayjs(date).add(1, 'w');
 
                 if (i < setupOccurrences.value.nbOccurrences) {

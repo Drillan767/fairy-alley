@@ -1,5 +1,5 @@
 <template>
-    <admin-layout title="Utilisateurs en cours d'inscription">
+    <admin-layout title="Tous les utilisateurs">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
                 Utilisateurs
@@ -94,7 +94,7 @@
     </admin-layout>
 </template>
 
-<script>
+<script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import JetSelect from '@/Jetstream/Select.vue';
 import { Link } from '@inertiajs/inertia-vue3';
@@ -104,251 +104,225 @@ import {computed, onMounted, ref, toRaw} from "vue";
 import Swal from "sweetalert2";
 import dayjs from "dayjs";
 
-export default {
-    title: 'Tous les utilisateurs',
-    components: {
-        AdminLayout,
-        Link,
-        VueGoodTable,
-        JetSelect,
+const props = defineProps({
+    users: {
+        type: Array,
+        required: true,
     },
+    lessons: Array,
+    roles: Object,
+    flash: {
+        type: Object,
+        required: false
+    }
+})
 
-    props: {
-        users: {
-            type: Array,
-            required: true,
-        },
-        lessons: Array,
-        roles: Object,
-        flash: {
-            type: Object,
-            required: false
+const userList = ref(props.users);
+const vuegoodtable = ref(null)
+
+const currentYear = computed(() => {
+    const date = dayjs();
+
+    // Check if after september
+    if (date.month() >= 8) {
+        return `${date.year()} - ${date.add(1, 'year').year()}`
+    } else {
+        return `${date.subtract(1, 'year').year()} - ${date.year()}`;
+    }
+})
+
+const selectedYear = ref(currentYear.value);
+
+onMounted(() => {
+    let searchTerm = localStorage.getItem('globalSearch');
+
+    if (searchTerm) {
+        vuegoodtable.value.globalSearchTerm = searchTerm;
+        // Not working.
+        const searchField = document.querySelector('input[id^="vgt-search"]');
+        searchField.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter'}));
+    }
+});
+
+const roleList = computed(() => {
+    let list = [];
+    let roles = toRaw(props.roles)
+    for (const property in roles) {
+        list.push({
+            value: property,
+            text: props.roles[property].display,
+        })
+    }
+
+    return list;
+})
+
+const yearsList = computed(() => {
+    let years = [];
+    props.lessons.forEach((lesson) => {
+        if (!years.find((y) => y.value === lesson.year)) {
+            years.push({label: lesson.year, value: lesson.year})
         }
-    },
+    });
 
-    setup (props) {
-        const userList = ref(props.users);
-        const vuegoodtable = ref(null)
+    return years;
+})
 
-        const roleList = computed(() => {
-            let list = [];
-            let roles = toRaw(props.roles)
-            for (const property in roles) {
-                list.push({
-                    value: property,
-                    text: props.roles[property].display,
-                })
-            }
+const changeYear = () => {
+    const selectedLesson = props.lessons
+        .filter((l) => l.year === selectedYear.value)
+        .map((l) => l.id);
 
-            return list;
-        })
+    userList.value = props.users.filter((u) => selectedLesson.includes(u.lesson_id))
+}
 
-        const currentYear = computed(() => {
-            const date = dayjs();
+const searchOptions = {
+    enabled: true,
+    placeholder: 'Rechercher...',
+    trigger: 'enter',
+};
 
-            // Check if after september
-            if (date.month() >= 8) {
-                return `${date.year()} - ${date.add(1, 'year').year()}`
-            } else {
-                return `${date.subtract(1, 'year').year()} - ${date.year()}`;
-            }
-        })
-        const selectedYear = ref(currentYear.value);
+const sortOption = {
+    enabled: true,
+    initialSortBy: JSON.parse(localStorage.getItem('sort')),
+};
 
-        const yearsList = computed(() => {
-            let years = [];
-            props.lessons.forEach((lesson) => {
-                if (!years.find((y) => y.value === lesson.year)) {
-                    years.push({label: lesson.year, value: lesson.year})
-                }
-            });
-
-            return years;
-        })
-
-        const changeYear = () => {
-            const selectedLesson = props.lessons
-                .filter((l) => l.year === selectedYear.value)
-                .map((l) => l.id);
-
-            userList.value = props.users.filter((u) => selectedLesson.includes(u.lesson_id))
-        }
-
-        const searchOptions = {
-            enabled: true,
-            placeholder: 'Rechercher...',
-            trigger: 'enter',
-        };
-
-        const sortOption = {
-            enabled: true,
-            initialSortBy: JSON.parse(localStorage.getItem('sort')),
-        };
-
-        onMounted(() => {
-            let searchTerm = localStorage.getItem('globalSearch');
-
-            if (searchTerm) {
-                vuegoodtable.value.globalSearchTerm = searchTerm;
-                // Not working.
-                const searchField = document.querySelector('input[id^="vgt-search"]');
-                searchField.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter'}));
-            }
-        });
-
-        const onSortChange = (params) => {
-            const sortValue = params ? toRaw(params[0]) : null;
-            if (sortValue) {
-                const { type } = sortValue;
-                if (type !== 'none') {
-                    localStorage.setItem('sort', JSON.stringify(sortValue));
-                } else {
-                    localStorage.setItem('sort', "{}")
-                }
-            }
-        };
-
-        const onColumnFilter = (params) => {
-            const filterValue = toRaw(params.columnFilters);
-            const filters = Object.keys(filterValue);
-            filters.forEach((f) => localStorage.setItem(f, filterValue[f]))
-        };
-
-        const columns = [
-            {
-                label: 'Nom de famille',
-                field: 'lastname',
-                sortable: true,
-            },
-            {
-                label: 'Prénom',
-                field: 'firstname',
-                sortable: true,
-            },
-            {
-                label: 'Adresse e-mail',
-                field: 'email',
-            },
-            {
-                label: 'Téléphone',
-                field: 'phone',
-            },
-            {
-                label: 'Cours',
-                field: 'lesson',
-                filterOptions: {
-                    enabled: true,
-                    filterValue: localStorage.getItem('lesson'),
-                    placeholder: 'Sélectionner...',
-                    filterDropdownItems: [
-                        {
-                            text: 'Aucun',
-                            value: 0,
-                        },
-                        ...props.lessons.map((lesson) => {
-                            return {text: lesson.title, value: lesson.id}
-                        }),
-                    ],
-                    filterFn: (data, filterString) => {
-                        const lessonId = parseInt(filterString);
-                        if (lessonId === 0) {
-                            return data === undefined
-                        } else {
-                            return data && data.id === lessonId;
-                        }
-                    }
-                }
-            },
-            {
-                label: "Statut",
-                field: 'role',
-                filterOptions: {
-                    enabled: true,
-                    filterValue: localStorage.getItem('role'),
-                    placeholder: 'Choisir',
-                    filterDropdownItems: roleList.value,
-                }
-            },
-            {
-                label: 'Actions',
-                field: 'actions',
-                sortable: false,
-            }
-        ];
-
-        const onSearch = (e) => localStorage.setItem('globalSearch', e.searchTerm)
-
-        const deleteUser = (user) => {
-            const feminine = {
-                user: user.gender === 'F' ? 'utilisatrice' : 'utilisateur',
-                archived: user.gender === 'F' ? 'archivée' : 'archivé',
-                deleted: user.gender === 'F' ? 'supprimée' : 'supprimé',
-                if: user.gender === 'F' ? 'si elle' : "s'il",
-            };
-
-            Swal.fire({
-                icon: 'warning',
-                title: "Supprimer l'utilisateur ?",
-                showCancelButton: true,
-                showDenyButton: true,
-                cancelButtonText: 'Annuler',
-                denyButtonText: 'Archiver',
-                confirmButtonText: 'Supprimer',
-                confirmButtonColor: '#DC2626',
-                html: `<p>L'${feminine.user} ${user.full_name} est sur le point d'être ${feminine.deleted}.</p><br />
-                        <p>Vous pouvez également archiver l'${feminine.user}, et l'accès à son compte lui sera désormais impossible.</p><br />
-                        <p>Si vous décidez de sa suppression, cela supprimera également ses informations ainsi que ses documents liés ${feminine.if} en avait.</p><br />
-                        <p>Cette action est irreversible. Continuer ?</p>`
-            })
-                .then((result) => {
-                    if (result.isConfirmed) {
-                        axios.delete(route('utilisateurs.destroy', {utilisateur: user.id}))
-                            .then(() => {
-                                this.userList = props.users.filter((u) => u.id !== user.id)
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: `${user.full_name} a été ${feminine.deleted} avec succès.`
-                                })
-                            })
-                    } else if (result.isDenied) {
-                        axios.post(route('utilisateurs.archive', {user: user.id}))
-                            .then(() => {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: `${user.full_name} a été ${feminine.archived} avec succès.`
-                                })
-                            })
-                    }
-                });
-        }
-
-        const lessonList = computed(() => {
-            let lessons = [];
-            lessons.push({text: 'Aucun', value: 0})
-
-            props.lessons.forEach((lesson) => {
-                lessons.push({text: lesson.title, value: lesson.id})
-            })
-
-            return lessons;
-        })
-
-        return {
-            userList,
-            searchOptions,
-            sortOption,
-            onColumnFilter,
-            deleteUser,
-            onSortChange,
-            onSearch,
-            lessonList,
-            columns,
-            vuegoodtable,
-            yearsList,
-            currentYear,
-            selectedYear,
-            changeYear
+const onSortChange = (params) => {
+    const sortValue = params ? toRaw(params[0]) : null;
+    if (sortValue) {
+        const { type } = sortValue;
+        if (type !== 'none') {
+            localStorage.setItem('sort', JSON.stringify(sortValue));
+        } else {
+            localStorage.setItem('sort', "{}")
         }
     }
+};
+
+const onColumnFilter = (params) => {
+    const filterValue = toRaw(params.columnFilters);
+    const filters = Object.keys(filterValue);
+    filters.forEach((f) => localStorage.setItem(f, filterValue[f]))
+};
+
+const columns = [
+    {
+        label: 'Nom de famille',
+        field: 'lastname',
+        sortable: true,
+    },
+    {
+        label: 'Prénom',
+        field: 'firstname',
+        sortable: true,
+    },
+    {
+        label: 'Adresse e-mail',
+        field: 'email',
+    },
+    {
+        label: 'Téléphone',
+        field: 'phone',
+    },
+    {
+        label: 'Cours',
+        field: 'lesson',
+        filterOptions: {
+            enabled: true,
+            filterValue: localStorage.getItem('lesson'),
+            placeholder: 'Sélectionner...',
+            filterDropdownItems: [
+                {
+                    text: 'Aucun',
+                    value: 0,
+                },
+                ...props.lessons.map((lesson) => {
+                    return {text: lesson.title, value: lesson.id}
+                }),
+            ],
+            filterFn: (data, filterString) => {
+                const lessonId = parseInt(filterString);
+                if (lessonId === 0) {
+                    return data === undefined
+                } else {
+                    return data && data.id === lessonId;
+                }
+            }
+        }
+    },
+    {
+        label: "Statut",
+        field: 'role',
+        filterOptions: {
+            enabled: true,
+            filterValue: localStorage.getItem('role'),
+            placeholder: 'Choisir',
+            filterDropdownItems: roleList.value,
+        }
+    },
+    {
+        label: 'Actions',
+        field: 'actions',
+        sortable: false,
+    }
+];
+
+const onSearch = (e) => localStorage.setItem('globalSearch', e.searchTerm)
+
+const deleteUser = (user) => {
+    const feminine = {
+        user: user.gender === 'F' ? 'utilisatrice' : 'utilisateur',
+        archived: user.gender === 'F' ? 'archivée' : 'archivé',
+        deleted: user.gender === 'F' ? 'supprimée' : 'supprimé',
+        if: user.gender === 'F' ? 'si elle' : "s'il",
+    };
+
+    Swal.fire({
+        icon: 'warning',
+        title: "Supprimer l'utilisateur ?",
+        showCancelButton: true,
+        showDenyButton: true,
+        cancelButtonText: 'Annuler',
+        denyButtonText: 'Archiver',
+        confirmButtonText: 'Supprimer',
+        confirmButtonColor: '#DC2626',
+        html: `
+            <p>L'${feminine.user} ${user.full_name} est sur le point d'être ${feminine.deleted}.</p><br />
+            <p>Vous pouvez également archiver l'${feminine.user}, et l'accès à son compte lui sera désormais impossible.</p><br />
+            <p>Si vous décidez de sa suppression, cela supprimera également ses informations ainsi que ses documents liés ${feminine.if} en avait.</p><br />
+            <p>Cette action est irreversible. Continuer ?</p>
+            `
+    })
+        .then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(route('utilisateurs.destroy', {utilisateur: user.id}))
+                    .then(() => {
+                        userList.value = props.users.filter((u) => u.id !== user.id)
+                        Swal.fire({
+                            icon: 'success',
+                            title: `${user.full_name} a été ${feminine.deleted} avec succès.`
+                        })
+                    })
+            } else if (result.isDenied) {
+                axios.post(route('utilisateurs.archive', {user: user.id}))
+                    .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: `${user.full_name} a été ${feminine.archived} avec succès.`
+                        })
+                    })
+            }
+        });
 }
+
+const lessonList = computed(() => {
+    let lessons = [];
+    lessons.push({text: 'Aucun', value: 0})
+
+    props.lessons.forEach((lesson) => {
+        lessons.push({text: lesson.title, value: lesson.id})
+    })
+
+    return lessons;
+})
 </script>

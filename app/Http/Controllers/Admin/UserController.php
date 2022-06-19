@@ -4,25 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Events\UserRoleChanged;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\FirstContactRequest;
-use App\Http\Requests\SubscriptionValidationRequest;
-use App\Http\Requests\UserUpdateRequest;
+use App\Http\Requests\{FirstContactRequest, SubscriptionValidationRequest, UserUpdateRequest};
 use App\Jobs\SendLessonChanged;
-use App\Models\Lesson;
-use App\Models\Service;
-use App\Models\Subscription;
-use App\Models\User;
-use App\Models\YearData;
+use App\Models\{Lesson, Service, Subscription, User, };
 use App\Notifications\RenewalStatusChanged;
-use App\Services\FileHandler;
-use App\Services\FirstContactHandler;
-use App\Services\SubscriptionHandler;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Inertia\Inertia;
-use Inertia\Response;
+use App\Services\{FileHandler, FirstContactHandler, SubscriptionHandler};
+use Illuminate\Http\{RedirectResponse, Request};
+use Illuminate\Support\Facades\{DB, Hash};
+use Inertia\{Inertia, Response};
 use Spatie\Valuestore\Valuestore;
 
 class UserController extends Controller
@@ -59,7 +48,7 @@ class UserController extends Controller
     public function store(FirstContactRequest $request, FirstContactHandler $firstContactHandler): RedirectResponse
     {
         $firstContactHandler->store($request);
-        return redirect()->route('utilisateurs.index')->with('success', "L'utilisateur a été créé et un mail de création de mot de passe lui a été envoyé");
+        return redirect()->back()->with('success', "L'utilisateur a été créé et un mail de création de mot de passe lui a été envoyé");
     }
 
     public function show(User $utilisateur): Response

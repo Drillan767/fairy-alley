@@ -53,6 +53,7 @@ class User extends Authenticatable
             $user->files()->delete();
             $user->subscription()->delete();
             $user->roles()->detach();
+            $user->movements()->delete();
             $user->firstContactData()->delete();
         });
     }

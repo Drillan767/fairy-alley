@@ -4,8 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RenewalRequest;
-use App\Models\Lesson;
-use App\Models\YearData;
+use App\Models\{Lesson, YearData};
 use App\Services\SubscriptionHandler;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -17,6 +16,7 @@ class RenewalController extends Controller
     {
         $config = Valuestore::make(storage_path('app/settings.json'));
         $renewal = Valuestore::make(storage_path('app/renewal.json'));
+        $decidedLessons = $this->countLessonDecisions($renewal->all());
 
         $tos = $config->get('tos');
 
@@ -39,7 +39,14 @@ class RenewalController extends Controller
             ->where('year', now()->year . ' - ' . now()->addYear()->year)
             ->orderBy('title')
             ->get(['id', 'title', 'gender'])
-            ->map(fn ($lesson) => ['value' => $lesson->id, 'label' => $lesson->title, 'gender' => $lesson->gender])
+            ->map(function ($lesson) use ($decidedLessons) {
+                $lessonTitle = array_key_exists($lesson->id, $decidedLessons) && $decidedLessons[$lesson->id] >= 10 ? ' - Complet' : '';
+                return [
+                    'value' => $lesson->id,
+                    'label' => $lesson->title . $lessonTitle,
+                    'gender' => $lesson->gender
+                ];
+            })
         ;
 
         return Inertia::render('User/Renewal/Index', compact('tos', 'lessons', 'relatedRenewal', 'yearData'));
@@ -54,5 +61,19 @@ class RenewalController extends Controller
 
         return redirect()->route('profile.index')->with('success', 'Votre réinscription a bien été enregistrée.
         Vous pourrez suivre son avancement directement sur votre profil.');
+    }
+
+    private function countLessonDecisions(array $renewals): array
+    {
+        $result = [];
+        foreach ($renewals as $renewal) {
+            foreach ($renewal['lesson_choices'] as $choice) {
+                if ($choice) {
+                    isset($result[$choice]) ? $result[$choice]++ : $result[$choice] = 1;
+                }
+            }
+        }
+
+        return $result;
     }
 }

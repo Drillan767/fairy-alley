@@ -23,6 +23,7 @@ class FirstContactRequest extends FormRequest
      */
     public function rules(): array
     {
+        $previous = parse_url(url()->previous(), PHP_URL_PATH);
         return [
             'firstname' => ['required', 'string'],
             'lastname' => ['required', 'string'],
@@ -45,7 +46,7 @@ class FirstContactRequest extends FormRequest
             'sports' => ['nullable', 'string'],
             'objectives' => ['nullable', 'string'],
             'other_data' => ['nullable', 'string'],
-            'role' => auth()->check() && auth()->user()->hasRole('administrator')
+            'role' => auth()->check() && auth()->user()->hasRole('administrator') && $previous === '/utilisateurs/nouveau'
                 ? ['required', 'string', 'exists:roles,name']
                 : ['prohibited'],
         ];

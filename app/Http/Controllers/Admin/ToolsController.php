@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 use Shuchkin\SimpleXLSXGen;
+use Spatie\Valuestore\Valuestore;
 
 class ToolsController extends Controller
 {
@@ -35,13 +36,19 @@ class ToolsController extends Controller
 
     public function exportHolidays()
     {
-        $jsonFile = Storage::disk('s3')->get('system/holidays.json');
-        $holidays = json_decode($jsonFile);
+        $holidayFile = Storage::disk('s3')->get('system/holidays.json');
+        $holidays = json_decode($holidayFile);
+        $settings = Valuestore::make(storage_path('app/settings.json'));
+        $customHolidays = $settings->get('holidays', []);
 
         $result = [];
 
         foreach ($holidays as $day => $event) {
             $result[$event][] = $day;
+        }
+
+        foreach ($customHolidays as $date => $customHoliday) {
+            $result[$customHoliday] = [$date];
         }
 
         $file[] = array_keys($result);
