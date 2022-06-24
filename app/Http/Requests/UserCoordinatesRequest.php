@@ -29,8 +29,8 @@ class UserCoordinatesRequest extends FormRequest
             'address2' => ['nullable', 'string'],
             'zipcode' => ['required', 'max:5'],
             'city' => ['required', 'string'],
-            'phone' => ['required', 'string'],
-            'pro' => ['required', 'string'],
+            'phone' => ['nullable', 'required_without:pro', 'string'],
+            'pro' => ['nullable', 'required_without:phone', 'string'],
         ];
     }
 }

@@ -12,9 +12,9 @@
 
                 <ul v-for="(user, i) in details.userList" :key="i" class="mt-2 list-disc">
                     <li class="ml-4 flex justify-between">
-                            <span>
-                                {{ user.firstname}} {{ user.lastname }} ( {{ [user.phone, user.pro].filter(x => x).join(', ') }} )
-                            </span>
+                        <span>
+                            {{ user.firstname}} {{ user.lastname }} ( {{ [user.phone, user.pro].filter(x => x).join(', ') }} )
+                        </span>
                         <button @click="unsubscribe(user)" class="btn btn-xs btn-error text-white">
                             <svg
                                 width="20"

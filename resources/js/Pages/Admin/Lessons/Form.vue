@@ -38,7 +38,7 @@
             </div>
 
             <div class="mt-2" v-if="!['', 0].includes(setupOccurrences.nbOccurrences)">
-                <jet-label for="nbOccurrences" value="Date de la première occurrence" />
+                <jet-label for="nbOccurrences" value="Date de la première occurrence" class="mb-1"/>
                 <Datepicker
                     v-model="setupOccurrences.occurrenceStartDate"
                     locale="fr"
@@ -109,7 +109,7 @@
     </form>
 </template>
 
-<script>
+<script setup>
 import JetInput from '@/Jetstream/Input.vue';
 import JetButton from '@/Jetstream/Button.vue';
 import JetLabel from '@/Jetstream/Label.vue';
@@ -125,180 +125,155 @@ import {computed, onMounted, ref, toRaw} from "vue";
 import Button from "@/Jetstream/Button.vue";
 import Swal from 'sweetalert2';
 
-export default {
-    props: {
-        lesson: {
-            type: Object,
-            required: false
+const props = defineProps({
+    lesson: {
+        type: Object,
+        required: false
+    },
+    editing: Boolean,
+    tiny: String,
+    holidays: Array,
+})
+
+const occurrences = ref([]);
+const lexicon = ref({
+    'ok': 'assuré',
+    'cancelled': 'annulé',
+    'recovery': 'récupéré',
+})
+
+onMounted(() => {
+    if (props.editing) {
+        setupOccurrences.value.nbOccurrences = props.lesson.schedule.filter((l) => l.status !== 'cancelled').length
+        setupOccurrences.value.occurrenceStartDate = props.lesson.schedule[0].date
+
+        occurrences.value = props.lesson.schedule;
+    }
+})
+
+const choices = ref([
+    {label: 'Cours classique', value: 'lesson'},
+    {label: 'Conference', value: 'conference'},
+    {label: 'Atelier', value: 'workshop'},
+    {label: 'Cours privé', value: 'private lesson'},
+]);
+
+const editSpecificDate = (detail, index) => {
+    Swal.fire({
+        title: "Éditer les détails de l'occurrence",
+        text: `Que voulez-vous faire pour l'occurrence du ${dayjs(detail.date).format('DD/MM/YYYY à HH:mm')} ?`,
+        input: 'select',
+        inputValue: detail.status,
+        inputOptions: {
+            ok: 'Définir comme ayant lieu',
+            cancelled: 'Définir comme annulée',
+            recovery: 'Définir comme jour de rattrapage',
         },
-        editing: Boolean,
-        tiny: String,
-        holidays: Array,
-    },
-
-    components: {
-        Button,
-        JetInput,
-        JetLabel,
-        JetButton,
-        JetSecondaryButton,
-        JetInputError,
-        Wysiwyg,
-        JetSelect,
-        Datepicker,
-    },
-
-    setup (props) {
-        const occurrences = ref([]);
-        const lexicon = ref({
-            'ok': 'assuré',
-            'cancelled': 'annulé',
-            'recovery': 'récupéré',
-        })
-
-        onMounted(() => {
-            if (props.editing) {
-                setupOccurrences.value.nbOccurrences = props.lesson.schedule.filter((l) => l.status !== 'cancelled').length
-                setupOccurrences.value.occurrenceStartDate = props.lesson.schedule[0].date
-
-                occurrences.value = props.lesson.schedule;
+        preConfirm: (select) => {
+            occurrences.value[index] = {
+                date: detail.date,
+                status: select,
             }
-        })
 
-        const choices = ref([
-            {label: 'Cours classique', value: 'lesson'},
-            {label: 'Conference', value: 'conference'},
-            {label: 'Atelier', value: 'workshop'},
-            {label: 'Cours privé', value: 'private lesson'},
-        ]);
-
-        const editSpecificDate = (detail, index) => {
             Swal.fire({
-                title: "Éditer les détails de l'occurrence",
-                text: `Que voulez-vous faire pour l'occurrence du ${dayjs(detail.date).format('DD/MM/YYYY à HH:mm')} ?`,
-                input: 'select',
-                inputValue: detail.status,
-                inputOptions: {
-                    ok: 'Définir comme ayant lieu',
-                    cancelled: 'Définir comme annulée',
-                    recovery: 'Définir comme jour de rattrapage',
-                },
-                preConfirm: (select) => {
-                    occurrences.value[index] = {
-                        date: detail.date,
-                        status: select,
-                    }
-
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        title: 'Statut du cours mis à jour.',
-                        position: 'top-end',
-                        timerProgressBar: true,
-                        showConfirmButton: false,
-                        timer: 2000,
-                    })
-                }
+                toast: true,
+                icon: 'success',
+                title: 'Statut du cours mis à jour.',
+                position: 'top-end',
+                timerProgressBar: true,
+                showConfirmButton: false,
+                timer: 2000,
             })
         }
+    })
+}
 
-        const disabledDates = computed(() => {
-            const dates = []
-            props.holidays.map((day) => dates.push(dayjs(day).toDate()))
-            return dates;
-        });
+const disabledDates = computed(() => {
+    const dates = []
+    props.holidays.map((day) => dates.push(dayjs(day).toDate()))
+    return dates;
+});
 
-        const setupOccurrences = ref({
-            nbOccurrences: 0,
-            occurrenceStartDate: dayjs().set('hour', 8).set('minute', 0).set('second', 0).toDate()
-        })
+const setupOccurrences = ref({
+    nbOccurrences: 0,
+    occurrenceStartDate: dayjs().set('hour', 8).set('minute', 0).set('second', 0).toDate()
+})
 
-        const data = props.editing ? {
-            ...props.lesson,
-            _method: 'PUT',
-        } : {
-            title: '',
-            description: '',
-            type: '',
-            gender: [],
-            ref: '',
-            occurrences: []
-        }
-        const form = useForm(data);
+const data = props.editing ? {
+    ...props.lesson,
+    _method: 'PUT',
+} : {
+    title: '',
+    description: '',
+    type: '',
+    gender: [],
+    ref: '',
+    occurrences: []
+}
+const form = useForm(data);
 
-        const date = dayjs().startOf('day').toDate()
-        const dateList = ref([{date: date}]);
-        const textInputOptions = ref({
-            format: 'dd.MM.yyyy'
-        })
+const date = dayjs().startOf('day').toDate()
+const dateList = ref([{date: date}]);
+const textInputOptions = ref({
+    format: 'dd.MM.yyyy'
+})
 
-        const generateOccurrences = () => {
-            const result = [];
-            let nbOccurrences = setupOccurrences.value.nbOccurrences;
-            let date = setupOccurrences.value.occurrenceStartDate;
+const generateOccurrences = () => {
+    const result = [];
+    let nbOccurrences = setupOccurrences.value.nbOccurrences;
+    const initialOccurence = setupOccurrences.value.nbOccurrences;
+    let date = setupOccurrences.value.occurrenceStartDate;
 
-            result.push({
-                date: dayjs(date).format('YYYY-MM-DD HH:mm'),
-                status: 'ok',
-            })
+    result.push({
+        date: dayjs(date).format('YYYY-MM-DD HH:mm'),
+        status: 'ok',
+    })
 
-            for (let i = 1; i <= nbOccurrences; i++) {
-                date = dayjs(date).add(1, 'w');
+    for (let i = 1; i <= nbOccurrences; i++) {
+        date = dayjs(date).add(1, 'w');
 
-                if (i < setupOccurrences.value.nbOccurrences) {
-                    // All of the following happens if there was no need to add days because of a holiday.
-                    if (toRaw(props.holidays).includes(dayjs(date).format('YYYY-MM-DD'))) {
-                        nbOccurrences++
-                        result.push({
-                            date: dayjs(date).format('YYYY-MM-DD HH:mm'),
-                            status: 'cancelled',
-                        })
-                    } else {
-                        result.push({
-                            date: dayjs(date).format('YYYY-MM-DD HH:mm'),
-                            status: 'ok',
-                        })
-                    }
-
-                } else {
-                    // All the following happens if we're beyond the initial maximum occurrences planned.
-                    // If the day is already exceeding the initial limit, we'll just ignore it and go on.
-                    if (!props.holidays.includes(dayjs(date).format('YYYY-MM-DD'))) {
-                        result.push({
-                            date: dayjs(date).format('YYYY-MM-DD HH:mm'),
-                            status: 'recovery',
-                        })
-                    }
-                }
+        if (i < setupOccurrences.value.nbOccurrences) {
+            // All of the following happens if there was no need to add days because of a holiday.
+            if (toRaw(props.holidays).includes(dayjs(date).format('YYYY-MM-DD'))) {
+                nbOccurrences++
+                result.push({
+                    date: dayjs(date).format('YYYY-MM-DD HH:mm'),
+                    status: 'cancelled',
+                })
+            } else {
+                result.push({
+                    date: dayjs(date).format('YYYY-MM-DD HH:mm'),
+                    status: 'ok',
+                })
             }
 
-            occurrences.value = result;
-        };
+        } else if (result.filter((r) => r.status !== 'cancelled').length < initialOccurence) {
+            // All the following happens if we're beyond the initial maximum occurrences planned.
+            // If the day is already exceeding the initial limit, we'll just ignore it and go on.
 
-        const submit = () => {
-            form.transform((data) => ({
-                ...data,
-                schedule: occurrences.value
-            }))
-            const path = props.editing ? route('cours.update', {cour: props.lesson.id}) : route('cours.store');
-            form.post(path);
+            if (!props.holidays.includes(dayjs(date).format('YYYY-MM-DD'))) {
+                result.push({
+                    date: dayjs(date).format('YYYY-MM-DD HH:mm'),
+                    status: 'recovery',
+                })
+            } else {
+                nbOccurrences++;
+            }
         }
+    }
 
-        return {
-            form,
-            submit,
-            setupOccurrences,
-            generateOccurrences,
-            dateList,
-            occurrences,
-            disabledDates,
-            textInputOptions,
-            editSpecificDate,
-            choices,
-            lexicon,
-        }
-    },
+    occurrences.value = result;
+};
+
+const submit = () => {
+    form.transform((data) => ({
+        ...data,
+        schedule: occurrences.value
+    }))
+    const path = props.editing ? route('cours.update', {cour: props.lesson.id}) : route('cours.store');
+    form.post(path);
 }
+
 </script>
 
 <style>

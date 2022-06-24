@@ -73,7 +73,7 @@ class AdminController
             // User must be able to subscribe.
             ->whereNot('lesson_id', $lesson_id)
             ->whereHas('roles', function ($query) {
-                $query->whereIn('name', ['subscriber', 'substitute']);
+                $query->whereIn('name', ['subscriber', 'substitute', 'administrator']);
             })
 
             // User isn't already in this lesson
