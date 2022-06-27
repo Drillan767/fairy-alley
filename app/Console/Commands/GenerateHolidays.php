@@ -59,7 +59,7 @@ class GenerateHolidays extends Command
             $period = CarbonPeriod::create($vacation['fields']['start_date'], $vacation['fields']['end_date']);
 
             foreach ($period as $p) {
-                $date = $p->addDay()->format('Y-m-d');
+                $date = $p->format('Y-m-d');
                 if (!$holidays->has($date)) {
                     $holidays->put($date, $vacation['fields']['description']);
                 }
