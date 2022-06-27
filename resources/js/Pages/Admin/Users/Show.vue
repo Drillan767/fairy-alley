@@ -334,7 +334,6 @@ export default {
         }
 
         const changeRole = async () => {
-            console.log('coucou ?');
             const {value: role} = await Swal.fire({
                 icon: 'info',
                 title: 'Sélectionnez un nouveau rôle',
