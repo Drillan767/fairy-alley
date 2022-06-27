@@ -210,7 +210,10 @@ class UserController extends Controller
     public function renewalIndex(): Response
     {
         $renewals = Valuestore::make(storage_path('app/renewal.json'))->all();
-        $lessons = Lesson::where('year', now()->year . ' - ' . now()->addYear()->year)->get(['id', 'title']);
+        $lessons = Lesson::query()
+            ->orderBy('title')
+            ->where('year', now()->year . ' - ' . now()->addYear()->year)
+            ->get(['id', 'title']);
         $users = User::with('currentYearData')->get([
             'id',
             'firstname',
