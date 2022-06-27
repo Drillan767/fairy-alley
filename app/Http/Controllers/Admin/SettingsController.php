@@ -38,7 +38,7 @@ class SettingsController extends Controller
     public function holidays(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'dates' => ['array', 'required'],
+            'dates' => ['array'],
             'dates.*.date' => ['required', 'string'],
             'dates.*.reason' => ['required', 'string']
         ],
@@ -53,13 +53,11 @@ class SettingsController extends Controller
         }
 
         $settings = $this->instanciateSettings();
-        $customHolidays = $settings->get('holidays', []);
+        $customHolidays = [];
 
         foreach ($request->get('dates') as $date) {
             $cDate = Carbon::parse($date['date'])->format('Y-m-d');
-            if (!array_key_exists($cDate, $customHolidays)) {
-                $customHolidays[$cDate] = $date['reason'];
-            }
+            $customHolidays[$cDate] = $date['reason'];
         }
 
         $settings->put('holidays', $customHolidays);
