@@ -40,7 +40,7 @@ class RenewalController extends Controller
             ->orderBy('title')
             ->get(['id', 'title', 'gender'])
             ->map(function ($lesson) use ($decidedLessons) {
-                $lessonTitle = array_key_exists($lesson->id, $decidedLessons) && $decidedLessons[$lesson->id] >= 10 ? ' - Complet' : '';
+                $lessonTitle = array_key_exists($lesson->id, $decidedLessons) && $decidedLessons[$lesson->id] >= 10 ? ' (Complet)' : '';
                 return [
                     'value' => $lesson->id,
                     'label' => $lesson->title . $lessonTitle,
@@ -67,11 +67,7 @@ class RenewalController extends Controller
     {
         $result = [];
         foreach ($renewals as $renewal) {
-            foreach ($renewal['lesson_choices'] as $choice) {
-                if ($choice) {
-                    isset($result[$choice]) ? $result[$choice]++ : $result[$choice] = 1;
-                }
-            }
+            isset($result[$renewal['admin_decision']]) ? $result[$renewal['admin_decision']]++ : $result[$renewal['admin_decision']] = 1;
         }
 
         return $result;
