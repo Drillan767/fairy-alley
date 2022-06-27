@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
@@ -56,7 +57,7 @@ class GenerateHolidays extends Command
 
 
         foreach ($vacations['records'] as $vacation) {
-            $period = CarbonPeriod::create($vacation['fields']['start_date'], $vacation['fields']['end_date']);
+            $period = Carbon::parse($vacation['fields']['start_date'])->addDay()->toPeriod($vacation['fields']['end_date'], '1 day');
 
             foreach ($period as $p) {
                 $date = $p->format('Y-m-d');
