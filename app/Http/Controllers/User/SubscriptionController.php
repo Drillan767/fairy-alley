@@ -35,7 +35,7 @@ class SubscriptionController extends Controller
         $lessonDays = [];
         $nextLessons = [];
 
-        $headlines = collect(config('lesson.headlines'))->firstWhere('status_id', $user->subscription->status);
+        $headlines = collect(config('lesson.headlines'))->firstWhere('status_id', $user->subscription?->status ?? 5);
 
         if (now()->between(Carbon::parse($settings->get('subscription_start')), Carbon::parse($settings->get('subscription_end')))) {
             $renewalStatus = collect(config('lesson.renewal'))->firstWhere('status', $user->resubscription_status);
