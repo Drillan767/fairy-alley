@@ -39,7 +39,6 @@
                                 :search-options="searchOptions"
                                 :sort-options="sortOption"
                                 @on-sort-change="onSortChange"
-                                @on-search="onSearch"
                                 @on-column-filter="onColumnFilter"
                             >
                                 <template #table-row="props">
@@ -133,17 +132,6 @@ const currentYear = computed(() => {
 
 const selectedYear = ref(currentYear.value);
 
-onMounted(() => {
-    let searchTerm = localStorage.getItem('globalSearch');
-
-    if (searchTerm) {
-        vuegoodtable.value.globalSearchTerm = searchTerm;
-        // Not working.
-        const searchField = document.querySelector('input[id^="vgt-search"]');
-        searchField.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter'}));
-    }
-});
-
 const roleList = computed(() => {
     let list = [];
     let roles = toRaw(props.roles)
@@ -179,7 +167,6 @@ const changeYear = () => {
 const searchOptions = {
     enabled: true,
     placeholder: 'Rechercher...',
-    trigger: 'enter',
 };
 
 const sortOption = {
@@ -266,8 +253,6 @@ const columns = [
         sortable: false,
     }
 ];
-
-const onSearch = (e) => localStorage.setItem('globalSearch', e.searchTerm)
 
 const deleteUser = (user) => {
     const feminine = {
