@@ -144,7 +144,7 @@
 
                                 <div class="mt-8 flex justify-end">
                                     <button class="btn btn-primary btn-active" type="submit" aria-pressed="true">
-                                        {{ editing ? 'Mettre à jour' : 'Valider'}} ma réinscription
+                                        {{ editing ? 'Mettre à jour' : 'Valider'}} ma demande de réinscription
                                     </button>
                                 </div>
                             </form>

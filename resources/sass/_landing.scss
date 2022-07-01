@@ -49,6 +49,14 @@
         @apply relative bg-white w-3/5 m-auto pt-0 pb-5 px-5 border-gray-300;
         animation-name: animatetop;
         animation-duration: 0.4s;
+
+        video::-webkit-media-controls-volume-slider {
+            display:none;
+        }
+
+        video::-webkit-media-controls-mute-button {
+            display:none;
+        }
     }
 }
 

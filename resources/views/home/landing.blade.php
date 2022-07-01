@@ -246,6 +246,7 @@
             modalBox.classList.remove('hidden');
             modalBox.querySelector('.' + btn.getAttribute('data-video')).classList.remove('hidden');
             body.style.overflow = 'hidden';
+            visite.play();
         })
     })
 

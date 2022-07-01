@@ -158,6 +158,7 @@ import JetCheckbox from '@/Jetstream/Checkbox.vue';
 import { useForm } from "@inertiajs/inertia-vue3";
 import JetTextarea from '@/Jetstream/Textarea.vue';
 import { ref, computed } from "vue";
+import {Inertia} from "@inertiajs/inertia";
 
 export default {
     title: 'Nouvel utilisateur',
@@ -216,7 +217,9 @@ export default {
         });
 
         const submit = () => {
-            form.post(route('utilisateurs.store'))
+            form.post(route('utilisateurs.store'), {
+                onSuccess: () => Inertia.visit(route('utilisateurs.index'))
+            })
         }
 
         const familySituations = ref([

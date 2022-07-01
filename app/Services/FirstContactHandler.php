@@ -17,7 +17,9 @@ class FirstContactHandler
         $user = new User();
 
         foreach ($this->columns()['user'] as $field) {
-            $user->$field = $request->get($field);
+            $user->$field = $field === 'lastname'
+                ? $request->get($field)
+                : strtoupper($request->get($field));
         }
 
         // User won't be able to login anyway.

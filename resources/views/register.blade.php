@@ -109,7 +109,7 @@
                                 <label for="family_situation" class="block text-sm font-medium text-gray-700">Situation familiale</label>
                                 <select id="family_situation" name="family_situation" value="{{ old('family_situation') }}">
                                     <option value="Célibataire / Divorcé(e)">Célibataire</option>
-                                    <option value="Marié(e) / paxé(e)">Marié(e) / paxé(e)</option>
+                                    <option value="Marié(e) / pacsé(e)">Marié(e) / pacsé(e)</option>
                                     <option value="Veuf / Veuve">Veuf / Veuve</option>
                                 </select>
                                 @error('family_situation')

@@ -45,7 +45,7 @@ class UserController extends Controller
         return Inertia::render('Admin/Users/Create', compact('lessons'));
     }
 
-    public function store(FirstContactRequest $request, FirstContactHandler $firstContactHandler): RedirectResponse
+    public function store(FirstContactRequest $request, FirstContactHandler $firstContactHandler)
     {
         $firstContactHandler->store($request);
         return redirect()->back()->with('success', "L'utilisateur a été créé et un mail de création de mot de passe lui a été envoyé");

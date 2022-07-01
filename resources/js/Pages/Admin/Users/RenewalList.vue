@@ -17,7 +17,7 @@
                     </div>
                     <div class="flex items-center justify-end mb-5">
                         <a :href="route('utilisateurs.create')" class="btn btn-error">
-                            Valider la nouvelle année
+                            Valider les demandes complètes
                         </a>
                     </div>
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
