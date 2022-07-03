@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\DB;
 
 class FirstContactRequest extends FormRequest
 {
@@ -50,5 +51,21 @@ class FirstContactRequest extends FormRequest
                 ? ['required', 'string', 'exists:roles,name']
                 : ['prohibited'],
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $exists = DB::table('users')
+                ->where([
+                    'firstname' => $this->get('firstname'),
+                    'lastname' => $this->get('lastname')
+                ])
+                ->count();
+
+            if ($exists) {
+                $validator->errors()->add('firstname', 'Un utilisateur avec le même nom et prénom existe déjà.');
+            }
+        });
     }
 }

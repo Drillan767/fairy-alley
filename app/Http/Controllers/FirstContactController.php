@@ -6,13 +6,19 @@ use App\Http\Requests\FirstContactRequest;
 use App\Models\Lesson;
 use App\Services\FirstContactHandler;
 use Illuminate\Http\JsonResponse;
+use Spatie\Valuestore\Valuestore;
 
 class FirstContactController extends Controller
 {
     public function create()
     {
+        $years = $this->handleYears();
+
         return view('register', [
-            'lessons' => Lesson::orderBy('title')->get(['id', 'title']),
+            'lessons' => Lesson::orderBy('title')
+                ->where('type', 'lesson')
+                ->where('year', $years)
+                ->get(['id', 'title']),
         ]);
     }
 
@@ -24,10 +30,21 @@ class FirstContactController extends Controller
 
     public function relatedLessons(string $gender): JsonResponse
     {
+        $years = $this->handleYears();
         $lessons = Lesson::query()
             ->whereJsonContains('gender', $gender)
+            ->where('year', $years)
+            ->where('type', 'lesson')
             ->orderBy('title')
             ->get(['id', 'title']);
         return response()->json($lessons);
+    }
+
+    private function handleYears(): string
+    {
+        $settings = Valuestore::make(storage_path('app/settings.json'));
+        return $settings->get('which_year') === 'current'
+            ? now()->subYear()->year . ' - ' . now()->year
+            : now()->year . ' - ' . now()->addYear()->year;
     }
 }

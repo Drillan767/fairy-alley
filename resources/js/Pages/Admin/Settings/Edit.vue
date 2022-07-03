@@ -16,6 +16,7 @@
                            :end="settings.subscription_end"
                            :price_full="settings.price_full"
                            :price_quarterly="settings.price_quarterly"
+                           :which_year="settings.which_year"
                            :tos="settings.tos"
                        />
 

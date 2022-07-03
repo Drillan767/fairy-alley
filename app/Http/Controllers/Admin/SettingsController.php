@@ -24,13 +24,10 @@ class SettingsController extends Controller
         $settings = $this->instanciateSettings();
         $settings->put('subscription_start', Carbon::parse($request->get('start'))->startOfDay());
         $settings->put('subscription_end', Carbon::parse($request->get('end'))->startOfDay());
-        $settings->put('price_full', $request->get('price_full'));
-        $settings->put('price_quarterly', $request->get('price_quarterly'));
-        $settings->put('tos', $request->get('tos'));
-        $settings->put('details', $request->get('details'));
-        $settings->put('process', $request->get('process'));
-        $settings->put('organization', $request->get('organization'));
-        $settings->put('conditions', $request->get('conditions'));
+
+        foreach (['price_full', 'price_quarterly', 'which_year', 'tos'] as $field) {
+            $settings->put($field, $request->get($field));
+        }
 
         return redirect()->back();
     }

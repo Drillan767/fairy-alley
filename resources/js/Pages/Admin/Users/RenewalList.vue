@@ -2,7 +2,7 @@
     <admin-layout title="Utilisateurs en phase de réinscription">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
-                Utilisateurs en phase de réinscription
+                Utilisateurs en phase de réinscription ({{ nbRenewing }})
             </h1>
         </template>
 
@@ -289,6 +289,8 @@ const usersForGivenLesson = (lid) => {
 }
 
 const getStatus = (user_status) => status.value.find((s) => s.value === user_status).text
+
+const nbRenewing = props.users.filter((u) => u.resubscription_status !== null).length
 
 const findRequirements = (user_id, element) => {
     const relatedRenewalInfos = props.renewals[`user_${user_id}`]

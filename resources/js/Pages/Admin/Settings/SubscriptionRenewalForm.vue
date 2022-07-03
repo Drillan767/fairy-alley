@@ -53,6 +53,24 @@
                 réinscription auront le statut "Archivé", ce qui leur empêcheront de se connecter.
             </p>
 
+            <div class="col-span-6 sm:col-span-4 my-4">
+                <jet-label value="Quels cours afficher dans le formulaire de premier contact ?" />
+                <div class="mt-1">
+                    <label class="inline-flex items-center">
+                        <input type="radio" class="form-radio" value="current" v-model="form.which_year" :checked="form.which_year === 'current'">
+                        <span class="ml-2">Les cours de l'année en cours ({{ currentYear }})</span>
+                    </label>
+                </div>
+                <div>
+                    <label class="inline-flex items-center">
+                        <input type="radio" class="form-radio" value="next" v-model="form.which_year" :checked="form.which_year === 'next'">
+                        <span class="ml-2">Les cours de l'année prochaine ({{ nextYear }})</span>
+                    </label>
+                </div>
+
+                <jet-input-error :message="form.errors.gender" class="mt-2" />
+            </div>
+
             <h2 class="font-semibold text-l text-gray-800 leading-tight">Termes d'utilisation</h2>
 
             <div class="mt-4">
@@ -76,11 +94,10 @@ import JetInputError from '@/Jetstream/InputError.vue';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import dayjs from "dayjs";
-import { usePage } from '@inertiajs/inertia-vue3'
-import {useForm} from "@inertiajs/inertia-vue3";
+import { usePage, useForm } from '@inertiajs/inertia-vue3'
 import Swal from "sweetalert2";
 import Wysiwyg from '@/Jetstream/Wysiwyg.vue';
-import {computed} from "vue";
+import {computed, ref} from "vue";
 
 const tiny = computed(() => {
     return usePage().props.value.tiny
@@ -103,6 +120,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    which_year: {
+        type: String,
+        default: '',
+    },
     tos: {
         type: String,
         default: '',
@@ -114,8 +135,12 @@ const form = useForm({
     end: props.end,
     price_full: props.price_full,
     price_quarterly: props.price_quarterly,
+    which_year: props.which_year,
     tos: props.tos,
 })
+
+const currentYear = ref(dayjs().subtract(1, 'year').year() + ' - ' + dayjs().year())
+const nextYear = ref(dayjs().year() + ' - ' + dayjs().add(1, 'year').year())
 
 const submit = () => {
 
