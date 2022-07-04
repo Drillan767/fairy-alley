@@ -243,7 +243,7 @@ const columns = [
         filterOptions: {
             enabled: true,
             filterValue: localStorage.getItem('role'),
-            placeholder: 'Choisir',
+            placeholder: 'Sélectionner...',
             filterDropdownItems: roleList.value,
         }
     },

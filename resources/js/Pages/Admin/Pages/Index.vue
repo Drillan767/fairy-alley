@@ -56,7 +56,12 @@
                                 </tr>
                                 </thead>
                                 <tbody class="text-gray-600 text-sm font-light">
-                                <tr class="border-b border-gray-200 hover:bg-gray-100" v-for="(page, i) in pageList" :key="i">
+                                <tr
+                                    class="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
+                                    v-for="(page, i) in pageList"
+                                    :key="i"
+                                    @click="rowClick(page.id, $event)"
+                                >
                                     <td class="py-3 px-6 text-left whitespace-nowrap">
                                         <div class="flex items-center">
                                             <span class="font-medium">{{ page.title }}</span>
@@ -85,14 +90,6 @@
                                                 </div>
                                             </Link>
 
-                                            <Link :href="route('pages.edit', {id: page.id})">
-                                                <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                                    </svg>
-                                                </div>
-                                            </Link>
-
                                             <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110 cursor-pointer" @click="deletePage(page)">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -111,90 +108,87 @@
     </admin-layout>
 </template>
 
-<script>
+<script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import { Link } from '@inertiajs/inertia-vue3';
 import Swal from "sweetalert2";
+import {onMounted, ref} from "vue";
+import {Inertia} from "@inertiajs/inertia";
 
-export default {
-    title: 'Toutes les pages',
-    components: {
-        AdminLayout,
-        Link,
+const props = defineProps({
+    pages: {
+        type: Array,
+        required: true,
     },
-    props: {
-        pages: {
-            type: Array,
-            required: true,
-        },
-        flash: {
-            type: Object,
-            required: false,
-        }
-    },
+    flash: {
+        type: Object,
+        required: false,
+    }
+})
 
-    data() {
-        return {
-            pageList: [],
-            filter: '',
-            sort: '',
-        }
-    },
+const pageList = ref([])
+const filter = ref('')
+const sort = ref('')
 
-    mounted() {
-        this.pageList = this.pages
-        const sort = localStorage.getItem('page_sort');
-        if (sort) {
-            this.sortPages(sort);
-        }
-    },
+const sortPages = (method) => {
+    if (method === 'asc') {
+        pageList.value.sort(((a, b) => a['title'] > b['title'] ? 1 : -1))
+        localStorage.setItem('page_sort', 'asc');
+        sort.value = 'asc'
+    }
+    else {
+        pageList.value.sort(((a, b) => a['title'] < b['title'] ? 1 : -1))
+        localStorage.setItem('page_sort', 'desc');
+        sort.value = 'desc'
+    }
+}
 
-    methods: {
-        sortPages(method) {
-            if (method === 'asc') {
-                this.pageList.sort(((a, b) => a['title'] > b['title'] ? 1 : -1))
-                localStorage.setItem('page_sort', 'asc');
-                this.sort = 'asc';
-            } else {
-                this.pageList.sort(((a, b) => a['title'] < b['title'] ? 1 : -1))
-                localStorage.setItem('page_sort', 'desc');
-                this.sort = 'desc';
-            }
-        },
-
-        deletePage(page) {
-            Swal.fire({
-                icon: 'warning',
-                title: "Supprimer la page ?",
-                text: `La page intitulée "${page.title}" va être supprimée, et cette action est irréversible. Confirmer ?`,
-                showCancelButton: true,
-                cancelButtonText: 'Annuler',
-                confirmButtonText: 'Supprimer',
-                confirmButtonColor: '#DC2626'
-            })
-            .then((result) => {
-                if (result.isConfirmed) {
-                    axios.delete(route('pages.destroy', {page: page.id}))
+const deletePage = (page) => {
+    Swal.fire({
+        icon: 'warning',
+        title: "Supprimer la page ?",
+        text: `La page intitulée "${page.title}" va être supprimée, et cette action est irréversible. Confirmer ?`,
+        showCancelButton: true,
+        cancelButtonText: 'Annuler',
+        confirmButtonText: 'Supprimer',
+        confirmButtonColor: '#DC2626'
+    })
+        .then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(route('pages.destroy', {page: page.id}))
                     .then(() => {
-                        this.pageList = this.pageList.filter(p => p.id !== page.id)
+                        pageList.value = pageList.value.filter(p => p.id !== page.id)
                         Swal.fire({
                             icon: 'success',
                             title: 'Page supprimée.',
                             text: 'La page a bien été supprimée'
                         })
                     })
-                }
-            })
-        },
-
-        truncateSummary(summary) {
-            const defaultLength = 70;
-            if (summary.length > defaultLength) {
-                return summary.slice(0, (defaultLength - 3)) + '...';
-            } else {
-                return summary;
             }
-        }
+        })
+}
+
+const truncateSummary = (summary) => {
+    const defaultLength = 70;
+    if (summary.length > defaultLength) {
+        return summary.slice(0, (defaultLength - 3)) + '...';
+    } else {
+        return summary;
     }
 }
+
+onMounted(() => {
+    pageList.value = props.pages
+    const sort = localStorage.getItem('page_sort');
+    if (sort) {
+        sortPages(sort);
+    }
+})
+
+const rowClick = (id, e) => {
+    if (!['svg', 'path'].includes(e.target.tagName)) {
+        Inertia.visit(route('pages.edit', {id: id}))
+    }
+}
+
 </script>

@@ -80,6 +80,12 @@ return [
             'title' => 'Demande d\'inscription incomplète : le paiement est manquant, veuillez vous en occuper dans les plus brefs délais.',
             'color' => 'orange',
             'showEdit' => false,
+        ],
+        [
+            'status' => 5,
+            'title' => 'Demande d\'inscription incomplète : le paiement est incomplet, veuillez vous en occuper dans les plus brefs délais.',
+            'color' => 'orange',
+            'showEdit' => false,
         ]
     ]
 ];

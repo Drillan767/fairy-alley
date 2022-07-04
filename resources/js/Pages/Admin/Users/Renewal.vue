@@ -199,6 +199,7 @@ const renewalStatuses = ref([
     {label: 'En attente', value: 1},
     {label: 'Documents manquants (certificat, etc)', value: 3},
     {label: 'Paiement manquant', value: 4},
+    {label: 'Paiement incomplet', value: 5},
     {label: 'Réinscription complète', value: 2},
 ])
 

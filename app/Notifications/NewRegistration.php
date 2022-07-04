@@ -42,7 +42,7 @@ class NewRegistration extends Notification
     {
         return (new MailMessage)
             ->from('nepasrepondre@alleedesfees.fr')
-            ->subject("Nouvelle inscription pour L'allée des Fées")
+            ->subject("Nouvelle inscription pour L'allée des Fées - {$this->user->full_name}")
             ->greeting('Bonjour,')
             ->line("Vous recevez cet email car un nouvel utilisateur a demandé une inscription sur le site de l'Allée des Fées")
             ->line('Cliquez sur le lien ci-dessous pour voir les informations la concernant')

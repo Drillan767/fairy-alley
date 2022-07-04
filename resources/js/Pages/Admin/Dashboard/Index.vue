@@ -23,7 +23,7 @@
     </admin-layout>
 </template>
 
-<script>
+<script setup>
 import '@fullcalendar/core/vdom';
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -38,71 +38,56 @@ import axios from 'axios'
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 
-export default {
-    title: 'Administration',
-    components: {
-        AdminLayout,
-        FullCalendar,
-        Detail,
+const props = defineProps({
+    flash: {
+        type: Object,
+        required: false
+    }
+})
+
+const showModal = ref(false)
+const details = ref(null)
+const lessonHour = ref(null)
+const fullCalendar = ref(null)
+
+dayjs.extend(utc)
+
+const calendarOptions = {
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
+    initialView: 'timeGridWeek',
+    allDayText: 'Journée',
+    locale: frLocale,
+    slotMaxTime: '23:00:00',
+    slotMinTime: '08:00:00',
+    displayEventTime: false,
+
+    headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
     },
-    props: {
-        flash: {
-            type: Object,
-            required: false
-        }
+    eventClick: (info) => {
+        const hour = dayjs(info.event.start)
+        const lessonProps = info.event.extendedProps;
+
+        axios.post(route('lesson.details', lessonProps))
+            .then((response) => {
+                lessonHour.value = hour
+                details.value = response.data
+                details.value.lesson_id = lessonProps.lesson_id
+                details.value.status = lessonProps.status
+                showModal.value = true
+            })
+    }, // Parcours bien-être (0 personnes)
+    eventContent: (arg) => {
+        return {html: arg.event.title}
     },
-
-    setup() {
-        const showModal = ref(false)
-        const details = ref(null)
-        const lessonHour = ref(null)
-        const fullCalendar = ref(null)
-
-        dayjs.extend(utc)
-
-        const calendarOptions = {
-            plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
-            initialView: 'timeGridWeek',
-            allDayText: 'Journée',
-            locale: frLocale,
-            slotMaxTime: '23:00:00',
-            slotMinTime: '08:00:00',
-            displayEventTime: false,
-
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-            },
-            eventClick: (info) => {
-                const hour = dayjs(info.event.start)
-                const lessonProps = info.event.extendedProps;
-
-                axios.post(route('lesson.details', lessonProps))
-                    .then((response) => {
-                        lessonHour.value = hour
-                        details.value = response.data
-                        details.value.lesson_id = lessonProps.lesson_id
-                        details.value.status = lessonProps.status
-                        showModal.value = true
-                    })
-            },
-            events: route('admin.lesson.list')
-        }
-
-        const closeModal = () => {
-            showModal.value = false
-            fullCalendar.value.getApi().refetchEvents()
-        };
-
-        return {
-            calendarOptions,
-            showModal,
-            closeModal,
-            lessonHour,
-            details,
-            fullCalendar,
-        }
-    },
+    events: route('admin.lesson.list')
 }
+
+const closeModal = () => {
+    showModal.value = false
+    fullCalendar.value.getApi().refetchEvents()
+};
+
 </script>

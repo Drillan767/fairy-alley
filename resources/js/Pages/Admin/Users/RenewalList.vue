@@ -126,13 +126,16 @@ const changeLesson = (user_id) => {
         displayCancelButton: true,
         confirmButtonText: 'Enregistrer',
         cancelButtonText: 'Annuler',
-        preConfirm: (select) => {
-            Inertia.post(route('utilisateurs.updateDecision'), {
-                lesson: select,
-                user_id: user_id
-            })
-        }
+        preConfirm: (select) => select
     })
+        .then((result) => {
+            if (result.isConfirmed) {
+                Inertia.post(route('utilisateurs.updateDecision'), {
+                    lesson: result.value,
+                    user_id: user_id
+                })
+            }
+        })
 }
 
 const status = ref([
@@ -150,6 +153,10 @@ const status = ref([
     },
     {
         text: 'Paiement manquant',
+        value: 4,
+    },
+    {
+        text: 'Paiement incomplet',
         value: 4,
     },
     {
@@ -174,8 +181,7 @@ const columns = ref([
         label: 'Statut',
         field: 'resubscription_status',
         filterOptions: {
-            placeholder: 'Sélectionner...',
-            filterValue: '1',
+            placeholder: 'Tous',
             enabled: true,
             filterDropdownItems: [
                 ...status.value
@@ -217,7 +223,7 @@ const columns = ref([
         field: 'decision',
         filterOptions: {
             enabled: true,
-            placeholder: 'Sélectionner...',
+            placeholder: 'Tous',
             filterDropdownItems: props.lessons.map((l) => {
                 return {text: l.title, value: l.id}
             })

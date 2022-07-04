@@ -24,7 +24,7 @@ class AdminController
                 $time = Carbon::parse($schedule['date']);
                 // Check if locked or is holiday, add color if so.
                 $events[] = [
-                    'title' => $lesson->title . ' (' . $this->listUsers($lesson->id, $time->format('Y-m-d H:i:s')) . ' personnes)',
+                    'title' => $lesson->title . '<br /> (' . $this->listUsers($lesson->id, $time->format('Y-m-d H:i:s')) . ' personnes)',
                     'start' => $time->format('Y-m-d H:i:s'),
                     'end' => $time->addHour()->addMinutes(30)->format('Y-m-d H:i:s'),
                     'color' => match ($schedule['status']) {
