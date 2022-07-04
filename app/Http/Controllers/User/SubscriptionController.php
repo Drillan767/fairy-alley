@@ -5,8 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionRequest;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{Hash, Validator};
 use Illuminate\Validation\Rules\Password;
 use App\Models\{Lesson, Movement, Service, User};
 use App\Services\{LessonDateDisplayHandler, SubscriptionHandler};
@@ -38,7 +37,20 @@ class SubscriptionController extends Controller
         $headlines = collect(config('lesson.headlines'))->firstWhere('status_id', $user->subscription?->status ?? 5);
 
         if (now()->between(Carbon::parse($settings->get('subscription_start')), Carbon::parse($settings->get('subscription_end')))) {
+            $renewals = Valuestore::make(storage_path('app/renewal.json'));
+            $relatedRenewal = $renewals->get("user_$user->id");
+            $selectedLessons = Lesson::query()
+                ->select('title')
+                ->find($relatedRenewal['lesson_choices'])
+                ->pluck('title');
+
+            $renewalSentence = 'Vous avez choisi le';
+            $renewalSentence .= $selectedLessons->count() < 2 ?: 's'
+                . ' cours '
+                . implode(' et ', $selectedLessons->toArray()) . " <br />";
+
             $renewalStatus = collect(config('lesson.renewal'))->firstWhere('status', $user->resubscription_status);
+            $renewalStatus['title'] = $renewalSentence . $renewalStatus['title'];
         } else {
             $renewalStatus = [];
         }

@@ -37,7 +37,6 @@ class RenewalController extends Controller
         $lessons = Lesson::query()
             ->where('type', 'lesson')
             ->where('year', now()->year . ' - ' . now()->addYear()->year)
-            ->orderBy('title')
             ->get(['id', 'title', 'gender'])
             ->map(function ($lesson) use ($decidedLessons) {
                 $lessonTitle = array_key_exists($lesson->id, $decidedLessons) && $decidedLessons[$lesson->id] >= 10 ? ' (Complet)' : '';

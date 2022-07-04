@@ -77,7 +77,6 @@ class AdminController
             })
 
             // User isn't already in this lesson
-            ->orderBy('lastname')
             ->get(['id', 'firstname', 'lastname'])
             ->map(function ($user) {
                 return [

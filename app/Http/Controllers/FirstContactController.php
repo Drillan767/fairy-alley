@@ -15,7 +15,7 @@ class FirstContactController extends Controller
         $years = $this->handleYears();
 
         return view('register', [
-            'lessons' => Lesson::orderBy('title')
+            'lessons' => Lesson::query()
                 ->where('type', 'lesson')
                 ->where('year', $years)
                 ->get(['id', 'title']),
@@ -35,7 +35,6 @@ class FirstContactController extends Controller
             ->whereJsonContains('gender', $gender)
             ->where('year', $years)
             ->where('type', 'lesson')
-            ->orderBy('title')
             ->get(['id', 'title']);
         return response()->json($lessons);
     }

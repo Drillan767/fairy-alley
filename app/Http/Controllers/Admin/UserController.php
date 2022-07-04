@@ -22,9 +22,17 @@ class UserController extends Controller
 
     public function index(): Response
     {
+        $settings = Valuestore::make(storage_path('app/settings.json'));
+        $years = $settings->get('which_year') === 'current'
+            ? now()->subYear()->year . ' - ' . now()->year
+            : now()->year . ' - ' . now()->addYear()->year;
+
         $roles = config('roles');
-        $lessons = Lesson::orderBy('title')->get(['id', 'title', 'year']);
-        $users = User::with('subscription.lesson')->get([
+        $lessons = Lesson::query()
+            ->where('type', 'lesson')
+            ->get(['id', 'title', 'year']);
+        $users = User::with('subscription.lesson')
+            ->get([
             'id',
             'firstname',
             'lastname',
@@ -40,7 +48,7 @@ class UserController extends Controller
 
     public function create(): Response
     {
-        $lessons = Lesson::orderBy('title')->get(['id', 'title']);
+        $lessons = Lesson::all(['id', 'title']);
 
         return Inertia::render('Admin/Users/Create', compact('lessons'));
     }
@@ -54,9 +62,7 @@ class UserController extends Controller
     public function show(User $utilisateur): Response
     {
         $utilisateur->load('currentYearData.file', 'lesson', 'subscription', 'firstContactData');
-        $lessons = Lesson::query()
-            ->orderBy('title')
-            ->get(['id', 'title'])
+        $lessons = Lesson::all(['id', 'title'])
             ->mapWithKeys(fn ($l) => [$l->id => $l->title]);
 
         $services = Service::orderBy('title')
@@ -215,7 +221,6 @@ class UserController extends Controller
     {
         $renewals = Valuestore::make(storage_path('app/renewal.json'))->all();
         $lessons = Lesson::query()
-            ->orderBy('title')
             ->where('year', now()->year . ' - ' . now()->addYear()->year)
             ->get(['id', 'title']);
         $users = User::with('currentYearData')->get([
@@ -281,7 +286,6 @@ class UserController extends Controller
 
         $lessons = Lesson::query()
             ->where('year', now()->year . ' - ' . now()->addYear()->year)
-            ->orderBy('title')
             ->get(['id', 'title'])
             ->map(fn ($lesson) => ['label' => $lesson->title, 'value' => $lesson->id]);
 
@@ -336,8 +340,3 @@ class UserController extends Controller
         return redirect()->route('utilisateurs.index')->with('success', "Réinscription de l'utilisateur mise à jour avec succès.");
     }
 }
-
-/*
- Votre demande de réinscription pour le cours X a été validée,
- Merci de votre attention
- */

@@ -20,7 +20,7 @@
                         <div class="w-1/6">
                             <jet-select
                                 :choices="yearsList"
-                                placeholder="Choisir une année"
+                                placeholder="Toutes les années"
                                 v-model="selectedYear"
                                 @change="changeYear"
                             />
