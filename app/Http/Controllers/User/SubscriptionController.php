@@ -37,20 +37,26 @@ class SubscriptionController extends Controller
         $headlines = collect(config('lesson.headlines'))->firstWhere('status_id', $user->subscription?->status ?? 5);
 
         if (now()->between(Carbon::parse($settings->get('subscription_start')), Carbon::parse($settings->get('subscription_end')))) {
-            $renewals = Valuestore::make(storage_path('app/renewal.json'));
-            $relatedRenewal = $renewals->get("user_$user->id");
-            $selectedLessons = Lesson::query()
-                ->select('title')
-                ->find($relatedRenewal['lesson_choices'])
-                ->pluck('title');
+            if ($user->resubscription_status !== null) {
+                $renewals = Valuestore::make(storage_path('app/renewal.json'));
+                $relatedRenewal = $renewals->get("user_$user->id");
+                $selectedLessons = Lesson::query()
+                    ->select('title')
+                    ->find($relatedRenewal['lesson_choices'])
+                    ->pluck('title');
 
-            $renewalSentence = 'Vous avez choisi le';
-            $renewalSentence .= $selectedLessons->count() < 2 ?: 's'
-                . ' cours '
-                . implode(' et ', $selectedLessons->toArray()) . " <br />";
+                $renewalSentence = 'Vous avez choisi le';
+                $renewalSentence .= $selectedLessons->count() < 2 ?: 's'
+                    . ' cours '
+                    . implode(' et ', $selectedLessons->toArray()) . " <br />";
 
-            $renewalStatus = collect(config('lesson.renewal'))->firstWhere('status', $user->resubscription_status);
-            $renewalStatus['title'] = $renewalSentence . $renewalStatus['title'];
+                $renewalStatus = collect(config('lesson.renewal'))->firstWhere('status', $user->resubscription_status);
+                $renewalStatus['title'] = $renewalSentence . $renewalStatus['title'];
+            }
+            else {
+                $renewalStatus = collect(config('lesson.renewal'))->firstWhere('status', $user->resubscription_status);
+            }
+
         } else {
             $renewalStatus = [];
         }
