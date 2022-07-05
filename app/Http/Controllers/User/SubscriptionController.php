@@ -46,11 +46,12 @@ class SubscriptionController extends Controller
                     ->pluck('title');
 
                 $renewalSentence = 'Vous avez choisi le';
-                $renewalSentence .= $selectedLessons->count() < 2 ?: 's'
-                    . ' cours '
-                    . implode(' et ', $selectedLessons->toArray()) . " <br />";
+                $renewalSentence .= $selectedLessons->count() > 1 ? 's' : '';
+                $renewalSentence .= ' cours ';
+                $renewalSentence .=  implode(' et ', $selectedLessons->toArray()) . " <br />";
 
                 $renewalStatus = collect(config('lesson.renewal'))->firstWhere('status', $user->resubscription_status);
+
                 $renewalStatus['title'] = $renewalSentence . $renewalStatus['title'];
             }
             else {
