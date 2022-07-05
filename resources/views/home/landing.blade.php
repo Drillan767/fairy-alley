@@ -85,7 +85,7 @@
                 <br />
                 <a href="{{ route('fc.create') }}"
                    class="flex mx-auto mt-16 mr-4 text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg block sm:inline-block">
-                    Demande d'inscription au cours de gymnastique
+                    Laissez vos coordonnées pour découvrir les cours de gymnastique
                 </a>
 
             </div>
