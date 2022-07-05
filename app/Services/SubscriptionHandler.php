@@ -71,7 +71,7 @@ class SubscriptionHandler
         $user->save();
     }
 
-    public function update(SubscriptionRequest $request)
+    public function update(SubscriptionRequest|RenewalRequest $request)
     {
         $user = User::with('currentYearData.file', 'subscription')->find($request->get('user_id'));
         $user->subscription->update([
