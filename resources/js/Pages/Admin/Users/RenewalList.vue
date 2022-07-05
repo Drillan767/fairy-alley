@@ -102,7 +102,7 @@
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import 'vue-good-table-next/dist/vue-good-table-next.css';
 import { VueGoodTable } from 'vue-good-table-next';
-import {ref, computed} from "vue";
+import {ref, computed, toRaw} from "vue";
 import {Link} from "@inertiajs/inertia-vue3";
 import Swal from "sweetalert2";
 import {Inertia} from "@inertiajs/inertia";
@@ -138,7 +138,7 @@ const changeLesson = (user_id) => {
         })
 }
 
-const status = ref([
+const status = [
     {
         text: 'Aucun',
         value: null,
@@ -157,13 +157,13 @@ const status = ref([
     },
     {
         text: 'Paiement incomplet',
-        value: 4,
+        value: 5,
     },
     {
         text: 'Réinscription complète',
         value: 2,
     },
-])
+]
 
 const columns = ref([
     {
@@ -184,7 +184,7 @@ const columns = ref([
             placeholder: 'Tous',
             enabled: true,
             filterDropdownItems: [
-                ...status.value
+                ...status
             ],
             filterFn: (data, filterString) => {
                 if (filterString === 'Aucun') {
@@ -294,7 +294,7 @@ const usersForGivenLesson = (lid) => {
     return ` (${nbUsers} personnes)`;
 }
 
-const getStatus = (user_status) => status.value.find((s) => s.value === user_status).text
+const getStatus = (userStatus) => status.find((s) => s.value === userStatus).text
 
 const nbRenewing = props.users.filter((u) => u.resubscription_status !== null).length
 
