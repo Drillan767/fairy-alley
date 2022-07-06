@@ -73,7 +73,7 @@ class SubscriptionHandler
 
     public function update(SubscriptionRequest|RenewalRequest $request)
     {
-        $user = User::with('currentYearData.file', 'subscription')->find($request->get('user_id'));
+        $user = User::with('currentYearData.file', 'subscription')->find(auth()->id());
         $user->subscription->update([
             'status' => Subscription::PENDING,
             'invites' => $request->get('invites') ?? [],
@@ -85,8 +85,6 @@ class SubscriptionHandler
 
         if ($request->hasFile('medical_certificate')) {
             $this->fileHandler->uploadOrReplace($request->file('medical_certificate'), $yearData, $user);
-
-            // Send notification saying an update was made to the subscription
         }
 
         Notification::sendNow(User::role('administrator')->get(), new RenewalUpdated($user->full_name, $user->id));
