@@ -83,6 +83,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () use ($start, 
                 Route::get('/réinscriptions', 'renewalIndex')->name('utilisateur.renewal.index');
                 Route::get('/réinscription/{user}', 'renewal')->name('utilisateur.renewal.show');
                 Route::post('/store-renewal', 'storeRenewal')->name('utilisateur.renewal.store');
+                Route::post('/renew-user-subscription', 'renewUsers')->name('utilisateur.subscription.renew');
             }
 
         });

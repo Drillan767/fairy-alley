@@ -4,13 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Events\UserRoleChanged;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendRenewalEmails;
+use App\Notifications\UserRenewalFeedback;
+use App\Notifications\UserRenewed;
 use App\Http\Requests\{FirstContactRequest, SubscriptionValidationRequest, UserUpdateRequest};
 use App\Jobs\SendLessonChanged;
 use App\Models\{Lesson, Service, Subscription, User, };
 use App\Notifications\RenewalStatusChanged;
 use App\Services\{FileHandler, FirstContactHandler, SubscriptionHandler};
 use Illuminate\Http\{RedirectResponse, Request};
-use Illuminate\Support\Facades\{DB, Hash};
+use Illuminate\Support\Facades\{DB, Hash, Notification};
 use Inertia\{Inertia, Response};
 use Spatie\Valuestore\Valuestore;
 
@@ -338,5 +341,35 @@ class UserController extends Controller
         }
 
         return redirect()->route('utilisateurs.index')->with('success', "Réinscription de l'utilisateur mise à jour avec succès.");
+    }
+
+    public function renewUsers (): RedirectResponse
+    {
+        $renewals = Valuestore::make(storage_path('app/renewal.json'));
+
+        $users = User::query()
+            ->with('subscription', 'currentYearData')
+            ->where('resubscription_status', 2)
+            ->get(['id', 'firstname', 'lastname', 'email']);
+
+        $decisions = [];
+
+        foreach ($users as $user) {
+            $relatedRenewal = $renewals->get("user_$user->id");
+            $user->lesson_id = $relatedRenewal['admin_decision'];
+            $user->resubscription_status = null;
+            $user->save();
+
+            $user->subscription->lesson_id = $relatedRenewal['admin_decision'];
+            $user->subscription->save();
+
+            $renewals->forget("user_$user->id");
+
+            $decisions[$user->id] = intval($relatedRenewal['admin_decision']);
+        }
+
+        SendRenewalEmails::dispatchAfterResponse($users, $decisions);
+
+        return redirect()->back()->with('success', 'Les utilisateurs ont bien été réinscrits pour l\'année prochaine.');
     }
 }

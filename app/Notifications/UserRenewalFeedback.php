@@ -3,10 +3,12 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\HtmlString;
 
-class TestNotification extends Notification
+class UserRenewalFeedback extends Notification
 {
     use Queueable;
 
@@ -15,7 +17,7 @@ class TestNotification extends Notification
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(public array $users)
     {
         //
     }
@@ -39,12 +41,21 @@ class TestNotification extends Notification
      */
     public function toMail($notifiable)
     {
+        $list = '<ul>';
+        foreach ($this->users as $user) {
+            $list .= "<li>{$user['lastname']} {$user['firstname']}</li>";
+        }
+        $list .= '</ul>';
+
         return (new MailMessage)
-                    ->from('nepasrepondre@alleedesfees.fr', "L'Allée des Fées")
-                    ->subject('Test vers lui même')
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->from('nepasrepondre@alleedesfees.fr', "L'allée des Fées")
+            ->subject('Réinscription des utilisateurs terminées')
+            ->greeting('Bonjour,')
+            ->line('Vous avez validé la réinscription des utilisateurs suivants :')
+            ->line(new HtmlString($list))
+            ->line('Cet email a été envoyé pour vous indiquer que la réinscription de ces utilisateurs est terminée.')
+            ->line('Bonne journée,')
+           ;
     }
 
     /**

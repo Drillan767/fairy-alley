@@ -184,7 +184,6 @@ const registerLesson = async (lessons, date, nbReplacements) => {
 };
 
 const generateRadioButton = (lessons, name, date) => {
-    console.log(date)
     let form = document.createElement('form');
 
     let dateDiv = document.createElement('div');

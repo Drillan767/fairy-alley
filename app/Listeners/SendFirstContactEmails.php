@@ -31,6 +31,5 @@ class SendFirstContactEmails
     {
         Notification::sendNow(User::role('administrator')->get(), new NewRegistration($event->user));
         $event->user->notify(new RegistrationAcknowledged());
-        Log:debug(['Les mails ont été envoyés à', $event->user->email]);
     }
 }

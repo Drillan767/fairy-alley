@@ -41,7 +41,7 @@ class NewRegistration extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->from('nepasrepondre@alleedesfees.fr')
+            ->from('nepasrepondre@alleedesfees.fr', "L'Allée des Fées")
             ->subject("Nouvelle inscription pour L'allée des Fées - {$this->user->full_name}")
             ->greeting('Bonjour,')
             ->line("Vous recevez cet email car un nouvel utilisateur a demandé une inscription sur le site de l'Allée des Fées")

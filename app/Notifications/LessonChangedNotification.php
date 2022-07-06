@@ -42,7 +42,7 @@ class LessonChangedNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->from('nepasrepondre@alleedesfees.fr')
+            ->from('nepasrepondre@alleedesfees.fr', "L'Allée des Fées")
             ->subject('Modification de votre cours')
             ->greeting('Bonjour,')
             ->line('Vous recevez cet email car le cours où vous étiez inscrit a été changé.')

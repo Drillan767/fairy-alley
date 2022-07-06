@@ -40,7 +40,7 @@ class RegistrationAcknowledged extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->from('nepasrepondre@alleedesfees.fr')
+            ->from('nepasrepondre@alleedesfees.fr', "L'Allée des Fées")
             ->subject("Demande d'inscription prise en compte")
             ->greeting('Bonjour,')
             ->line("Vous recevez cet email car vous venez de faire une demande d'inscription à l'Allée des Fées.")

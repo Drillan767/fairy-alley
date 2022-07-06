@@ -16,9 +16,9 @@
                         <p class="ml-5">{{ flash.success }}</p>
                     </div>
                     <div class="flex items-center justify-end mb-5">
-                        <a :href="route('utilisateurs.create')" class="btn btn-error">
+                        <button @click="renewUsersSubscription" class="btn btn-error">
                             Valider les demandes complètes
-                        </a>
+                        </button>
                     </div>
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
@@ -301,11 +301,42 @@ const nbRenewing = props.users.filter((u) => u.resubscription_status !== null).l
 const findRequirements = (user_id, element) => {
     const relatedRenewalInfos = props.renewals[`user_${user_id}`]
 
-    if (relatedRenewalInfos) {
-        return relatedRenewalInfos[element]
-    }
+    return relatedRenewalInfos ? relatedRenewalInfos[element] : null
+}
 
-    return null
+const renewUsersSubscription = () => {
+    const worthyUsers = props.users.filter((u) => u.resubscription_status === 2)
+
+    let htmlMessage = `
+    <p class="mb-4">Vous vous apprêtez à valider la réinscription des utilisateurs dont le dossier est complet</p>
+    <p class="mb-4">Les utilisateurs répondant aux critères sont les suivants :</p>
+    <ul class="my-4">
+    `;
+
+    worthyUsers.forEach((u) => {
+        htmlMessage += `<li>${u.lastname} ${u.firstname}</li>`
+    })
+
+    htmlMessage += '</ul>'
+    htmlMessage += `
+    <p class="mb-4">Le processus va enregistrer la décision finale de l'administrateur comme étant le cours de l'utilisateur pour l'année prochaine</p>
+    <p class="mb-4">Également, la personne apparaîtra toujours sur la page, mais plus comme étant en phase de réinscription.</p>
+    <p class="mb-4 underline text-red-500">Le processus est IRRÉVERSIBLE.</p>
+    `
+
+    Swal.fire({
+        icon: 'warning',
+        width: '64em',
+        showCancelButton: true,
+        cancelButtonText: 'Annuler',
+        confirmButtonText: 'Confirmer',
+        html: htmlMessage,
+    })
+        .then((result) => {
+            if (result.isConfirmed) {
+                Inertia.post(route('utilisateur.subscription.renew'))
+            }
+        })
 }
 
 </script>
