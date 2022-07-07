@@ -52,7 +52,7 @@
                             <div class="col-span-6 sm:col-span-3">
                                 <div class="flex gap-x-3">
                                     <div class="flex-1">
-                                        <label for="birthday" class="block text-sm font-medium text-gray-700">Date de naissance</label>
+                                        <label for="birthday" class="block text-sm font-medium text-gray-700 required">Date de naissance</label>
                                         <input type="date" name="birthday" value="{{ old('birthday') }}" id="birthday">
                                         @error('birthday')
                                         <p class="text-sm text-red-600">{{ $message }}</p>
@@ -63,13 +63,13 @@
                                         <div class="flex mt-2 justify-around">
                                             <div class="form-check">
                                                 <label class="form-check-label inline-block text-gray-800">
-                                                    <input type="radio" name="gender" value="H">
+                                                    <input type="radio" name="gender" value="H" {{ old('gender') === 'H' ? 'checked="checked"' : '' }}>
                                                     Homme
                                                 </label>
                                             </div>
                                             <div class="form-check">
                                                 <label class="form-check-label inline-block text-gray-800">
-                                                    <input type="radio" name="gender" value="F">
+                                                    <input type="radio" name="gender" value="F" {{ old('gender') === 'F' ? 'checked="checked"' : '' }}>
                                                     Femme
                                                 </label>
                                             </div>
@@ -259,6 +259,11 @@
                             option = select.lastElementChild;
                         }
 
+                        const defaultOption = document.createElement('option');
+                        defaultOption.setAttribute('value', '');
+                        defaultOption.appendChild(document.createTextNode('Sélectionner un cours...'))
+                        select.appendChild(defaultOption)
+
                         data.forEach((d) => {
                             const no = document.createElement('option');
                             no.setAttribute('value', d.id);
@@ -266,7 +271,6 @@
                             select.appendChild(no);
                         })
                     });
-                console.log(e.target.value)
             })
         })
     </script>

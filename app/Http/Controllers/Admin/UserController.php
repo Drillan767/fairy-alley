@@ -64,8 +64,16 @@ class UserController extends Controller
 
     public function show(User $utilisateur): Response
     {
+        $settings = Valuestore::make(storage_path('app/settings.json'));
+        $years = $settings->get('which_year') === 'current'
+            ? now()->subYear()->year . ' - ' . now()->year
+            : now()->year . ' - ' . now()->addYear()->year;
+
         $utilisateur->load('currentYearData.file', 'lesson', 'subscription', 'firstContactData');
-        $lessons = Lesson::all(['id', 'title'])
+        $lessons = Lesson::query()
+            ->where('year', $years)
+            ->whereJsonContains('gender', $utilisateur->gender)
+            ->get(['id', 'title'])
             ->mapWithKeys(fn ($l) => [$l->id => $l->title]);
 
         $services = Service::orderBy('title')

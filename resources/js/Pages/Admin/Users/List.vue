@@ -158,6 +158,7 @@ const yearsList = computed(() => {
 
 const changeYear = () => {
     const selectedLesson = props.lessons
+        // suivi line 393
         .filter((l) => l.year === selectedYear.value)
         .map((l) => l.id);
 
