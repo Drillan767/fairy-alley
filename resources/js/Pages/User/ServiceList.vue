@@ -10,7 +10,8 @@
                 </td>
                 <td class="tdClass flex justify-end pr-4">
                     <template v-if="subscriptionStatus(service) === 'unsubscribed'">
-                        <button class="btn btn-sm" @click="subscribe(service)">Inscription</button>
+                        <button class="btn btn-sm btn-outline">Bientôt disponible !</button>
+<!--                        <button class="btn btn-sm" @click="subscribe(service)">Inscription</button>-->
                     </template>
                     <template v-if="subscriptionStatus(service) === 'pending'">
                         <span class="text-orange-500">En attente</span>

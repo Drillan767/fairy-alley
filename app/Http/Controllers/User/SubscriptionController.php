@@ -27,6 +27,7 @@ class SubscriptionController extends Controller
         ->with(['subscriptions' => function ($query) {
             $query->where('expires_at', '>=', now());
         }])
+        ->orderBy('order')
         ->get();
 
         $user = auth()->user();

@@ -140,11 +140,11 @@ const changeLesson = (user_id) => {
 
 const status = [
     {
-        text: 'Aucun',
+        text: 'Demande non faite',
         value: null,
     },
     {
-        text: 'En attente',
+        text: 'Demande faite',
         value: 1,
     },
     {
