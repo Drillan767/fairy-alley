@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
@@ -56,6 +57,12 @@ class User extends Authenticatable
             $user->roles()->detach();
             $user->movements()->delete();
             $user->firstContactData()->delete();
+        });
+
+        static::creating(function ($model) {
+            $model->firstname = Str::title($model->firstname);
+            $model->email = strtolower($model->email);
+            $model->lastname = strtoupper($model->lastname);
         });
 
         static::addGlobalScope('order', function (Builder $builder) {
