@@ -35,8 +35,9 @@
                                     </div>
                                     <div class="gap-x-2" v-else-if="props.column.field === 'decision'">
                                         <template v-if="props.row.resubscription_status !== null">
-                                            {{ getLesson(props.row.id) }}
-                                            <button type="button" class="btn btn-xs" @click="changeLesson(props.row.id)">
+                                            <span v-html="getLesson(props.row.id)"></span>
+
+                                            <button type="button" class="btn btn-xs ml-2" @click="changeLesson(props.row.id)">
                                                 Modifier
                                             </button>
                                         </template>
@@ -271,7 +272,7 @@ const getLesson = (user_id, choice = null) => {
             const lessonId = relatedRenewalInfos['admin_decision'];
 
             if (lessonId) {
-                return props.lessons.find((l) => l.id === parseInt(lessonId)).title + usersForGivenLesson(lessonId)
+                return props.lessons.find((l) => l.id === parseInt(lessonId)).title + '<br />' + usersForGivenLesson(lessonId)
             }
         }
 

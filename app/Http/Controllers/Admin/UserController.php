@@ -5,15 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Events\UserRoleChanged;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendRenewalEmails;
-use App\Notifications\UserRenewalFeedback;
-use App\Notifications\UserRenewed;
 use App\Http\Requests\{FirstContactRequest, SubscriptionValidationRequest, UserUpdateRequest};
 use App\Jobs\SendLessonChanged;
 use App\Models\{Lesson, Service, Subscription, User, };
 use App\Notifications\RenewalStatusChanged;
 use App\Services\{FileHandler, FirstContactHandler, SubscriptionHandler};
 use Illuminate\Http\{RedirectResponse, Request};
-use Illuminate\Support\Facades\{DB, Hash, Notification};
+use Illuminate\Support\Facades\{DB, Hash};
 use Inertia\{Inertia, Response};
 use Spatie\Valuestore\Valuestore;
 
@@ -123,6 +121,11 @@ class UserController extends Controller
         $user = User::select('id')->find($validated['user']);
         $user->syncRoles([$validated['role']]);
         event(new UserRoleChanged($user, $validated['role']));
+
+        if ($validated['role'] === 'subscriber') {
+            $user->password = Hash::make('password');
+            $user->save();
+        }
 
         return redirect()->back()->with('success', 'Le statut de la personne a bien été changé.');
     }
@@ -275,7 +278,7 @@ class UserController extends Controller
         return Inertia::render('Admin/Users/RenewalList', compact('renewals', 'lessons', 'users'));
     }
 
-    public function updateDecision (Request $request)
+    public function updateDecision (Request $request): RedirectResponse
     {
         $renewals = Valuestore::make(storage_path('app/renewal.json'));
         $relatedRenewal = $renewals->get("user_{$request->get('user_id')}");
