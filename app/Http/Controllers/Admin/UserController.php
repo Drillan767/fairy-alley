@@ -237,13 +237,15 @@ class UserController extends Controller
         $lessons = Lesson::query()
             ->where('year', now()->year . ' - ' . now()->addYear()->year)
             ->get(['id', 'title']);
-        $users = User::with('currentYearData')->get([
-            'id',
-            'firstname',
-            'lastname',
-            'email',
-            'resubscription_status',
-        ])
+        $users = User::with('currentYearData')
+            ->whereNull('resubscribed_at')
+            ->get([
+                'id',
+                'firstname',
+                'lastname',
+                'email',
+                'resubscription_status',
+            ])
         ->map(function ($user) use ($renewals) {
 
             $user = [
@@ -369,6 +371,7 @@ class UserController extends Controller
             $relatedRenewal = $renewals->get("user_$user->id");
             $user->lesson_id = $relatedRenewal['admin_decision'];
             $user->resubscription_status = null;
+            $user->resubscribed_at = now();
             $user->save();
 
             $user->subscription->lesson_id = $relatedRenewal['admin_decision'];

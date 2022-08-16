@@ -157,12 +157,15 @@ const yearsList = computed(() => {
 })
 
 const changeYear = () => {
+    console.log(selectedYear.value)
     const selectedLesson = props.lessons
         // suivi line 393
         .filter((l) => l.year === selectedYear.value)
         .map((l) => l.id);
 
-    userList.value = props.users.filter((u) => selectedLesson.includes(u.lesson_id))
+    userList.value = selectedYear.value === ''
+        ? props.users
+        : props.users.filter((u) => selectedLesson.includes(u.lesson_id))
 }
 
 const searchOptions = {

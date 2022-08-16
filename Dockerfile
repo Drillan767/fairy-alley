@@ -9,6 +9,7 @@ RUN apk update && apk add --no-cache \
     bash \
     caddy \
     npm \
+    mariadb-client \
     ffmpeg \
     git \
     freetype-dev \
@@ -18,7 +19,8 @@ RUN apk update && apk add --no-cache \
     libwebp-dev \
     wget \
     zlib-dev \
-    libmcrypt-dev
+    libmcrypt-dev \
+    && echo "* * * * * sh /srv/crontab" > /etc/crontabs/root
 
 RUN docker-php-ext-configure gd \
         --with-jpeg=/usr/include/  \
