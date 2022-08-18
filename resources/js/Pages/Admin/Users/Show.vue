@@ -448,7 +448,7 @@ const paymentStatus = computed(() => {
     const expectedTotal = props.currentUser.current_year_data.total
 
     form.payments.forEach((p) => {
-        total += parseInt(p.amount)
+        total += parseInt(p.amount === '' ? 0 : p.amount)
     })
 
     if (total === 0) {
