@@ -34,6 +34,7 @@ $start = Carbon::parse($settings->get('subscription_start'));
 $end = Carbon::parse($settings->get('subscription_end'));
 
 Route::get('/', [HomeController::class, 'landing'])->name('landing');
+/*
 Route::post('/contact', [HomeController::class, 'contact'])->name('contact');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () use ($start, $end) {
@@ -158,3 +159,5 @@ Route::get('related-lessons/{gender}', [FirstContactController::class, 'relatedL
 Route::get('/page/{slug}', [PageController::class, 'show'])->name('pages.show');
 
 require_once __DIR__ . '/fortify.php';
+
+*/
