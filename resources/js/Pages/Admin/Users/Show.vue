@@ -1,5 +1,5 @@
 <template>
-    <admin-layout title="Pages">
+    <admin-layout :title="currentUser.full_name">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ currentUser.full_name }}
@@ -181,6 +181,80 @@
                                         </template>
                                     </div>
                                 </div>
+
+                                <hr class="mt-4" />
+
+                                <h2 class="font-semibold text-l text-gray-700 leading-tight mt-4 mb-5 flex">
+                                    Paiement(s)
+
+                                    <span class="flex ml-4 text-green-500" v-if="paymentStatus.status === 'complete'">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        complet
+                                    </span>
+
+                                    <span class="flex ml-4 text-red-500" v-if="paymentStatus.status === 'error'">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Une anomalie a été détectée.
+                                    </span>
+                                </h2>
+
+                                <div class="col-span-6 sm:col-span-4">
+                                    <p v-if="form.payments.length === 0" class="text-orange-500">
+                                        Aucun paiement reçu pour le moment.
+                                    </p>
+                                    <div
+                                        v-for="(entry, index) in form.payments"
+                                        :key="index"
+                                        class="flex items-end"
+                                    >
+                                        <div class="flex gap-x2">
+                                            <div class="px-3">
+                                                <jet-label value="Montant reçu :"/>
+                                                <jet-input v-model="entry.amount" type="text" />
+                                                <jet-input-error :message="form.errors[`payments.${index}.amount`]" class="mt-2"/>
+                                            </div>
+
+                                            <div class="px-3">
+                                                <jet-label value="Moyen de paiement :" class="mb-1"/>
+                                                <jet-select :choices="paymentMethods" v-model="entry.method" />
+                                                <jet-input-error :message="form.errors[`payments.${index}.method`]" class="mt-2"/>
+                                            </div>
+
+                                            <div class="px-3">
+                                                <jet-label value="Reçu le :"/>
+                                                <jet-input v-model="entry.paid_at" type="date" />
+                                                <jet-input-error :message="form.errors[`payments.${index}.paid_at`]" class="mt-2"/>
+                                            </div>
+
+                                            <div v-if="form.payments.length > 1" class="flex items-end">
+                                                <jet-secondary-button @click="removePayment(index)">Retirer</jet-secondary-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-8" v-if="form.payments.length < 3">
+                                        <jet-button type="button" @click="addPayment">Ajouter un paiement</jet-button>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <p>
+                                            <b>Total :</b>
+                                            <span
+                                                class="ml-2"
+                                                :class="{
+                                                    'text-red-500': ['error', 'none'].includes(paymentStatus.status),
+                                                    'text-orange-500': paymentStatus.status === 'incomplete',
+                                                    'text-green-500': paymentStatus.status === 'complete',
+                                                }"
+                                            >
+                                                {{ paymentStatus.total }} / {{ currentUser.current_year_data.total }} €
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -249,7 +323,7 @@
     </admin-layout>
 </template>
 
-<script>
+<script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import JetButton from '@/Jetstream/Button.vue';
 import JetButtonSecondary from "@/Jetstream/SecondaryButton.vue"
@@ -257,155 +331,168 @@ import JetInput from '@/Jetstream/Input.vue';
 import JetTextarea from '@/Jetstream/Textarea.vue';
 import JetLabel from '@/Jetstream/Label.vue';
 import JetInputError from '@/Jetstream/InputError.vue';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import JetSelect from '@/Jetstream/Select.vue';
 import { useForm } from "@inertiajs/inertia-vue3";
 import Multiselect from '@vueform/multiselect';
 import '@vueform/multiselect/themes/default.scss';
-import {computed, toRaw, ref, onMounted} from "vue";
+import {ref, onMounted, computed} from "vue";
 import Swal from "sweetalert2";
 import {Inertia} from "@inertiajs/inertia";
 
-export default {
-    title () {
-        return this.currentUser.full_name;
+const props = defineProps({
+    currentUser: Object,
+    services: Array,
+    roles: Object,
+    lessons: Object,
+    flash: {
+        type: Object,
+        required: false
     },
+})
 
-    props: {
-        currentUser: Object,
-        services: Array,
-        roles: Object,
-        lessons: Object,
-        flash: {
-            type: Object,
-            required: false
-        },
-    },
+const form = useForm({
+    _method: 'PUT',
+    payments: props.currentUser.current_year_data.payments,
+    ...props.currentUser
+})
 
-    components: {
-        AdminLayout,
-        JetButton,
-        JetInput,
-        JetTextarea,
-        JetLabel,
-        JetInputError,
-        JetButtonSecondary,
-        Multiselect
-    },
+const roleList = ref({});
 
-    setup (props) {
-        const form = useForm({
-            _method: 'PUT',
-            ...props.currentUser
+const submit = () => {
+    form.post(route('utilisateurs.update', {utilisateur: props.currentUser.id}))
+}
+
+onMounted(() => {
+    for (const key in props.roles) {
+        roleList.value[key] = props.roles[key].display;
+    }
+})
+
+const paymentMethods = ref([
+    {label: 'Espèces', value: 'Espèces'},
+    {label: 'Virement', value: 'Virement'},
+    {label: 'Chèque', value: 'Chèque'},
+])
+
+const addPayment = () => {
+    form.year_data.payments.push({paid_at: '', amount: '', method: ''})
+}
+
+const removePayment = (index) => {
+    form.year_data.payments.splice(index, 1)
+}
+
+const changeLesson = async () => {
+    const {value: lesson} = await Swal.fire({
+        icon: 'info',
+        title: 'Sélectionnez un nouveau cours',
+        input: 'select',
+        inputOptions: props.lessons,
+        inputPlaceholder: 'Sélectionner...',
+        showCancelButton: true,
+        cancelButtonText: 'Annuler',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'Veuillez sélectionner un cours'
+            }
+        }
+    })
+
+    if (lesson) {
+        Inertia.post(route('utilisateurs.change-lesson'), {
+            lid: lesson,
+            user: props.currentUser.id
+        })
+    }
+}
+
+const changeRole = async () => {
+    const {value: role} = await Swal.fire({
+        icon: 'info',
+        title: 'Sélectionnez un nouveau rôle',
+        input: 'select',
+        inputOptions: roleList.value,
+        inputPlaceholder: 'Sélectionner...',
+        showCancelButton: true,
+        cancelButtonText: 'Annuler',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'Veuillez sélectionner un rôle'
+            }
+        }
+    })
+
+    if (role) {
+        const choice = await Swal.fire({
+            icon: 'warning',
+            title: `Confirmer le rôle "${props.roles[role].display}" ?`,
+            html: `<p>${props.roles[role].warning}</p><br /><p>Continuer ?</p>`,
+            confirmButtonText: 'Confirmer',
+            showCancelButton: true,
+            cancelButtonText: 'Annuler',
         })
 
-        const roleList = ref({});
-
-        const submit = () => {
-            form.post(route('utilisateurs.update', {utilisateur: props.currentUser.id}))
-        }
-
-        onMounted(() => {
-            for (const key in props.roles) {
-                roleList.value[key] = props.roles[key].display;
-            }
-        })
-
-        const changeLesson = async () => {
-            const {value: lesson} = await Swal.fire({
-                icon: 'info',
-                title: 'Sélectionnez un nouveau cours',
-                input: 'select',
-                inputOptions: props.lessons,
-                inputPlaceholder: 'Sélectionner...',
-                showCancelButton: true,
-                cancelButtonText: 'Annuler',
-                inputValidator: (value) => {
-                    if (!value) {
-                        return 'Veuillez sélectionner un cours'
-                    }
-                }
+        if (choice.isConfirmed) {
+            Inertia.post(route('utilisateurs.change-role'), {
+                role: role,
+                user: props.currentUser.id
             })
-
-            if (lesson) {
-                Inertia.post(route('utilisateurs.change-lesson'), {
-                    lid: lesson,
-                    user: props.currentUser.id
-                })
-            }
-        }
-
-        const changeRole = async () => {
-            const {value: role} = await Swal.fire({
-                icon: 'info',
-                title: 'Sélectionnez un nouveau rôle',
-                input: 'select',
-                inputOptions: roleList.value,
-                inputPlaceholder: 'Sélectionner...',
-                showCancelButton: true,
-                cancelButtonText: 'Annuler',
-                inputValidator: (value) => {
-                    if (!value) {
-                        return 'Veuillez sélectionner un rôle'
-                    }
-                }
-            })
-
-            if (role) {
-                const choice = await Swal.fire({
-                    icon: 'warning',
-                    title: `Confirmer le rôle "${props.roles[role].display}" ?`,
-                    html: `<p>${props.roles[role].warning}</p><br /><p>Continuer ?</p>`,
-                    confirmButtonText: 'Confirmer',
-                    showCancelButton: true,
-                    cancelButtonText: 'Annuler',
-                })
-
-                if (choice.isConfirmed) {
-                    Inertia.post(route('utilisateurs.change-role'), {
-                        role: role,
-                        user: props.currentUser.id
-                    })
-                }
-            }
-        }
-
-        const resetPassword = () => {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Réinitialiser le mot de passe ?',
-                showCancelButton: true,
-                cancelButtonText: 'Annuler',
-                confirmButtonText: 'Confirmer',
-                html: `<p>Vous vous apprêtez à réinitialiser le mot de passe de
-                ${props.currentUser.full_name} <br /> à sa valeur initiale ("<b>password</b>" sans guillemets). Confirmer ?</p>`
-            })
-                .then((response) => {
-                    if (response.isConfirmed) {
-                        axios.post(route('utilisateurs.reset-password'), {id: props.currentUser.id})
-                            .then(() => {
-                                Swal.fire({
-                                    icon: 'success',
-                                    toast: true,
-                                    position: 'top-end',
-                                    title: 'Succès.',
-                                    text: 'Le mot de passe a été réinitialisé',
-                                    timerProgressBar: true,
-                                    showConfirmButton: false,
-                                    timer: 2000,
-                                })
-                            })
-                    }
-                })
-        }
-
-        return {
-            form,
-            changeLesson,
-            changeRole,
-            resetPassword,
-            submit,
         }
     }
 }
+
+const paymentStatus = computed(() => {
+    let total = 0;
+    let status = '';
+    const expectedTotal = props.currentUser.current_year_data.total
+
+    form.payments.forEach((p) => {
+        total += parseInt(p.amount)
+    })
+
+    if (total === 0) {
+        status = 'none'
+    } else if (total > 0 && total < expectedTotal) {
+        status = 'incomplete'
+    } else if (total === expectedTotal) {
+        status = 'complete'
+    } else {
+        status = 'error'
+    }
+
+    return {status, total}
+})
+
+const resetPassword = () => {
+    Swal.fire({
+        icon: 'warning',
+        title: 'Réinitialiser le mot de passe ?',
+        showCancelButton: true,
+        cancelButtonText: 'Annuler',
+        confirmButtonText: 'Confirmer',
+        html: `<p>Vous vous apprêtez à réinitialiser le mot de passe de
+                ${props.currentUser.full_name} <br /> à sa valeur initiale ("<b>password</b>" sans guillemets). Confirmer ?</p>`
+    })
+        .then((response) => {
+            if (response.isConfirmed) {
+                axios.post(route('utilisateurs.reset-password'), {id: props.currentUser.id})
+                    .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            toast: true,
+                            position: 'top-end',
+                            title: 'Succès.',
+                            text: 'Le mot de passe a été réinitialisé',
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            timer: 2000,
+                        })
+                    })
+            }
+        })
+}
+
 </script>
 
 <style scoped lang="scss">

@@ -62,6 +62,25 @@ class SettingsController extends Controller
         return redirect()->back();
     }
 
+    public function templates()
+    {
+        $templates = Valuestore::make(storage_path('app/templates.json'));
+
+        return Inertia::render('Admin/Settings/Templates', [
+            'templates' => $templates->all(),
+        ]);
+    }
+
+    public function storeTemplates(Request $request)
+    {
+        $templates = Valuestore::make(storage_path('app/templates.json'));
+        foreach ($request->all() as $l => $r) {
+            $templates->put($l, $r);
+        }
+
+        return redirect()->back()->with('success', 'Templates sauvegardés.');
+    }
+
     private function instanciateSettings()
     {
         return Valuestore::make(storage_path('app/settings.json'));

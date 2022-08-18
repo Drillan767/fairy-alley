@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Jobs\SendRevivalMails;
 use App\Models\{Lesson, Movement, User};
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -176,5 +177,11 @@ class AdminController
             });
 
         return $userList;
+    }
+
+    public function revive(Request $request): JsonResponse
+    {
+        SendRevivalMails::dispatchAfterResponse($request->get('type'));
+        return response()->json('ok');
     }
 }

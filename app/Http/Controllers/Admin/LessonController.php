@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LessonRequest;
 use App\Models\Lesson;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -62,6 +63,19 @@ class LessonController extends Controller
         if (request()->user()->hasRole('administrator')) {
             $cour->delete();
         }
+    }
+
+    public function users(int $lid)
+    {
+        $lesson = Lesson::select('id', 'title')->find($lid);
+        $users = User::select('id', 'firstname', 'lastname')
+            ->with('currentYearData:user_id,total,payments')
+            ->where('lesson_id', $lid)
+            ->whereNotNull('resubscribed_at')
+            ->get();
+
+
+        return Inertia::render('Admin/Lessons/Users', compact('lesson', 'users'));
     }
 
     private function handleLesson(Lesson $lesson, LessonRequest $request, bool $update = false)

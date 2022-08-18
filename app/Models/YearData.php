@@ -16,6 +16,8 @@ class YearData extends Model
         'deposit_paid' => 'boolean',
     ];
 
+    protected $fillable = ['total', 'payments'];
+
     public function file(): MorphOne
     {
         return $this->morphOne(Media::class, 'illustrable');

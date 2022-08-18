@@ -120,10 +120,6 @@
                                                     Importer des témoignages
                                                 </jet-dropdown-link>
                                                 <div class="border-t border-gray-100"></div>
-                                                <jet-dropdown-link :href="route('settings.edit')">
-                                                    Paramètres généraux du site
-                                                </jet-dropdown-link>
-                                                <div class="border-t border-gray-100"></div>
                                                 <jet-dropdown-link :href="route('files.index', {media: 'musiques'})">
                                                     Musiques
                                                 </jet-dropdown-link>
@@ -165,6 +161,16 @@
 
                                         <jet-dropdown-link :href="route('profile.show')">
                                             Profil
+                                        </jet-dropdown-link>
+
+                                        <div class="border-t border-gray-100"></div>
+
+                                        <jet-dropdown-link :href="route('settings.edit')">
+                                        Paramètres généraux du site
+                                        </jet-dropdown-link>
+
+                                        <jet-dropdown-link :href="route('settings.template.get')">
+                                            Template des emails
                                         </jet-dropdown-link>
 
                                         <div class="border-t border-gray-100"></div>

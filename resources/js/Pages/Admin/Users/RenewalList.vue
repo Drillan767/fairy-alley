@@ -16,6 +16,15 @@
                         <p class="ml-5">{{ flash.success }}</p>
                     </div>
                     <div class="flex items-center justify-end mb-5">
+
+                        <div class="dropdown dropdown-end mr-2">
+                            <label tabindex="0" class="btn m-1">Relancer...</label>
+                            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-64">
+                                <li><a @click="revive('unsubscribed')">les non réinscrit(e)s</a></li>
+                                <li><a @click="revive('unpaid')">les paiements manquants ou incomplets</a></li>
+                            </ul>
+                        </div>
+
                         <button @click="renewUsersSubscription" class="btn btn-error">
                             Valider les demandes complètes
                         </button>
@@ -25,6 +34,7 @@
                             <vue-good-table
                                 :rows="users"
                                 :columns="columns"
+                                :sort-options="{enabled: true, initialSortBy: {field: 'lastname', type: 'asc'}}"
                             >
                                 <template #table-row="props">
                                     <div v-if="props.column.field === 'choice1'">
@@ -188,12 +198,13 @@ const columns = ref([
                 ...status
             ],
             filterFn: (data, filterString) => {
-                if (filterString === 'Aucun') {
+                if (filterString === 'Demande non faite') {
                     return data === null
                 } else {
                     return data === parseInt(filterString)
                 }
             }
+
         }
     },
 
@@ -336,6 +347,38 @@ const renewUsersSubscription = () => {
         .then((result) => {
             if (result.isConfirmed) {
                 Inertia.post(route('utilisateur.subscription.renew'))
+            }
+        })
+}
+
+const revive = (type) => {
+    const action = type === 'unsubscribed'
+        ? 'qui ne se sont pas encore réinscrits'
+        : 'dont le paiement est incomplet'
+
+    const target = type === 'unsubscribed'
+        ? "qui n'ont pas encore fait la démarche de se réinscrire"
+        : "qui n'ont soit pas encore, soit pas dans sa totalité payé pour l'année"
+
+    Swal.fire({
+        icon: 'question',
+        title: 'Relancer les utilisateurs ?',
+        text: `Vous vous apprêtez à relancer les utilisateurs ${action}. Un email sera envoyé à tous les utilisateurs ${target}. Continuer ?`,
+        showCancelButton: true,
+        confirmButtonText: 'Confirmer',
+        cancelButtonText: 'Annuler',
+    })
+
+        .then((decision) => {
+            if (decision.isConfirmed) {
+                axios.post(route('revive'), {type})
+                    .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Succès',
+                            text: 'Un mail de relance a été envoyé, et un mail récapitulatif contenant les noms de personnes concernées à été envoyé aux administrateurs.'
+                        })
+                    })
             }
         })
 }

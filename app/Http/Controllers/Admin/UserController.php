@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\SendRenewalEmails;
 use App\Http\Requests\{FirstContactRequest, SubscriptionValidationRequest, UserUpdateRequest};
 use App\Jobs\SendLessonChanged;
-use App\Models\{Lesson, Service, Subscription, User, };
+use App\Models\{Lesson, Service, Subscription, User, YearData};
 use App\Notifications\RenewalStatusChanged;
 use App\Services\{FileHandler, FirstContactHandler, SubscriptionHandler};
 use Illuminate\Http\{RedirectResponse, Request};
@@ -23,11 +23,6 @@ class UserController extends Controller
 
     public function index(): Response
     {
-        $settings = Valuestore::make(storage_path('app/settings.json'));
-        $years = $settings->get('which_year') === 'current'
-            ? now()->subYear()->year . ' - ' . now()->year
-            : now()->year . ' - ' . now()->addYear()->year;
-
         $roles = config('roles');
         $lessons = Lesson::query()
             ->where('type', 'lesson')
@@ -162,6 +157,12 @@ class UserController extends Controller
         }
 
         $utilisateur->save();
+
+        if ($request->has('payments')) {
+            $utilisateur->currentYearData->update([
+               'payments' => $request->get('payments'),
+            ]);
+        }
 
         return redirect()->route('utilisateurs.index')->with('success', 'Utilisateur mis à jour avec succès.');
     }

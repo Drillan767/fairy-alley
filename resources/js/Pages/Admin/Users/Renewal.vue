@@ -72,12 +72,12 @@
                                         Paiement
                                     </h2>
 
-                                    <div class="col-span-6 sm:col-span-3">
+                                    <div class="col-span-6 sm:col-span-2">
                                         <jet-label value="Total" />
                                         <jet-input type="text" v-model="form.year_data.total" />
                                     </div>
 
-                                    <div class="col-span-6 sm:col-span-3">
+                                    <div class="col-span-6 sm:col-span-4 border-l pl-2">
                                         <template v-if="renewalData.payment === 'quarterly'">
                                             <p class="mb-4">La personne a souhaité un paiement en plusieurs fois.</p>
                                             <div
@@ -87,9 +87,15 @@
                                             >
                                                 <div class="flex gap-x2">
                                                     <div class="px-3">
-                                                        <jet-label value="Montant à verser :"/>
+                                                        <jet-label value="Montant reçu :"/>
                                                         <jet-input v-model="entry.amount" type="text" />
                                                         <jet-input-error :message="form.errors[`payments.${index}.date`]" class="mt-2"/>
+                                                    </div>
+
+                                                    <div class="px-3">
+                                                        <jet-label value="Moyen de paiement :" class="mb-1"/>
+                                                        <jet-select :choices="paymentMethods" v-model="entry.method" />
+                                                        <jet-input-error :message="form.errors[`payments.${index}.method`]" class="mt-2"/>
                                                     </div>
 
                                                     <div class="px-3">
@@ -104,10 +110,9 @@
                                                 </div>
                                             </div>
                                             <div class="mt-8" v-if="form.year_data.payments.length < 3">
-                                                <jet-button type="button" @click="addPayment">Ajouter une mensualité</jet-button>
+                                                <jet-button type="button" @click="addPayment">Ajouter un paiement</jet-button>
                                             </div>
                                         </template>
-
                                     </div>
 
                                     <div class="col-span-6">
@@ -195,6 +200,12 @@ const form = useForm({
     },
 })
 
+const paymentMethods = ref([
+    {label: 'Espèces', value: 'Espèces'},
+    {label: 'Virement', value: 'Virement'},
+    {label: 'Chèque', value: 'Chèque'},
+])
+
 const renewalStatuses = ref([
     {label: 'En attente', value: 1},
     {label: 'Documents manquants (certificat, etc)', value: 3},
@@ -208,7 +219,7 @@ const handleUpload = (file) => {
 };
 
 const addPayment = () => {
-    form.year_data.payments.push({date: '', amount: ''})
+    form.year_data.payments.push({date: '', amount: '', method: ''})
 }
 
 const removePayment = (index) => {

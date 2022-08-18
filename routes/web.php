@@ -41,6 +41,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () use ($start, 
     Route::post('/flow', [MovementController::class, 'flow'])->name('movement.flow');
 
     Route::middleware(['role:administrator'])->group(function () use ($start, $end) {
+
         Route::controller(AdminController::class)->group(function() {
             Route::get('/administration', 'index')->name('admin.index');
             Route::get('/admin/lesson/list', 'lessonList')->name('admin.lesson.list');
@@ -55,6 +56,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () use ($start, 
             Route::get('/parametres', 'edit')->name('settings.edit');
             Route::post('/settings-renewal', 'renewal')->name('settings.renewal');
             Route::post('/settings-holidays', 'holidays')->name('settings.holidays');
+
+            Route::get('/templates-emails', 'templates')->name('settings.template.get');
+            Route::post('/templates-emails', 'storeTemplates')->name('settings.template.post');
         });
 
         Route::controller(MovementController::class)->group(function() {
@@ -84,6 +88,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () use ($start, 
                 Route::get('/réinscription/{user}', 'renewal')->name('utilisateur.renewal.show');
                 Route::post('/store-renewal', 'storeRenewal')->name('utilisateur.renewal.store');
                 Route::post('/renew-user-subscription', 'renewUsers')->name('utilisateur.subscription.renew');
+                Route::post('/revive', [AdminController::class, 'revive'])->name('revive');
             }
 
         });
@@ -95,7 +100,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () use ($start, 
             Route::post('/media', 'upload')->name('media.upload');
         });
 
-        Route::get('/cours/{cours}/utilisateurs', [LessonController::class, 'users'])->name('cours.users');
+        Route::get('/cours/{lid}/utilisateurs', [LessonController::class, 'users'])->name('cours.users');
 
         Route::controller(ToolsController::class)->group(function () {
             Route::get('/importer-utilisateurs', 'importForm')->name('import.form');

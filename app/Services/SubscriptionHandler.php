@@ -44,6 +44,7 @@ class SubscriptionHandler
 
         if ($request->get('payment_method') === 'full') {
             $yearData->total = $settings->get('price_full');
+            $yearData->payments = [];
         } else {
             $yearData->total = $settings->get('price_quarterly') * 3;
             $yearData->payments = [

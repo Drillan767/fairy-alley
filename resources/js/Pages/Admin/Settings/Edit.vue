@@ -28,18 +28,12 @@
     </admin-layout>
 </template>
 
-<script>
+<script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import SubscriptionRenewalForm from "./SubscriptionRenewalForm.vue";
 import CustomHolidays from "./CustomHolidaysForm.vue";
 
-export default {
-    props: ['settings'],
-    components: {
-        CustomHolidays,
-        AdminLayout,
-        SubscriptionRenewalForm
-    },
-}
+const props = defineProps(['settings'])
+
 </script>
 

@@ -31,11 +31,11 @@ class DumpDB extends Command
      */
     public function handle()
     {
-
         $dumpFile = 'dump-' . now()->format('d-m-Y') . '.sql';
 
         exec(
             'mysqldump -u' . env('DB_USERNAME') .
+            ' --add-drop-database --add-drop-table' .
             ' -p' . env('DB_PASSWORD')
             . ' -h ' . env('DB_HOST') . ' ' .
             env('DB_DATABASE') . ' > ' .
@@ -46,6 +46,6 @@ class DumpDB extends Command
 
         Storage::disk('local')->delete($dumpFile);
 
-        return 0;
+        return self::SUCCESS;
     }
 }

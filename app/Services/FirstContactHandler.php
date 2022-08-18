@@ -53,6 +53,8 @@ class FirstContactHandler
             }
         }
 
+        $yearData->payments = [];
+
         $user->yearDatas()->save($yearData);
 
         event(new FirstContactCreated($user));

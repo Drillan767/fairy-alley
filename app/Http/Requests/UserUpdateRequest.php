@@ -30,6 +30,19 @@ class UserUpdateRequest extends UserCoordinatesRequest
             'gender' => ['required', 'in:H,F'],
             'birthday' => ['nullable', 'date_format:Y-m-d'],
             'other_data' => ['nullable', 'string'],
+            'payments' => ['nullable', 'array', 'max:3'],
+            'payments.*.amount' => ['required', 'integer'],
+            'payments.*.method' => ['required', 'string', 'in:Chèque,Virement,Espèces'],
+            'payments.*.paid_at' => ['required', 'string'],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'payments.*.amount' => 'Montant',
+            'payments.*.method' => 'Moyen de paiement',
+            'payments.*.paid_at' => 'Reçu le',
         ];
     }
 }
