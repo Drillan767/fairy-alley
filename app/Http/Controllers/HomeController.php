@@ -12,16 +12,14 @@ class HomeController extends Controller
 {
     public function landing()
     {
-        return view('home.building');
-
-        /*$services = Service::with('thumbnail', 'page')
+        $services = Service::with('thumbnail', 'page')
             ->where('homepage', true)
             ->orderBy('order')
             ->get();
 
         $echauffement = env('MEDIAS_URL') . 'videos/1%20-%20Echauffement%201-Etirements%20Allong%C3%A9s%20Au%20Sol.m4v';
         $visite = env('MEDIAS_URL') . 'videos/descente-sur-maison.mp4';
-        return view('home.landing', compact('services', 'echauffement', 'visite'));*/
+        return view('home.landing', compact('services', 'echauffement', 'visite'));
     }
 
     public function contact(ContactRequest $request)
