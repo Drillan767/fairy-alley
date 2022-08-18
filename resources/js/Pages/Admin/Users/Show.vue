@@ -376,11 +376,11 @@ const paymentMethods = ref([
 ])
 
 const addPayment = () => {
-    form.year_data.payments.push({paid_at: '', amount: '', method: ''})
+    form.current_year_data.payments.push({paid_at: '', amount: 0, method: ''})
 }
 
 const removePayment = (index) => {
-    form.year_data.payments.splice(index, 1)
+    form.current_year_data.payments.splice(index, 1)
 }
 
 const changeLesson = async () => {
