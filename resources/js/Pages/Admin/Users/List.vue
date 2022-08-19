@@ -175,7 +175,7 @@ const searchOptions = {
 
 const sortOption = {
     enabled: true,
-    initialSortBy: JSON.parse(localStorage.getItem('sort')),
+    initialSortBy: {field: 'lastname', type: 'asc'},
 };
 
 const onSortChange = (params) => {

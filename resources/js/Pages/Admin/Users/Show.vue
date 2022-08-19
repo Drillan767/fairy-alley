@@ -202,6 +202,11 @@
                                     </span>
                                 </h2>
 
+                                <div class="my-4 ml-3">
+                                    <jet-label value="Total :"/>
+                                    <jet-input v-model="form.total" type="text" class="w-28 "/>
+                                </div>
+
                                 <div class="col-span-6 sm:col-span-4">
                                     <p v-if="form.payments.length === 0" class="text-orange-500">
                                         Aucun paiement reçu pour le moment.
@@ -354,6 +359,7 @@ const props = defineProps({
 const form = useForm({
     _method: 'PUT',
     payments: props.currentUser.current_year_data.payments,
+    total: props.currentUser.current_year_data.total,
     ...props.currentUser
 })
 
@@ -376,7 +382,7 @@ const paymentMethods = ref([
 ])
 
 const addPayment = () => {
-    form.current_year_data.payments.push({paid_at: '', amount: 0, method: ''})
+    form.current_year_data.payments.push({amount: 0, paid_at: '', method: ''})
 }
 
 const removePayment = (index) => {

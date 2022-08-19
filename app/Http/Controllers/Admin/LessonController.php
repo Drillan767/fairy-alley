@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LessonRequest;
 use App\Models\Lesson;
 use App\Models\User;
+use App\Services\LessonTempUsersHandler;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -65,7 +66,7 @@ class LessonController extends Controller
         }
     }
 
-    public function users(int $lid)
+    public function users(int $lid, LessonTempUsersHandler $tempUsersHandler)
     {
         $lesson = Lesson::select('id', 'title')->find($lid);
         $users = User::select('id', 'firstname', 'lastname')
@@ -74,8 +75,9 @@ class LessonController extends Controller
             ->whereNotNull('resubscribed_at')
             ->get();
 
+        $tempUsers = $tempUsersHandler->getUsers($lid);
 
-        return Inertia::render('Admin/Lessons/Users', compact('lesson', 'users'));
+        return Inertia::render('Admin/Lessons/Users', compact('lesson', 'users', 'tempUsers'));
     }
 
     private function handleLesson(Lesson $lesson, LessonRequest $request, bool $update = false)

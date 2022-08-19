@@ -78,7 +78,7 @@ const calendarOptions = {
                 details.value.status = lessonProps.status
                 showModal.value = true
             })
-    }, // Parcours bien-être (0 personnes)
+    },
     eventContent: (arg) => {
         return {html: arg.event.title}
     },

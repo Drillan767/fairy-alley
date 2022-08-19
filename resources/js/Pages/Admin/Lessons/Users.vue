@@ -35,7 +35,9 @@
                                         class="border-b border-gray-200 hover:bg-gray-100"
                                     >
                                         <td class="py-3 px-6 text-left whitespace-nowrap">
-                                            {{ user.full_name }}
+                                            <a :href="route('utilisateurs.show', {utilisateur: user.id})">
+                                                {{ user.full_name }}
+                                            </a>
                                         </td>
 
                                         <td>
@@ -65,6 +67,20 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    <tr
+                                        v-for="(user, i) in tempUsers"
+                                        :key="i"
+                                        class="border-b border-gray-200 hover:bg-gray-100"
+                                    >
+                                        <td class="py-3 px-6 text-left italic font-bold whitespace-nowrap">
+                                            <a :href="route('utilisateur.renewal.show', {user: user.id})" target="_blank">
+                                                {{ user.full_name }}
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            ⚠️ Utilisateur non validé ⚠️
+                                        </td>
+                                    </tr>
                                     <tr v-for="i in missingRows" :key="i" class="border-b border-gray-200 hover:bg-gray-100">
                                         <td colspan="2" class="py-3 px-6">&zwnj;</td>
                                     </tr>
@@ -83,11 +99,16 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
 import {computed} from "vue";
 import dayjs from "dayjs";
 
-const props = defineProps(['lesson', 'users'])
+const props = defineProps(['lesson', 'users', 'tempUsers'])
+
+const totalPersons = computed(() => {
+    const { users, tempUsers } = props
+    return users.length + tempUsers.length
+})
 
 const missingRows = computed(() => {
-    return props.users.length < 10
-    ? 10 - props.users.length
+    return totalPersons < 10
+    ? 10 - totalPersons
     : 0
 })
 

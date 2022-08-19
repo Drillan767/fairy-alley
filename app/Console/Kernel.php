@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('db:dump')->cron('0 20 ? * 5');
+        $schedule->command('db:dump --notify')->cron('0 20 ? * 5');
     }
 
     /**

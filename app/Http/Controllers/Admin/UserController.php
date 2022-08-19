@@ -160,7 +160,8 @@ class UserController extends Controller
 
         if ($request->has('payments')) {
             $utilisateur->currentYearData->update([
-               'payments' => $request->get('payments'),
+                'payments' => $request->get('payments'),
+                'total' => $request->get('total'),
             ]);
         }
 

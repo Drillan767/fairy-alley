@@ -18,9 +18,16 @@
                         </div>
                         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                             <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-                                <h2 class="font-semibold text-l text-gray-700 leading-tight mb-5">
-                                    Informations sur l'utilisateur
-                                </h2>
+                                <div class="flex justify-between">
+                                    <h2 class="font-semibold text-l text-gray-700 leading-tight mb-5">
+                                        Informations sur l'utilisateur
+                                    </h2>
+
+                                    <a :href="route('utilisateurs.show', {utilisateur: currentUser.id})" class="btn btn-sm">
+                                        Voir le profil
+                                    </a>
+                                </div>
+
 
                                 <div class="grid grid-cols-6 gap-4">
 
@@ -66,53 +73,6 @@
                                         >
                                             Télécharger le document
                                         </a>
-                                    </div>
-
-                                    <h2 class="font-semibold text-l text-gray-700 leading-tight mb-2 col-span-6">
-                                        Paiement
-                                    </h2>
-
-                                    <div class="col-span-6 sm:col-span-2">
-                                        <jet-label value="Total" />
-                                        <jet-input type="text" v-model="form.year_data.total" />
-                                    </div>
-
-                                    <div class="col-span-6 sm:col-span-4 border-l pl-2">
-                                        <template v-if="renewalData.payment === 'quarterly'">
-                                            <p class="mb-4">La personne a souhaité un paiement en plusieurs fois.</p>
-                                            <div
-                                                v-for="(entry, index) in form.year_data.payments"
-                                                :key="index"
-                                                class="flex items-end"
-                                            >
-                                                <div class="flex gap-x2">
-                                                    <div class="px-3">
-                                                        <jet-label value="Montant reçu :"/>
-                                                        <jet-input v-model="entry.amount" type="text" />
-                                                        <jet-input-error :message="form.errors[`payments.${index}.date`]" class="mt-2"/>
-                                                    </div>
-
-                                                    <div class="px-3">
-                                                        <jet-label value="Moyen de paiement :" class="mb-1"/>
-                                                        <jet-select :choices="paymentMethods" v-model="entry.method" />
-                                                        <jet-input-error :message="form.errors[`payments.${index}.method`]" class="mt-2"/>
-                                                    </div>
-
-                                                    <div class="px-3">
-                                                        <jet-label value="Reçu le :"/>
-                                                        <jet-input v-model="entry.date" type="date" />
-                                                        <jet-input-error :message="form.errors[`payments.${index}.date`]" class="mt-2"/>
-                                                    </div>
-
-                                                    <div v-if="form.year_data.payments.length > 1" class="flex items-end">
-                                                        <jet-secondary-button @click="removePayment(index)">Retirer</jet-secondary-button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="mt-8" v-if="form.year_data.payments.length < 3">
-                                                <jet-button type="button" @click="addPayment">Ajouter un paiement</jet-button>
-                                            </div>
-                                        </template>
                                     </div>
 
                                     <div class="col-span-6">
@@ -200,12 +160,6 @@ const form = useForm({
     },
 })
 
-const paymentMethods = ref([
-    {label: 'Espèces', value: 'Espèces'},
-    {label: 'Virement', value: 'Virement'},
-    {label: 'Chèque', value: 'Chèque'},
-])
-
 const renewalStatuses = ref([
     {label: 'En attente', value: 1},
     {label: 'Documents manquants (certificat, etc)', value: 3},
@@ -217,14 +171,6 @@ const renewalStatuses = ref([
 const handleUpload = (file) => {
     form.year_data.file = file
 };
-
-const addPayment = () => {
-    form.year_data.payments.push({date: '', amount: '', method: ''})
-}
-
-const removePayment = (index) => {
-    form.year_data.payments.splice(index, 1)
-}
 
 const firstLessonChoice = computed(() => {
     const firstLesson = props.renewalData.lesson_choices[0];
@@ -242,26 +188,6 @@ const secondLessonChoice = computed(() => {
     return '';
 })
 
-const submit = () => {
-    let total = 0;
-    form.year_data.payments.forEach((p) => total += parseInt(p.amount));
-
-    if (props.renewalData.payment === "quarterly" && total !== form.year_data.total) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Les mensualités ne correspondent pas avec le total',
-            text: 'Il apparaît que les valeurs indiquées dans les mensualités ne correspondent pas au total défini. Confirmer malgré tout ?',
-            showCancelButton: true,
-            cancelButtonText: 'Annuler',
-            confirmButtonText: 'Enregistrer',
-        })
-            .then((response) => {
-                if (response.isConfirmed) form.post(route('utilisateur.renewal.store'))
-            })
-    }
-    else {
-        form.post(route('utilisateur.renewal.store'))
-    }
-}
+const submit = () => form.post(route('utilisateur.renewal.store'))
 
 </script>

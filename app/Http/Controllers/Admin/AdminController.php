@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Jobs\SendRevivalMails;
+use App\Services\LessonTempUsersHandler;
 use App\Models\{Lesson, Movement, User};
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -152,6 +153,12 @@ class AdminController
             $userList = User::select('id', 'firstname', 'lastname', 'phone', 'pro')
                 ->where('lesson_id', $lesson_id)
                 ->get();
+
+            $tempUsersHandler = new LessonTempUsersHandler();
+            $tempUsers = $tempUsersHandler->getUsers($lesson_id);
+
+            $userList = $userList->concat($tempUsers);
+
         } else {
             $userList = User::where('lesson_id', $lesson_id)->count();
         }

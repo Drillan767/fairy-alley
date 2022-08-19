@@ -15,14 +15,14 @@ class DumpDB extends Command
      *
      * @var string
      */
-    protected $signature = 'db:dump';
+    protected $signature = 'db:dump {--notify}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Dumps the database';
 
     /**
      * Execute the console command.
@@ -42,9 +42,10 @@ class DumpDB extends Command
             storage_path('app/' . $dumpFile)
         );
 
-        Notification::sendNow(User::firstWhere('lastname', 'Muraz'), new SendBackup($dumpFile));
-
-        Storage::disk('local')->delete($dumpFile);
+        if ($this->option('notify')) {
+            Notification::sendNow(User::firstWhere('lastname', 'Muraz'), new SendBackup($dumpFile));
+            Storage::disk('local')->delete($dumpFile);
+        }
 
         return self::SUCCESS;
     }
