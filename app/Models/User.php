@@ -153,7 +153,7 @@ class User extends Authenticatable
 
     public function getFullNameAttribute(): string
     {
-        return strtoupper($this->lastname) . " $this->firstname ";
+        return strtoupper($this->lastname) . " $this->firstname";
     }
 
     public function getRoleAttribute()

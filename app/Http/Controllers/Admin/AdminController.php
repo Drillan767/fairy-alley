@@ -151,6 +151,7 @@ class AdminController
     {
         if ($loadInfos) {
             $userList = User::select('id', 'firstname', 'lastname', 'phone', 'pro')
+                ->whereHas('roles', fn ($q) => $q->where('name', 'subscribed'))
                 ->where('lesson_id', $lesson_id)
                 ->get();
 

@@ -31,7 +31,7 @@ class DumpDB extends Command
      */
     public function handle()
     {
-        $dumpFile = 'dump-' . now()->format('d-m-Y') . '.sql';
+        $dumpFile = 'dump-' . now()->format('Y-m-d') . '.sql';
 
         exec(
             'mysqldump -u' . env('DB_USERNAME') .
