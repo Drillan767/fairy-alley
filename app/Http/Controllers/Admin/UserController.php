@@ -240,6 +240,7 @@ class UserController extends Controller
             ->where('year', now()->year . ' - ' . now()->addYear()->year)
             ->get(['id', 'title']);
         $users = User::with('currentYearData')
+            ->whereRelation('roles', 'name', 'subscriber')
             ->whereNull('resubscribed_at')
             ->get([
                 'id',

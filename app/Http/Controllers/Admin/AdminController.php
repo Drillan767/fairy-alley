@@ -85,7 +85,8 @@ class AdminController
                     'value' => $user->id,
                     'name' => $user->full_name,
                 ];
-            });
+            })
+            ->values();
 
         return response()->json($users);
     }
@@ -184,7 +185,7 @@ class AdminController
                 }
             });
 
-        return $userList;
+        return $loadInfos ? $userList->values() : $userList;
     }
 
     public function revive(Request $request): JsonResponse
