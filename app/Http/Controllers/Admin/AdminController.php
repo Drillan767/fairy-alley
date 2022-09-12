@@ -172,16 +172,13 @@ class AdminController
             ->each(function ($movement) use (&$userList, $loadInfos) {
                 if ($movement->action === 'join') {
                     if($loadInfos) {
+                        $movement->user->spec = 'joined';
                         $userList->push($movement->user);
                     } else {
                         $userList++;
                     }
                 } else {
-                    if ($loadInfos) {
-                        $userList = $userList->reject(fn($user) => $user->id === $movement->user->id);
-                    } else {
-                        $userList--;
-                    }
+                    $movement->user->spec = 'left';
                 }
             });
 

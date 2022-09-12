@@ -247,6 +247,7 @@ class UserController extends Controller
                 'firstname',
                 'lastname',
                 'email',
+                'resubscribed_at',
                 'resubscription_status',
             ])
         ->map(function ($user) use ($renewals) {

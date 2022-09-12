@@ -111,7 +111,7 @@ const registerLesson = async (lessons, date, nbReplacements) => {
                         showCancelButton: currentStep > 0,
                         cancelButtonText: 'Annuler',
                         currentProgressStep: currentStep,
-                        html: generateRadioButton(filteredLessons, 'lesson'),
+                        html: generateRadioButton(filteredLessons, 'lesson', date),
                         preConfirm: () => {
                             const checked = Swal
                                 .getPopup()
