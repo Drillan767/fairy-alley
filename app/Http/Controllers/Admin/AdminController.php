@@ -150,19 +150,21 @@ class AdminController
 
     private function listUsers(int $lesson_id, string $hour, $loadInfos = false): Collection|int
     {
+
+        $tempUsersHandler = new LessonTempUsersHandler();
+        $tempUsers = $tempUsersHandler->getUsers($lesson_id);
+
         if ($loadInfos) {
             $userList = User::select('id', 'firstname', 'lastname', 'phone', 'pro')
                 ->whereRelation('roles', 'name', 'subscriber')
                 ->where('lesson_id', $lesson_id)
                 ->get();
 
-            $tempUsersHandler = new LessonTempUsersHandler();
-            $tempUsers = $tempUsersHandler->getUsers($lesson_id);
-
             $userList = $userList->concat($tempUsers);
 
         } else {
             $userList = User::where('lesson_id', $lesson_id)->count();
+            $userList += $tempUsers->count();
         }
 
         Movement::with('user')
@@ -170,15 +172,12 @@ class AdminController
             ->where('lesson_time', $hour)
             ->get()
             ->each(function ($movement) use (&$userList, $loadInfos) {
-                if ($movement->action === 'join') {
-                    if($loadInfos) {
-                        $movement->user->spec = 'joined';
-                        $userList->push($movement->user);
-                    } else {
-                        $userList++;
-                    }
+                if ($loadInfos) {
+                    $movedUser = $movement->user;
+                    $movedUser->spec = $movement->action;
+                    $userList->push($movedUser);
                 } else {
-                    $movement->user->spec = 'left';
+                    $userList++;
                 }
             });
 

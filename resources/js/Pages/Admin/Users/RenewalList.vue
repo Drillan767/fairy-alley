@@ -242,12 +242,16 @@ const columns = ref([
         }
     },
     {
-        label: 'Documents validés',
+        label: 'Documents',
         field: 'document',
     },
     {
         label: 'Paiement reçu',
         field: 'paid',
+    },
+    {
+        label: 'Date de réinscription',
+        field: 'resubscribed_at',
     },
     {
         label: 'Action',
